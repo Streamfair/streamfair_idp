@@ -19,8 +19,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      DB_SOURCE_IDP_SERVICE: ${{ secrets.DB_SOURCE_IDP_SERVICE }}
-      SERVER_ADDRESS_IDP_SERVICE: ${{ secrets.SERVER_ADDRESS_IDP_SERVICE }}
+      APP_DB_SOURCE_IDP_SERVICE: ${{ secrets.DB_SOURCE_IDP_SERVICE }}
+      APP_SERVER_ADDRESS_IDP_SERVICE: ${{ secrets.SERVER_ADDRESS_IDP_SERVICE }}
     services:
       postgres:
         image: postgres:16
@@ -46,12 +46,6 @@ jobs:
         curl -L https://github.com/golang-migrate/migrate/releases/download/v4.17.0/migrate.linux-amd64.tar.gz | tar xvz
         sudo mv migrate /usr/bin/migrate
         which migrate
-
-    - name: Wait for PostgreSQL to start
-      run: |
-          while ! pg_isready; do
-            sleep 1
-          done
 
     - name: Run migrations
       run: make migrateup
