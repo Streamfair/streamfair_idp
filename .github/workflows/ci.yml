@@ -19,8 +19,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      APP_DB_SOURCE_USER_SERVICE: ${{ secrets.DB_SOURCE_IDP_SERVICE }}
-      APP_SERVER_ADDRESS_USER_SERVICE: ${{ secrets.SERVER_ADDRESS_IDP_SERVICE }}
+      DB_SOURCE_IDP_SERVICE: ${{ secrets.DB_SOURCE_IDP_SERVICE }}
+      SERVER_ADDRESS_IDP_SERVICE: ${{ secrets.SERVER_ADDRESS_IDP_SERVICE }}
     services:
       postgres:
         image: postgres:16
