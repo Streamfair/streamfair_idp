@@ -21,6 +21,8 @@ jobs:
     env:
       APP_DB_SOURCE_IDP_SERVICE: ${{ secrets.DB_SOURCE_IDP_SERVICE }}
       APP_SERVER_ADDRESS_IDP_SERVICE: ${{ secrets.SERVER_ADDRESS_IDP_SERVICE }}
+      APP_TOKEN_SYMMETRIC_KEY: ${{ secrets.TOKEN_SYMMETRIC_KEY }}
+      APP_ACCESS_TOKEN_DURATION: ${{ secrets.ACCESS_TOKEN_DURATION }}
     services:
       postgres:
         image: postgres:16
