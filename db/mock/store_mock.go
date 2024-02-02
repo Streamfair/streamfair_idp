@@ -41,78 +41,271 @@ func (m *MockStore) EXPECT() *MockStoreMockRecorder {
 	return m.recorder
 }
 
-// CreateUser mocks base method.
-func (m *MockStore) CreateUser(ctx context.Context, arg db.CreateUserParams) (db.IdpSvcUser, error) {
+// AssignRoleToUser mocks base method.
+func (m *MockStore) AssignRoleToUser(ctx context.Context, arg db.AssignRoleToUserParams) (db.IdpSvcUserRole, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateUser", ctx, arg)
-	ret0, _ := ret[0].(db.IdpSvcUser)
+	ret := m.ctrl.Call(m, "AssignRoleToUser", ctx, arg)
+	ret0, _ := ret[0].(db.IdpSvcUserRole)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// CreateUser indicates an expected call of CreateUser.
-func (mr *MockStoreMockRecorder) CreateUser(ctx, arg any) *gomock.Call {
+// AssignRoleToUser indicates an expected call of AssignRoleToUser.
+func (mr *MockStoreMockRecorder) AssignRoleToUser(ctx, arg any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUser", reflect.TypeOf((*MockStore)(nil).CreateUser), ctx, arg)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AssignRoleToUser", reflect.TypeOf((*MockStore)(nil).AssignRoleToUser), ctx, arg)
 }
 
-// DeleteUser mocks base method.
-func (m *MockStore) DeleteUser(ctx context.Context, id int64) error {
+// CheckIfUserHasRole mocks base method.
+func (m *MockStore) CheckIfUserHasRole(ctx context.Context, arg db.CheckIfUserHasRoleParams) (db.IdpSvcUserRole, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteUser", ctx, id)
+	ret := m.ctrl.Call(m, "CheckIfUserHasRole", ctx, arg)
+	ret0, _ := ret[0].(db.IdpSvcUserRole)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CheckIfUserHasRole indicates an expected call of CheckIfUserHasRole.
+func (mr *MockStoreMockRecorder) CheckIfUserHasRole(ctx, arg any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckIfUserHasRole", reflect.TypeOf((*MockStore)(nil).CheckIfUserHasRole), ctx, arg)
+}
+
+// CreateRefreshToken mocks base method.
+func (m *MockStore) CreateRefreshToken(ctx context.Context, arg db.CreateRefreshTokenParams) (db.IdpSvcRefreshToken, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateRefreshToken", ctx, arg)
+	ret0, _ := ret[0].(db.IdpSvcRefreshToken)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateRefreshToken indicates an expected call of CreateRefreshToken.
+func (mr *MockStoreMockRecorder) CreateRefreshToken(ctx, arg any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateRefreshToken", reflect.TypeOf((*MockStore)(nil).CreateRefreshToken), ctx, arg)
+}
+
+// CreateRole mocks base method.
+func (m *MockStore) CreateRole(ctx context.Context, arg db.CreateRoleParams) (db.IdpSvcRole, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateRole", ctx, arg)
+	ret0, _ := ret[0].(db.IdpSvcRole)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateRole indicates an expected call of CreateRole.
+func (mr *MockStoreMockRecorder) CreateRole(ctx, arg any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateRole", reflect.TypeOf((*MockStore)(nil).CreateRole), ctx, arg)
+}
+
+// CreateToken mocks base method.
+func (m *MockStore) CreateToken(ctx context.Context, arg db.CreateTokenParams) (db.IdpSvcToken, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateToken", ctx, arg)
+	ret0, _ := ret[0].(db.IdpSvcToken)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateToken indicates an expected call of CreateToken.
+func (mr *MockStoreMockRecorder) CreateToken(ctx, arg any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateToken", reflect.TypeOf((*MockStore)(nil).CreateToken), ctx, arg)
+}
+
+// DeleteRefreshToken mocks base method.
+func (m *MockStore) DeleteRefreshToken(ctx context.Context, id int64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteRefreshToken", ctx, id)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// DeleteUser indicates an expected call of DeleteUser.
-func (mr *MockStoreMockRecorder) DeleteUser(ctx, id any) *gomock.Call {
+// DeleteRefreshToken indicates an expected call of DeleteRefreshToken.
+func (mr *MockStoreMockRecorder) DeleteRefreshToken(ctx, id any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUser", reflect.TypeOf((*MockStore)(nil).DeleteUser), ctx, id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteRefreshToken", reflect.TypeOf((*MockStore)(nil).DeleteRefreshToken), ctx, id)
 }
 
-// GetUserByID mocks base method.
-func (m *MockStore) GetUserByID(ctx context.Context, id int64) (db.IdpSvcUser, error) {
+// DeleteRole mocks base method.
+func (m *MockStore) DeleteRole(ctx context.Context, id int64) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetUserByID", ctx, id)
-	ret0, _ := ret[0].(db.IdpSvcUser)
+	ret := m.ctrl.Call(m, "DeleteRole", ctx, id)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteRole indicates an expected call of DeleteRole.
+func (mr *MockStoreMockRecorder) DeleteRole(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteRole", reflect.TypeOf((*MockStore)(nil).DeleteRole), ctx, id)
+}
+
+// DeleteToken mocks base method.
+func (m *MockStore) DeleteToken(ctx context.Context, id int64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteToken", ctx, id)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteToken indicates an expected call of DeleteToken.
+func (mr *MockStoreMockRecorder) DeleteToken(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteToken", reflect.TypeOf((*MockStore)(nil).DeleteToken), ctx, id)
+}
+
+// GetRefreshTokenByID mocks base method.
+func (m *MockStore) GetRefreshTokenByID(ctx context.Context, id int64) (db.IdpSvcRefreshToken, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetRefreshTokenByID", ctx, id)
+	ret0, _ := ret[0].(db.IdpSvcRefreshToken)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetUserByID indicates an expected call of GetUserByID.
-func (mr *MockStoreMockRecorder) GetUserByID(ctx, id any) *gomock.Call {
+// GetRefreshTokenByID indicates an expected call of GetRefreshTokenByID.
+func (mr *MockStoreMockRecorder) GetRefreshTokenByID(ctx, id any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserByID", reflect.TypeOf((*MockStore)(nil).GetUserByID), ctx, id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRefreshTokenByID", reflect.TypeOf((*MockStore)(nil).GetRefreshTokenByID), ctx, id)
 }
 
-// GetUserByUsername mocks base method.
-func (m *MockStore) GetUserByUsername(ctx context.Context, username string) (db.IdpSvcUser, error) {
+// GetRefreshTokenByValue mocks base method.
+func (m *MockStore) GetRefreshTokenByValue(ctx context.Context, token string) (db.IdpSvcRefreshToken, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetUserByUsername", ctx, username)
-	ret0, _ := ret[0].(db.IdpSvcUser)
+	ret := m.ctrl.Call(m, "GetRefreshTokenByValue", ctx, token)
+	ret0, _ := ret[0].(db.IdpSvcRefreshToken)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetUserByUsername indicates an expected call of GetUserByUsername.
-func (mr *MockStoreMockRecorder) GetUserByUsername(ctx, username any) *gomock.Call {
+// GetRefreshTokenByValue indicates an expected call of GetRefreshTokenByValue.
+func (mr *MockStoreMockRecorder) GetRefreshTokenByValue(ctx, token any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserByUsername", reflect.TypeOf((*MockStore)(nil).GetUserByUsername), ctx, username)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRefreshTokenByValue", reflect.TypeOf((*MockStore)(nil).GetRefreshTokenByValue), ctx, token)
 }
 
-// ListUsers mocks base method.
-func (m *MockStore) ListUsers(ctx context.Context, arg db.ListUsersParams) ([]db.ListUsersRow, error) {
+// GetRoleByID mocks base method.
+func (m *MockStore) GetRoleByID(ctx context.Context, id int64) (db.IdpSvcRole, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListUsers", ctx, arg)
-	ret0, _ := ret[0].([]db.ListUsersRow)
+	ret := m.ctrl.Call(m, "GetRoleByID", ctx, id)
+	ret0, _ := ret[0].(db.IdpSvcRole)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// ListUsers indicates an expected call of ListUsers.
-func (mr *MockStoreMockRecorder) ListUsers(ctx, arg any) *gomock.Call {
+// GetRoleByID indicates an expected call of GetRoleByID.
+func (mr *MockStoreMockRecorder) GetRoleByID(ctx, id any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListUsers", reflect.TypeOf((*MockStore)(nil).ListUsers), ctx, arg)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRoleByID", reflect.TypeOf((*MockStore)(nil).GetRoleByID), ctx, id)
+}
+
+// GetRoleByName mocks base method.
+func (m *MockStore) GetRoleByName(ctx context.Context, roleName string) (db.IdpSvcRole, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetRoleByName", ctx, roleName)
+	ret0, _ := ret[0].(db.IdpSvcRole)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetRoleByName indicates an expected call of GetRoleByName.
+func (mr *MockStoreMockRecorder) GetRoleByName(ctx, roleName any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRoleByName", reflect.TypeOf((*MockStore)(nil).GetRoleByName), ctx, roleName)
+}
+
+// GetTokenByID mocks base method.
+func (m *MockStore) GetTokenByID(ctx context.Context, id int64) (db.IdpSvcToken, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetTokenByID", ctx, id)
+	ret0, _ := ret[0].(db.IdpSvcToken)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetTokenByID indicates an expected call of GetTokenByID.
+func (mr *MockStoreMockRecorder) GetTokenByID(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTokenByID", reflect.TypeOf((*MockStore)(nil).GetTokenByID), ctx, id)
+}
+
+// GetTokenByValue mocks base method.
+func (m *MockStore) GetTokenByValue(ctx context.Context, token string) (db.IdpSvcToken, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetTokenByValue", ctx, token)
+	ret0, _ := ret[0].(db.IdpSvcToken)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetTokenByValue indicates an expected call of GetTokenByValue.
+func (mr *MockStoreMockRecorder) GetTokenByValue(ctx, token any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTokenByValue", reflect.TypeOf((*MockStore)(nil).GetTokenByValue), ctx, token)
+}
+
+// GetUserRoles mocks base method.
+func (m *MockStore) GetUserRoles(ctx context.Context, userID int64) ([]db.IdpSvcUserRole, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUserRoles", ctx, userID)
+	ret0, _ := ret[0].([]db.IdpSvcUserRole)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUserRoles indicates an expected call of GetUserRoles.
+func (mr *MockStoreMockRecorder) GetUserRoles(ctx, userID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserRoles", reflect.TypeOf((*MockStore)(nil).GetUserRoles), ctx, userID)
+}
+
+// ListRefreshTokens mocks base method.
+func (m *MockStore) ListRefreshTokens(ctx context.Context, arg db.ListRefreshTokensParams) ([]db.IdpSvcRefreshToken, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListRefreshTokens", ctx, arg)
+	ret0, _ := ret[0].([]db.IdpSvcRefreshToken)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListRefreshTokens indicates an expected call of ListRefreshTokens.
+func (mr *MockStoreMockRecorder) ListRefreshTokens(ctx, arg any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRefreshTokens", reflect.TypeOf((*MockStore)(nil).ListRefreshTokens), ctx, arg)
+}
+
+// ListRoles mocks base method.
+func (m *MockStore) ListRoles(ctx context.Context, arg db.ListRolesParams) ([]db.IdpSvcRole, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListRoles", ctx, arg)
+	ret0, _ := ret[0].([]db.IdpSvcRole)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListRoles indicates an expected call of ListRoles.
+func (mr *MockStoreMockRecorder) ListRoles(ctx, arg any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRoles", reflect.TypeOf((*MockStore)(nil).ListRoles), ctx, arg)
+}
+
+// ListTokens mocks base method.
+func (m *MockStore) ListTokens(ctx context.Context, arg db.ListTokensParams) ([]db.IdpSvcToken, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListTokens", ctx, arg)
+	ret0, _ := ret[0].([]db.IdpSvcToken)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListTokens indicates an expected call of ListTokens.
+func (mr *MockStoreMockRecorder) ListTokens(ctx, arg any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListTokens", reflect.TypeOf((*MockStore)(nil).ListTokens), ctx, arg)
 }
 
 // Ping mocks base method.
@@ -129,62 +322,61 @@ func (mr *MockStoreMockRecorder) Ping(ctx, timeout any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Ping", reflect.TypeOf((*MockStore)(nil).Ping), ctx, timeout)
 }
 
-// UpdateUser mocks base method.
-func (m *MockStore) UpdateUser(ctx context.Context, arg db.UpdateUserParams) (db.UpdateUserRow, error) {
+// RemoveRoleFromUser mocks base method.
+func (m *MockStore) RemoveRoleFromUser(ctx context.Context, arg db.RemoveRoleFromUserParams) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateUser", ctx, arg)
-	ret0, _ := ret[0].(db.UpdateUserRow)
+	ret := m.ctrl.Call(m, "RemoveRoleFromUser", ctx, arg)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// RemoveRoleFromUser indicates an expected call of RemoveRoleFromUser.
+func (mr *MockStoreMockRecorder) RemoveRoleFromUser(ctx, arg any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveRoleFromUser", reflect.TypeOf((*MockStore)(nil).RemoveRoleFromUser), ctx, arg)
+}
+
+// UpdateRefreshToken mocks base method.
+func (m *MockStore) UpdateRefreshToken(ctx context.Context, arg db.UpdateRefreshTokenParams) (db.UpdateRefreshTokenRow, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateRefreshToken", ctx, arg)
+	ret0, _ := ret[0].(db.UpdateRefreshTokenRow)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// UpdateUser indicates an expected call of UpdateUser.
-func (mr *MockStoreMockRecorder) UpdateUser(ctx, arg any) *gomock.Call {
+// UpdateRefreshToken indicates an expected call of UpdateRefreshToken.
+func (mr *MockStoreMockRecorder) UpdateRefreshToken(ctx, arg any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUser", reflect.TypeOf((*MockStore)(nil).UpdateUser), ctx, arg)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateRefreshToken", reflect.TypeOf((*MockStore)(nil).UpdateRefreshToken), ctx, arg)
 }
 
-// UpdateUserEmail mocks base method.
-func (m *MockStore) UpdateUserEmail(ctx context.Context, arg db.UpdateUserEmailParams) (db.UpdateUserEmailRow, error) {
+// UpdateRole mocks base method.
+func (m *MockStore) UpdateRole(ctx context.Context, arg db.UpdateRoleParams) (db.UpdateRoleRow, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateUserEmail", ctx, arg)
-	ret0, _ := ret[0].(db.UpdateUserEmailRow)
+	ret := m.ctrl.Call(m, "UpdateRole", ctx, arg)
+	ret0, _ := ret[0].(db.UpdateRoleRow)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// UpdateUserEmail indicates an expected call of UpdateUserEmail.
-func (mr *MockStoreMockRecorder) UpdateUserEmail(ctx, arg any) *gomock.Call {
+// UpdateRole indicates an expected call of UpdateRole.
+func (mr *MockStoreMockRecorder) UpdateRole(ctx, arg any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUserEmail", reflect.TypeOf((*MockStore)(nil).UpdateUserEmail), ctx, arg)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateRole", reflect.TypeOf((*MockStore)(nil).UpdateRole), ctx, arg)
 }
 
-// UpdateUserPassword mocks base method.
-func (m *MockStore) UpdateUserPassword(ctx context.Context, arg db.UpdateUserPasswordParams) (db.UpdateUserPasswordRow, error) {
+// UpdateToken mocks base method.
+func (m *MockStore) UpdateToken(ctx context.Context, arg db.UpdateTokenParams) (db.UpdateTokenRow, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateUserPassword", ctx, arg)
-	ret0, _ := ret[0].(db.UpdateUserPasswordRow)
+	ret := m.ctrl.Call(m, "UpdateToken", ctx, arg)
+	ret0, _ := ret[0].(db.UpdateTokenRow)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// UpdateUserPassword indicates an expected call of UpdateUserPassword.
-func (mr *MockStoreMockRecorder) UpdateUserPassword(ctx, arg any) *gomock.Call {
+// UpdateToken indicates an expected call of UpdateToken.
+func (mr *MockStoreMockRecorder) UpdateToken(ctx, arg any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUserPassword", reflect.TypeOf((*MockStore)(nil).UpdateUserPassword), ctx, arg)
-}
-
-// UpdateUsername mocks base method.
-func (m *MockStore) UpdateUsername(ctx context.Context, arg db.UpdateUsernameParams) (db.UpdateUsernameRow, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateUsername", ctx, arg)
-	ret0, _ := ret[0].(db.UpdateUsernameRow)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// UpdateUsername indicates an expected call of UpdateUsername.
-func (mr *MockStoreMockRecorder) UpdateUsername(ctx, arg any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateUsername", reflect.TypeOf((*MockStore)(nil).UpdateUsername), ctx, arg)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateToken", reflect.TypeOf((*MockStore)(nil).UpdateToken), ctx, arg)
 }

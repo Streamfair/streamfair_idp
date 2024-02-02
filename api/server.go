@@ -14,7 +14,7 @@ import (
 type Server struct {
 	config          util.Config
 	store           db.Store
-	localTokenMaker token.LocalMaker
+	localTokenMaker token.Maker
 	router          *gin.Engine
 }
 
@@ -40,23 +40,10 @@ func (server *Server) setupRouter() {
 
 	router.GET("/readiness", server.readinessCheck)
 
-	router.POST("/users", server.createUser)
-	router.POST("/users/login", server.loginUser)
-	router.GET("/users/id/:id", server.getUserByID)
-	router.GET("/users/id", server.handleMissingID)
-	router.GET("/users/username/:username", server.getUserByUsername)
-	router.GET("/users/username", server.handleMissingUsername)
-	router.GET("/users/list", server.listUsers)
-	router.PUT("/users/update/:id", server.updateUser)
-	router.PUT("/users/update", server.handleMissingID)
-	router.PUT("/users/update/email/:id", server.updateUserEmail)
-	router.PUT("/users/update/email", server.handleMissingID)
-	router.PUT("/users/update/username/:id", server.updateUsername)
-	router.PUT("/users/update/username", server.handleMissingUsername)
-	router.PUT("/users/update/password/:id", server.updateUserPassword)
-	router.PUT("/users/update/password", server.handleMissingID)
-	router.DELETE("/users/delete/:id", server.deleteUser)
-	router.DELETE("/users/delete", server.handleMissingID)
+	// router.POST("/users/login", server.loginUser)
+
+	// for later use
+	// authRoutes := router.Group("/").Use(authMiddleware(server.localTokenMaker))
 
 	server.router = router
 }

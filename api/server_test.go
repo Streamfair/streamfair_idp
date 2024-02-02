@@ -52,7 +52,7 @@ func TestStartServer(t *testing.T) {
 				mockStore.EXPECT().Ping(gomock.Any(), gomock.Any()).Times(1).Return(nil)
 			}
 
-			server := NewTestServer(t, mockStore)
+			server := newTestServer(t, mockStore)
 			port, err := getRandomPort()
 			if tc.invalidPort {
 				port = -1

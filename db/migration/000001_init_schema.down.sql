@@ -2,6 +2,5 @@ DROP TABLE IF EXISTS "idp_svc"."UserRoles" CASCADE;
 DROP TABLE IF EXISTS "idp_svc"."Roles" CASCADE;
 DROP TABLE IF EXISTS "idp_svc"."RefreshTokens" CASCADE;
 DROP TABLE IF EXISTS "idp_svc"."Tokens" CASCADE;
-DROP TABLE IF EXISTS "idp_svc"."Users" CASCADE;
 
 DROP SCHEMA IF EXISTS "idp_svc" CASCADE;

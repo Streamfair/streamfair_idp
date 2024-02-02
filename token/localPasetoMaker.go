@@ -9,18 +9,18 @@ import (
 )
 
 // PasetoMaker is a PASETO implementation of a token maker
-type SymmetricPasetoMaker struct {
+type PasetoMaker struct {
 	paseto       *paseto.V2
 	symmetricKey []byte
 }
 
 // NewPasetoMaker creates a new PasetoMaker
-func NewLocalPasetoMaker(symmetricKey string) (LocalMaker, error) {
+func NewLocalPasetoMaker(symmetricKey string) (Maker, error) {
 	if len(symmetricKey) != chacha20poly1305.KeySize {
 		return nil, fmt.Errorf("invalid key size: must be exactly %d characters", chacha20poly1305.KeySize)
 	}
 
-	maker := &SymmetricPasetoMaker{
+	maker := &PasetoMaker{
 		paseto:       paseto.NewV2(),
 		symmetricKey: []byte(symmetricKey),
 	}
@@ -29,7 +29,7 @@ func NewLocalPasetoMaker(symmetricKey string) (LocalMaker, error) {
 }
 
 // CreateToken creates a new token for a specific username and duration
-func (maker *SymmetricPasetoMaker) CreateLocalToken(username string, duration time.Duration) (string, error) {
+func (maker *PasetoMaker) CreateLocalToken(username string, duration time.Duration) (string, error) {
 	payload, err := NewPayload(username, duration)
 	if err != nil {
 		return "", err
@@ -39,7 +39,7 @@ func (maker *SymmetricPasetoMaker) CreateLocalToken(username string, duration ti
 }
 
 // VerifyToken checks if the token is valid or not
-func (maker *SymmetricPasetoMaker) VerifyLocalToken(token string) (*Payload, error) {
+func (maker *PasetoMaker) VerifyLocalToken(token string) (*Payload, error) {
 	payload := &Payload{}
 
 	err := maker.paseto.Decrypt(token, maker.symmetricKey, payload, nil)

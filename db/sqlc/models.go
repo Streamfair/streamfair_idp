@@ -30,24 +30,6 @@ type IdpSvcToken struct {
 	Revoked   bool               `json:"revoked"`
 }
 
-type IdpSvcUser struct {
-	ID                int64              `json:"id"`
-	Username          string             `json:"username"`
-	FullName          string             `json:"full_name"`
-	Email             string             `json:"email"`
-	PasswordHash      string             `json:"password_hash"`
-	PasswordSalt      string             `json:"password_salt"`
-	CountryCode       string             `json:"country_code"`
-	RoleID            pgtype.Int8        `json:"role_id"`
-	Status            pgtype.Text        `json:"status"`
-	LastLoginAt       pgtype.Timestamptz `json:"last_login_at"`
-	UsernameChangedAt pgtype.Timestamptz `json:"username_changed_at"`
-	EmailChangedAt    pgtype.Timestamptz `json:"email_changed_at"`
-	PasswordChangedAt pgtype.Timestamptz `json:"password_changed_at"`
-	CreatedAt         pgtype.Timestamptz `json:"created_at"`
-	UpdatedAt         pgtype.Timestamptz `json:"updated_at"`
-}
-
 type IdpSvcUserRole struct {
 	UserID int64 `json:"user_id"`
 	RoleID int64 `json:"role_id"`
