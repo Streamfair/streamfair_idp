@@ -7,8 +7,7 @@ package db
 
 import (
 	"context"
-
-	"github.com/jackc/pgx/v5/pgtype"
+	"time"
 )
 
 const createToken = `-- name: CreateToken :one
@@ -16,9 +15,9 @@ INSERT INTO "idp_svc"."Tokens" (user_id, token, expires_at) VALUES ($1, $2, $3) 
 `
 
 type CreateTokenParams struct {
-	UserID    int64              `json:"user_id"`
-	Token     string             `json:"token"`
-	ExpiresAt pgtype.Timestamptz `json:"expires_at"`
+	UserID    int64     `json:"user_id"`
+	Token     string    `json:"token"`
+	ExpiresAt time.Time `json:"expires_at"`
 }
 
 func (q *Queries) CreateToken(ctx context.Context, arg CreateTokenParams) (IdpSvcToken, error) {
@@ -117,14 +116,14 @@ UPDATE "idp_svc"."Tokens" SET token = COALESCE($2, token), expires_at = COALESCE
 `
 
 type UpdateTokenParams struct {
-	ID        int64              `json:"id"`
-	Token     string             `json:"token"`
-	ExpiresAt pgtype.Timestamptz `json:"expires_at"`
+	ID        int64     `json:"id"`
+	Token     string    `json:"token"`
+	ExpiresAt time.Time `json:"expires_at"`
 }
 
 type UpdateTokenRow struct {
-	Token     string             `json:"token"`
-	ExpiresAt pgtype.Timestamptz `json:"expires_at"`
+	Token     string    `json:"token"`
+	ExpiresAt time.Time `json:"expires_at"`
 }
 
 func (q *Queries) UpdateToken(ctx context.Context, arg UpdateTokenParams) (UpdateTokenRow, error) {

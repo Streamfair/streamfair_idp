@@ -7,8 +7,7 @@ package db
 
 import (
 	"context"
-
-	"github.com/jackc/pgx/v5/pgtype"
+	"time"
 )
 
 const createRefreshToken = `-- name: CreateRefreshToken :one
@@ -16,9 +15,9 @@ INSERT INTO "idp_svc"."RefreshTokens" (user_id, token, expires_at) VALUES ($1, $
 `
 
 type CreateRefreshTokenParams struct {
-	UserID    int64              `json:"user_id"`
-	Token     string             `json:"token"`
-	ExpiresAt pgtype.Timestamptz `json:"expires_at"`
+	UserID    int64     `json:"user_id"`
+	Token     string    `json:"token"`
+	ExpiresAt time.Time `json:"expires_at"`
 }
 
 func (q *Queries) CreateRefreshToken(ctx context.Context, arg CreateRefreshTokenParams) (IdpSvcRefreshToken, error) {
@@ -117,14 +116,14 @@ UPDATE "idp_svc"."RefreshTokens" SET token = COALESCE($2, token), expires_at = C
 `
 
 type UpdateRefreshTokenParams struct {
-	ID        int64              `json:"id"`
-	Token     string             `json:"token"`
-	ExpiresAt pgtype.Timestamptz `json:"expires_at"`
+	ID        int64     `json:"id"`
+	Token     string    `json:"token"`
+	ExpiresAt time.Time `json:"expires_at"`
 }
 
 type UpdateRefreshTokenRow struct {
-	Token     string             `json:"token"`
-	ExpiresAt pgtype.Timestamptz `json:"expires_at"`
+	Token     string    `json:"token"`
+	ExpiresAt time.Time `json:"expires_at"`
 }
 
 func (q *Queries) UpdateRefreshToken(ctx context.Context, arg UpdateRefreshTokenParams) (UpdateRefreshTokenRow, error) {

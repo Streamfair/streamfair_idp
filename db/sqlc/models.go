@@ -5,15 +5,15 @@
 package db
 
 import (
-	"github.com/jackc/pgx/v5/pgtype"
+	"time"
 )
 
 type IdpSvcRefreshToken struct {
-	ID        int64              `json:"id"`
-	UserID    int64              `json:"user_id"`
-	Token     string             `json:"token"`
-	ExpiresAt pgtype.Timestamptz `json:"expires_at"`
-	Revoked   bool               `json:"revoked"`
+	ID        int64     `json:"id"`
+	UserID    int64     `json:"user_id"`
+	Token     string    `json:"token"`
+	ExpiresAt time.Time `json:"expires_at"`
+	Revoked   bool      `json:"revoked"`
 }
 
 type IdpSvcRole struct {
@@ -23,11 +23,11 @@ type IdpSvcRole struct {
 }
 
 type IdpSvcToken struct {
-	ID        int64              `json:"id"`
-	UserID    int64              `json:"user_id"`
-	Token     string             `json:"token"`
-	ExpiresAt pgtype.Timestamptz `json:"expires_at"`
-	Revoked   bool               `json:"revoked"`
+	ID        int64     `json:"id"`
+	UserID    int64     `json:"user_id"`
+	Token     string    `json:"token"`
+	ExpiresAt time.Time `json:"expires_at"`
+	Revoked   bool      `json:"revoked"`
 }
 
 type IdpSvcUserRole struct {
