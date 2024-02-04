@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Streamfair/streamfair-idp-svc/util"
+	"github.com/Streamfair/streamfair_idp_svc/util"
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"testing"

@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/Streamfair/streamfair-idp-svc/token"
+	"github.com/Streamfair/streamfair_idp_svc/token"
 	"github.com/gin-gonic/gin"
 )
 

@@ -1,4 +1,4 @@
-module github.com/Streamfair/streamfair-idp-svc
+module github.com/Streamfair/streamfair_idp_svc
 
 go 1.21.6
 

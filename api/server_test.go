@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	mock_db "github.com/Streamfair/streamfair-idp-svc/db/mock"
+	mock_db "github.com/Streamfair/streamfair_idp_svc/db/mock"
 	"go.uber.org/mock/gomock"
 )
 

@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	db "github.com/Streamfair/streamfair-idp-svc/db/sqlc"
-	"github.com/Streamfair/streamfair-idp-svc/util"
+	db "github.com/Streamfair/streamfair_idp_svc/db/sqlc"
+	"github.com/Streamfair/streamfair_idp_svc/util"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/require"
 )
@@ -16,7 +16,7 @@ func newTestServer(t *testing.T, store db.Store) *Server {
 		TokenSymmetricKey:   util.RandomString(32),
 		AccessTokenDuration: time.Minute,
 	}
-	
+
 	server, err := NewServer(config, store)
 	require.NoError(t, err)
 

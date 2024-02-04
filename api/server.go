@@ -3,9 +3,9 @@ package api
 import (
 	"fmt"
 
-	db "github.com/Streamfair/streamfair-idp-svc/db/sqlc"
-	"github.com/Streamfair/streamfair-idp-svc/token"
-	"github.com/Streamfair/streamfair-idp-svc/util"
+	db "github.com/Streamfair/streamfair_idp_svc/db/sqlc"
+	"github.com/Streamfair/streamfair_idp_svc/token"
+	"github.com/Streamfair/streamfair_idp_svc/util"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgconn"
 )
