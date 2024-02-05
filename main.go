@@ -3,16 +3,21 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
+	"net"
 	"os"
 
-	"github.com/Streamfair/streamfair_idp_svc/api"
 	db "github.com/Streamfair/streamfair_idp_svc/db/sqlc"
+	"github.com/Streamfair/streamfair_idp_svc/gapi"
+	"github.com/Streamfair/streamfair_idp_svc/pb"
 	"github.com/Streamfair/streamfair_idp_svc/util"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 func main() {
-	fmt.Println("Hello, Streamfair IDP Service!")
+	fmt.Println("Hello, Streamfair User Service!")
 	config, err := util.LoadConfig(".")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "config: error while loading config: %v\n", err)
@@ -29,13 +34,80 @@ func main() {
 	}
 
 	store := db.NewStore(conn)
-	server, err := api.NewServer(config, store)
+	// go runGrpcGatewayServer(config, store)
+	runGrpcServer(config, store)
+
+}
+
+func runGrpcServer(config util.Config, store db.Store) {
+	server, err := gapi.NewServer(config, store)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "server: error while creating server: %v\n", err)
 	}
 
-	err = server.StartServer(config.ServerAddress)
+	grpcServer := grpc.NewServer()
+	pb.RegisterIdentityServiceServer(grpcServer, server)
+	reflection.Register(grpcServer)
+
+	listener, err := net.Listen("tcp", config.GrpcServerAddress)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "server: error while starting server: %v\n", err)
+		fmt.Fprintf(os.Stderr, "server: error while creating listener: %v\n", err)
+	}
+
+	log.Printf("start gRPC server on %s", listener.Addr().String())
+	err = grpcServer.Serve(listener)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "server: error while serving gRPC: %v\n", err)
 	}
 }
+
+// func runGrpcGatewayServer(config util.Config, store db.Store) {
+// 	server, err := gapi.NewServer(config, store)
+// 	if err != nil {
+// 		fmt.Fprintf(os.Stderr, "server: error while creating server: %v\n", err)
+// 	}
+
+// 	jsonOption := runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{
+// 		MarshalOptions: protojson.MarshalOptions{
+// 			UseProtoNames: true,
+// 		},
+// 		UnmarshalOptions: protojson.UnmarshalOptions{
+// 			DiscardUnknown: true,
+// 		},
+// 	})
+
+// 	grpcMux := runtime.NewServeMux(jsonOption)
+// 	ctx, cancel := context.WithCancel(context.Background())
+// 	defer cancel()
+
+// 	err = pb.RegisterUserSvcHandlerServer(ctx, grpcMux, server)
+// 	if err != nil {
+// 		fmt.Fprintf(os.Stderr, "server: error while registering gRPC server: %v\n", err)
+// 	}
+
+// 	mux := http.NewServeMux()
+// 	mux.Handle("/", grpcMux)
+
+// 	listener, err := net.Listen("tcp", config.HttpServerAddress)
+// 	if err != nil {
+// 		fmt.Fprintf(os.Stderr, "server: error while creating listener: %v\n", err)
+// 	}
+
+// 	log.Printf("start HTTP Gateway server on %s", listener.Addr().String())
+// 	err = http.Serve(listener, mux)
+// 	if err != nil {
+// 		fmt.Fprintf(os.Stderr, "server: error while starting HTTP Gateway server: %v\n", err)
+// 	}
+// }
+
+// func runGinServer(config util.Config, store db.Store) {
+// 	server, err := api.NewServer(config, store)
+// 	if err != nil {
+// 		fmt.Fprintf(os.Stderr, "server: error while creating server: %v\n", err)
+// 	}
+
+// 	err = server.StartServer(config.HttpServerAddress)
+// 	if err != nil {
+// 		fmt.Fprintf(os.Stderr, "server: error while starting server: %v\n", err)
+// 	}
+// }

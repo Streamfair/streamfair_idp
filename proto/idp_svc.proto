@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/api/annotations.proto";
+
+option go_package = "github.com/Streamfair/streamfair_idp_svc/pb";
+
+service IdentityService {
+
+}
