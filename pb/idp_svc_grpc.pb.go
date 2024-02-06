@@ -7,7 +7,13 @@
 package pb
 
 import (
+	context "context"
+	role "github.com/Streamfair/streamfair_idp_svc/pb/role"
+	user_role "github.com/Streamfair/streamfair_idp_svc/pb/user_role"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -15,53 +21,466 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-const ()
+const (
+	IdentityProvider_CreateRole_FullMethodName         = "/pb.IdentityProvider/CreateRole"
+	IdentityProvider_DeleteRole_FullMethodName         = "/pb.IdentityProvider/DeleteRole"
+	IdentityProvider_GetRoleByID_FullMethodName        = "/pb.IdentityProvider/GetRoleByID"
+	IdentityProvider_GetRoleByValue_FullMethodName     = "/pb.IdentityProvider/GetRoleByValue"
+	IdentityProvider_GetRolePermissions_FullMethodName = "/pb.IdentityProvider/GetRolePermissions"
+	IdentityProvider_ListRoles_FullMethodName          = "/pb.IdentityProvider/ListRoles"
+	IdentityProvider_UpdateRole_FullMethodName         = "/pb.IdentityProvider/UpdateRole"
+	IdentityProvider_AssignRoleToUser_FullMethodName   = "/pb.IdentityProvider/AssignRoleToUser"
+	IdentityProvider_CheckIfUserHasRole_FullMethodName = "/pb.IdentityProvider/CheckIfUserHasRole"
+	IdentityProvider_GetUserRoles_FullMethodName       = "/pb.IdentityProvider/GetUserRoles"
+	IdentityProvider_RemoveRoleFromUser_FullMethodName = "/pb.IdentityProvider/RemoveRoleFromUser"
+)
 
-// IdentityServiceClient is the client API for IdentityService service.
+// IdentityProviderClient is the client API for IdentityProvider service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type IdentityServiceClient interface {
+type IdentityProviderClient interface {
+	// Roles
+	CreateRole(ctx context.Context, in *role.CreateRoleRequest, opts ...grpc.CallOption) (*role.CreateRoleResponse, error)
+	DeleteRole(ctx context.Context, in *role.DeleteRoleRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	GetRoleByID(ctx context.Context, in *role.GetRoleByIDRequest, opts ...grpc.CallOption) (*role.GetRoleByIDResponse, error)
+	GetRoleByValue(ctx context.Context, in *role.GetRoleByValueRequest, opts ...grpc.CallOption) (*role.GetRoleByValueResponse, error)
+	GetRolePermissions(ctx context.Context, in *role.GetRolePermissionsRequest, opts ...grpc.CallOption) (*role.GetRolePermissionsResponse, error)
+	ListRoles(ctx context.Context, in *role.ListRolesRequest, opts ...grpc.CallOption) (*role.ListRolesResponse, error)
+	UpdateRole(ctx context.Context, in *role.UpdateRoleRequest, opts ...grpc.CallOption) (*role.UpdateRoleResponse, error)
+	// User roles
+	AssignRoleToUser(ctx context.Context, in *user_role.AssignRoleToUserRequest, opts ...grpc.CallOption) (*user_role.AssignRoleToUserResponse, error)
+	CheckIfUserHasRole(ctx context.Context, in *user_role.CheckIfUserHasRoleRequest, opts ...grpc.CallOption) (*user_role.CheckIfUserHasRoleResponse, error)
+	GetUserRoles(ctx context.Context, in *user_role.GetUserRolesRequest, opts ...grpc.CallOption) (*user_role.GetUserRolesResponse, error)
+	RemoveRoleFromUser(ctx context.Context, in *user_role.RemoveRoleFromUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
-type identityServiceClient struct {
+type identityProviderClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewIdentityServiceClient(cc grpc.ClientConnInterface) IdentityServiceClient {
-	return &identityServiceClient{cc}
+func NewIdentityProviderClient(cc grpc.ClientConnInterface) IdentityProviderClient {
+	return &identityProviderClient{cc}
 }
 
-// IdentityServiceServer is the server API for IdentityService service.
-// All implementations must embed UnimplementedIdentityServiceServer
+func (c *identityProviderClient) CreateRole(ctx context.Context, in *role.CreateRoleRequest, opts ...grpc.CallOption) (*role.CreateRoleResponse, error) {
+	out := new(role.CreateRoleResponse)
+	err := c.cc.Invoke(ctx, IdentityProvider_CreateRole_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *identityProviderClient) DeleteRole(ctx context.Context, in *role.DeleteRoleRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, IdentityProvider_DeleteRole_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *identityProviderClient) GetRoleByID(ctx context.Context, in *role.GetRoleByIDRequest, opts ...grpc.CallOption) (*role.GetRoleByIDResponse, error) {
+	out := new(role.GetRoleByIDResponse)
+	err := c.cc.Invoke(ctx, IdentityProvider_GetRoleByID_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *identityProviderClient) GetRoleByValue(ctx context.Context, in *role.GetRoleByValueRequest, opts ...grpc.CallOption) (*role.GetRoleByValueResponse, error) {
+	out := new(role.GetRoleByValueResponse)
+	err := c.cc.Invoke(ctx, IdentityProvider_GetRoleByValue_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *identityProviderClient) GetRolePermissions(ctx context.Context, in *role.GetRolePermissionsRequest, opts ...grpc.CallOption) (*role.GetRolePermissionsResponse, error) {
+	out := new(role.GetRolePermissionsResponse)
+	err := c.cc.Invoke(ctx, IdentityProvider_GetRolePermissions_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *identityProviderClient) ListRoles(ctx context.Context, in *role.ListRolesRequest, opts ...grpc.CallOption) (*role.ListRolesResponse, error) {
+	out := new(role.ListRolesResponse)
+	err := c.cc.Invoke(ctx, IdentityProvider_ListRoles_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *identityProviderClient) UpdateRole(ctx context.Context, in *role.UpdateRoleRequest, opts ...grpc.CallOption) (*role.UpdateRoleResponse, error) {
+	out := new(role.UpdateRoleResponse)
+	err := c.cc.Invoke(ctx, IdentityProvider_UpdateRole_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *identityProviderClient) AssignRoleToUser(ctx context.Context, in *user_role.AssignRoleToUserRequest, opts ...grpc.CallOption) (*user_role.AssignRoleToUserResponse, error) {
+	out := new(user_role.AssignRoleToUserResponse)
+	err := c.cc.Invoke(ctx, IdentityProvider_AssignRoleToUser_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *identityProviderClient) CheckIfUserHasRole(ctx context.Context, in *user_role.CheckIfUserHasRoleRequest, opts ...grpc.CallOption) (*user_role.CheckIfUserHasRoleResponse, error) {
+	out := new(user_role.CheckIfUserHasRoleResponse)
+	err := c.cc.Invoke(ctx, IdentityProvider_CheckIfUserHasRole_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *identityProviderClient) GetUserRoles(ctx context.Context, in *user_role.GetUserRolesRequest, opts ...grpc.CallOption) (*user_role.GetUserRolesResponse, error) {
+	out := new(user_role.GetUserRolesResponse)
+	err := c.cc.Invoke(ctx, IdentityProvider_GetUserRoles_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *identityProviderClient) RemoveRoleFromUser(ctx context.Context, in *user_role.RemoveRoleFromUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, IdentityProvider_RemoveRoleFromUser_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// IdentityProviderServer is the server API for IdentityProvider service.
+// All implementations must embed UnimplementedIdentityProviderServer
 // for forward compatibility
-type IdentityServiceServer interface {
-	mustEmbedUnimplementedIdentityServiceServer()
+type IdentityProviderServer interface {
+	// Roles
+	CreateRole(context.Context, *role.CreateRoleRequest) (*role.CreateRoleResponse, error)
+	DeleteRole(context.Context, *role.DeleteRoleRequest) (*emptypb.Empty, error)
+	GetRoleByID(context.Context, *role.GetRoleByIDRequest) (*role.GetRoleByIDResponse, error)
+	GetRoleByValue(context.Context, *role.GetRoleByValueRequest) (*role.GetRoleByValueResponse, error)
+	GetRolePermissions(context.Context, *role.GetRolePermissionsRequest) (*role.GetRolePermissionsResponse, error)
+	ListRoles(context.Context, *role.ListRolesRequest) (*role.ListRolesResponse, error)
+	UpdateRole(context.Context, *role.UpdateRoleRequest) (*role.UpdateRoleResponse, error)
+	// User roles
+	AssignRoleToUser(context.Context, *user_role.AssignRoleToUserRequest) (*user_role.AssignRoleToUserResponse, error)
+	CheckIfUserHasRole(context.Context, *user_role.CheckIfUserHasRoleRequest) (*user_role.CheckIfUserHasRoleResponse, error)
+	GetUserRoles(context.Context, *user_role.GetUserRolesRequest) (*user_role.GetUserRolesResponse, error)
+	RemoveRoleFromUser(context.Context, *user_role.RemoveRoleFromUserRequest) (*emptypb.Empty, error)
+	mustEmbedUnimplementedIdentityProviderServer()
 }
 
-// UnimplementedIdentityServiceServer must be embedded to have forward compatible implementations.
-type UnimplementedIdentityServiceServer struct {
+// UnimplementedIdentityProviderServer must be embedded to have forward compatible implementations.
+type UnimplementedIdentityProviderServer struct {
 }
 
-func (UnimplementedIdentityServiceServer) mustEmbedUnimplementedIdentityServiceServer() {}
+func (UnimplementedIdentityProviderServer) CreateRole(context.Context, *role.CreateRoleRequest) (*role.CreateRoleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateRole not implemented")
+}
+func (UnimplementedIdentityProviderServer) DeleteRole(context.Context, *role.DeleteRoleRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteRole not implemented")
+}
+func (UnimplementedIdentityProviderServer) GetRoleByID(context.Context, *role.GetRoleByIDRequest) (*role.GetRoleByIDResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetRoleByID not implemented")
+}
+func (UnimplementedIdentityProviderServer) GetRoleByValue(context.Context, *role.GetRoleByValueRequest) (*role.GetRoleByValueResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetRoleByValue not implemented")
+}
+func (UnimplementedIdentityProviderServer) GetRolePermissions(context.Context, *role.GetRolePermissionsRequest) (*role.GetRolePermissionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetRolePermissions not implemented")
+}
+func (UnimplementedIdentityProviderServer) ListRoles(context.Context, *role.ListRolesRequest) (*role.ListRolesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListRoles not implemented")
+}
+func (UnimplementedIdentityProviderServer) UpdateRole(context.Context, *role.UpdateRoleRequest) (*role.UpdateRoleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateRole not implemented")
+}
+func (UnimplementedIdentityProviderServer) AssignRoleToUser(context.Context, *user_role.AssignRoleToUserRequest) (*user_role.AssignRoleToUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AssignRoleToUser not implemented")
+}
+func (UnimplementedIdentityProviderServer) CheckIfUserHasRole(context.Context, *user_role.CheckIfUserHasRoleRequest) (*user_role.CheckIfUserHasRoleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckIfUserHasRole not implemented")
+}
+func (UnimplementedIdentityProviderServer) GetUserRoles(context.Context, *user_role.GetUserRolesRequest) (*user_role.GetUserRolesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserRoles not implemented")
+}
+func (UnimplementedIdentityProviderServer) RemoveRoleFromUser(context.Context, *user_role.RemoveRoleFromUserRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemoveRoleFromUser not implemented")
+}
+func (UnimplementedIdentityProviderServer) mustEmbedUnimplementedIdentityProviderServer() {}
 
-// UnsafeIdentityServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to IdentityServiceServer will
+// UnsafeIdentityProviderServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to IdentityProviderServer will
 // result in compilation errors.
-type UnsafeIdentityServiceServer interface {
-	mustEmbedUnimplementedIdentityServiceServer()
+type UnsafeIdentityProviderServer interface {
+	mustEmbedUnimplementedIdentityProviderServer()
 }
 
-func RegisterIdentityServiceServer(s grpc.ServiceRegistrar, srv IdentityServiceServer) {
-	s.RegisterService(&IdentityService_ServiceDesc, srv)
+func RegisterIdentityProviderServer(s grpc.ServiceRegistrar, srv IdentityProviderServer) {
+	s.RegisterService(&IdentityProvider_ServiceDesc, srv)
 }
 
-// IdentityService_ServiceDesc is the grpc.ServiceDesc for IdentityService service.
+func _IdentityProvider_CreateRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(role.CreateRoleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IdentityProviderServer).CreateRole(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IdentityProvider_CreateRole_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IdentityProviderServer).CreateRole(ctx, req.(*role.CreateRoleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IdentityProvider_DeleteRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(role.DeleteRoleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IdentityProviderServer).DeleteRole(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IdentityProvider_DeleteRole_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IdentityProviderServer).DeleteRole(ctx, req.(*role.DeleteRoleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IdentityProvider_GetRoleByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(role.GetRoleByIDRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IdentityProviderServer).GetRoleByID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IdentityProvider_GetRoleByID_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IdentityProviderServer).GetRoleByID(ctx, req.(*role.GetRoleByIDRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IdentityProvider_GetRoleByValue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(role.GetRoleByValueRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IdentityProviderServer).GetRoleByValue(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IdentityProvider_GetRoleByValue_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IdentityProviderServer).GetRoleByValue(ctx, req.(*role.GetRoleByValueRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IdentityProvider_GetRolePermissions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(role.GetRolePermissionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IdentityProviderServer).GetRolePermissions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IdentityProvider_GetRolePermissions_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IdentityProviderServer).GetRolePermissions(ctx, req.(*role.GetRolePermissionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IdentityProvider_ListRoles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(role.ListRolesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IdentityProviderServer).ListRoles(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IdentityProvider_ListRoles_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IdentityProviderServer).ListRoles(ctx, req.(*role.ListRolesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IdentityProvider_UpdateRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(role.UpdateRoleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IdentityProviderServer).UpdateRole(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IdentityProvider_UpdateRole_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IdentityProviderServer).UpdateRole(ctx, req.(*role.UpdateRoleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IdentityProvider_AssignRoleToUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(user_role.AssignRoleToUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IdentityProviderServer).AssignRoleToUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IdentityProvider_AssignRoleToUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IdentityProviderServer).AssignRoleToUser(ctx, req.(*user_role.AssignRoleToUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IdentityProvider_CheckIfUserHasRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(user_role.CheckIfUserHasRoleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IdentityProviderServer).CheckIfUserHasRole(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IdentityProvider_CheckIfUserHasRole_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IdentityProviderServer).CheckIfUserHasRole(ctx, req.(*user_role.CheckIfUserHasRoleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IdentityProvider_GetUserRoles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(user_role.GetUserRolesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IdentityProviderServer).GetUserRoles(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IdentityProvider_GetUserRoles_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IdentityProviderServer).GetUserRoles(ctx, req.(*user_role.GetUserRolesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IdentityProvider_RemoveRoleFromUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(user_role.RemoveRoleFromUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IdentityProviderServer).RemoveRoleFromUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IdentityProvider_RemoveRoleFromUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IdentityProviderServer).RemoveRoleFromUser(ctx, req.(*user_role.RemoveRoleFromUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// IdentityProvider_ServiceDesc is the grpc.ServiceDesc for IdentityProvider service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var IdentityService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "pb.IdentityService",
-	HandlerType: (*IdentityServiceServer)(nil),
-	Methods:     []grpc.MethodDesc{},
-	Streams:     []grpc.StreamDesc{},
-	Metadata:    "idp_svc.proto",
+var IdentityProvider_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "pb.IdentityProvider",
+	HandlerType: (*IdentityProviderServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "CreateRole",
+			Handler:    _IdentityProvider_CreateRole_Handler,
+		},
+		{
+			MethodName: "DeleteRole",
+			Handler:    _IdentityProvider_DeleteRole_Handler,
+		},
+		{
+			MethodName: "GetRoleByID",
+			Handler:    _IdentityProvider_GetRoleByID_Handler,
+		},
+		{
+			MethodName: "GetRoleByValue",
+			Handler:    _IdentityProvider_GetRoleByValue_Handler,
+		},
+		{
+			MethodName: "GetRolePermissions",
+			Handler:    _IdentityProvider_GetRolePermissions_Handler,
+		},
+		{
+			MethodName: "ListRoles",
+			Handler:    _IdentityProvider_ListRoles_Handler,
+		},
+		{
+			MethodName: "UpdateRole",
+			Handler:    _IdentityProvider_UpdateRole_Handler,
+		},
+		{
+			MethodName: "AssignRoleToUser",
+			Handler:    _IdentityProvider_AssignRoleToUser_Handler,
+		},
+		{
+			MethodName: "CheckIfUserHasRole",
+			Handler:    _IdentityProvider_CheckIfUserHasRole_Handler,
+		},
+		{
+			MethodName: "GetUserRoles",
+			Handler:    _IdentityProvider_GetUserRoles_Handler,
+		},
+		{
+			MethodName: "RemoveRoleFromUser",
+			Handler:    _IdentityProvider_RemoveRoleFromUser_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "idp_svc.proto",
 }

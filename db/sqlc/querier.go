@@ -11,26 +11,15 @@ import (
 type Querier interface {
 	AssignRoleToUser(ctx context.Context, arg AssignRoleToUserParams) (IdpSvcUserRole, error)
 	CheckIfUserHasRole(ctx context.Context, arg CheckIfUserHasRoleParams) (IdpSvcUserRole, error)
-	CreateRefreshToken(ctx context.Context, arg CreateRefreshTokenParams) (IdpSvcRefreshToken, error)
 	CreateRole(ctx context.Context, arg CreateRoleParams) (IdpSvcRole, error)
-	CreateToken(ctx context.Context, arg CreateTokenParams) (IdpSvcToken, error)
-	DeleteRefreshToken(ctx context.Context, id int64) error
 	DeleteRole(ctx context.Context, id int64) error
-	DeleteToken(ctx context.Context, id int64) error
-	GetRefreshTokenByID(ctx context.Context, id int64) (IdpSvcRefreshToken, error)
-	GetRefreshTokenByValue(ctx context.Context, token string) (IdpSvcRefreshToken, error)
 	GetRoleByID(ctx context.Context, id int64) (IdpSvcRole, error)
-	GetRoleByName(ctx context.Context, roleName string) (IdpSvcRole, error)
-	GetTokenByID(ctx context.Context, id int64) (IdpSvcToken, error)
-	GetTokenByValue(ctx context.Context, token string) (IdpSvcToken, error)
+	GetRoleByValue(ctx context.Context, roleName string) (IdpSvcRole, error)
+	GetRolePermissions(ctx context.Context, roleName string) ([]byte, error)
 	GetUserRoles(ctx context.Context, userID int64) ([]IdpSvcUserRole, error)
-	ListRefreshTokens(ctx context.Context, arg ListRefreshTokensParams) ([]IdpSvcRefreshToken, error)
 	ListRoles(ctx context.Context, arg ListRolesParams) ([]IdpSvcRole, error)
-	ListTokens(ctx context.Context, arg ListTokensParams) ([]IdpSvcToken, error)
 	RemoveRoleFromUser(ctx context.Context, arg RemoveRoleFromUserParams) error
-	UpdateRefreshToken(ctx context.Context, arg UpdateRefreshTokenParams) (UpdateRefreshTokenRow, error)
 	UpdateRole(ctx context.Context, arg UpdateRoleParams) (UpdateRoleRow, error)
-	UpdateToken(ctx context.Context, arg UpdateTokenParams) (UpdateTokenRow, error)
 }
 
 var _ Querier = (*Queries)(nil)

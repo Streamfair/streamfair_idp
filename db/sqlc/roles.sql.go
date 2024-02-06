@@ -45,15 +45,26 @@ func (q *Queries) GetRoleByID(ctx context.Context, id int64) (IdpSvcRole, error)
 	return i, err
 }
 
-const getRoleByName = `-- name: GetRoleByName :one
+const getRoleByValue = `-- name: GetRoleByValue :one
 SELECT id, role_name, permissions FROM "idp_svc"."Roles" WHERE role_name = $1 LIMIT 1
 `
 
-func (q *Queries) GetRoleByName(ctx context.Context, roleName string) (IdpSvcRole, error) {
-	row := q.db.QueryRow(ctx, getRoleByName, roleName)
+func (q *Queries) GetRoleByValue(ctx context.Context, roleName string) (IdpSvcRole, error) {
+	row := q.db.QueryRow(ctx, getRoleByValue, roleName)
 	var i IdpSvcRole
 	err := row.Scan(&i.ID, &i.RoleName, &i.Permissions)
 	return i, err
+}
+
+const getRolePermissions = `-- name: GetRolePermissions :one
+SELECT permissions FROM "idp_svc"."Roles" WHERE role_name = $1 LIMIT 1
+`
+
+func (q *Queries) GetRolePermissions(ctx context.Context, roleName string) ([]byte, error) {
+	row := q.db.QueryRow(ctx, getRolePermissions, roleName)
+	var permissions []byte
+	err := row.Scan(&permissions)
+	return permissions, err
 }
 
 const listRoles = `-- name: ListRoles :many

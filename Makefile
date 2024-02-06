@@ -1,52 +1,46 @@
+# Variables
+GRPC_PORT := 9091
+HTTP_PORT := 5439
+DB_CONTAINER_NAME := db_idp_service
+DB_NAME := streamfair_idp_service_db
+DB_USER := root
+DB_PASSWORD := secret
+DB_HOST := localhost
+
+PROTO_DIR := proto
+PB_DIR := pb
+AUTH_DIR := auth
+ROLE_DIR := role
+USER_ROLE_DIR := user_role
+
+OUT ?= 0
+
+# Targets
 postgres:
-	@echo "Starting db_idp_service..."
-	docker run --name db_idp_service -p 5439:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres:16-alpine
+	@echo "Starting ${DB_CONTAINER_NAME}..."
+	docker run --name ${DB_CONTAINER_NAME} -p ${HTTP_PORT}:5432 -e POSTGRES_USER=${DB_USER} -e POSTGRES_PASSWORD=${DB_PASSWORD} -d postgres:16-alpine
 
 createdb:
 	@echo "Creating database..."
-	docker exec -it db_idp_service createdb --username=root --owner=root streamfair_idp_service_db
+	docker exec -it ${DB_CONTAINER_NAME} createdb --username=root --owner=root ${DB_NAME}
 
 dropdb:
 	@echo "Dropping database..."
-	docker exec -it db_idp_service dropdb streamfair_idp_service_db
+	docker exec -it ${DB_CONTAINER_NAME} dropdb ${DB_NAME}
 
 createmigration:
 	@echo "Creating migration..."
 	migrate create -ext sql -dir db/migration -seq init_schema
 
-migrateup:
-	@echo "Migrating up..."
-	migrate -path db/migration -database "postgresql://root:secret@localhost:5439/streamfair_idp_service_db?sslmode=disable" -verbose up
-
-migrateup1:
-	@echo "Migrating up..."
-	migrate -path db/migration -database "postgresql://root:secret@localhost:5439/streamfair_idp_service_db?sslmode=disable" -verbose up 1
-
-migratedown:
-	@echo "Migrating down..."
-	migrate -path db/migration -database "postgresql://root:secret@localhost:5439/streamfair_idp_service_db?sslmode=disable" -verbose down
-
-migratedown1:
-	@echo "Migrating down..."
-	migrate -path db/migration -database "postgresql://root:secret@localhost:5439/streamfair_idp_service_db?sslmode=disable" -verbose down 1
+migrateup migrateup1 migratedown migratedown1:
+	@echo "Migrating..."
+	migrate -path db/migration -database "postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${HTTP_PORT}/${DB_NAME}?sslmode=disable" -verbose $(if $(filter migrateup1 migratedown1,$@),$(subst migrate,,$@),) $(if $(filter migrateup migratedown,$@),up,down) $(if $(filter migrateup1 migratedown1,$@),1,)
 
 dbclean: migratedown migrateup
 	clear
 
 sqlc:
 	sqlc generate
-
-# testout, dbtestout, apitestout are used to redirect test output to a file
-OUT ?= 0
-
-testout: OUT=1
-testout: test
-
-dbtestout: OUT=1
-dbtestout: dbtest
-
-apitestout: OUT=1
-apitestout: apitest
 
 test:
 	@if [ $(OUT) -eq 1 ]; then \
@@ -81,16 +75,52 @@ mock:
 	mockgen -source=db/sqlc/store.go -destination=db/mock/store_mock.go
 
 clean:
-	rm -f coverage.out tests.log db_tests.log api_tests.log
-
-proto:
-	rm -f pb/*.go
-	protoc --proto_path=proto --go_out=pb --go_opt=paths=source_relative \
-		--go-grpc_out=pb --go-grpc_opt=paths=source_relative \
-		--grpc-gateway_out=pb --grpc-gateway_opt=paths=source_relative \
-		proto/*.proto
+	rm -f coverage.out *_tests.log
 
 evans:
-	evans --host localhost --port 9094 -r repl
+	evans --host ${DB_HOST} --port ${GRPC_PORT} -r repl
 
-.PHONY: createdb dropdb postgres migrateup migrateup1 migratedown migratedown1 sqlc test dbtest apitest testout dbtestout apitestout dbclean server mock clean debug proto evans
+proto: proto_core proto_role proto_user_role # proto_auth
+
+proto_core: clean_pb
+	protoc --proto_path=$(PROTO_DIR) --go_out=$(PB_DIR) --go_opt=paths=source_relative \
+	--go-grpc_out=$(PB_DIR) --go-grpc_opt=paths=source_relative \
+	--grpc-gateway_out=$(PB_DIR) --grpc-gateway_opt=paths=source_relative \
+	$(PROTO_DIR)/*.proto
+
+proto_auth: clean_auth_dir
+	protoc --proto_path=$(PROTO_DIR) --go_out=$(PB_DIR) --go_opt=paths=source_relative \
+	--go-grpc_out=$(PB_DIR) --go-grpc_opt=paths=source_relative \
+	--grpc-gateway_out=$(PB_DIR) --grpc-gateway_opt=paths=source_relative \
+	$(PROTO_DIR)/$(AUTH_DIR)/*.proto
+
+proto_role: clean_role_dir
+	protoc --proto_path=$(PROTO_DIR) --go_out=$(PB_DIR) --go_opt=paths=source_relative \
+	--go-grpc_out=$(PB_DIR) --go-grpc_opt=paths=source_relative \
+	--grpc-gateway_out=$(PB_DIR) --grpc-gateway_opt=paths=source_relative \
+	$(PROTO_DIR)/$(ROLE_DIR)/*.proto
+
+proto_user_role: clean_user_role_dir
+	protoc --proto_path=$(PROTO_DIR) --go_out=$(PB_DIR) --go_opt=paths=source_relative \
+	--go-grpc_out=$(PB_DIR) --go-grpc_opt=paths=source_relative \
+	--grpc-gateway_out=$(PB_DIR) --grpc-gateway_opt=paths=source_relative \
+	$(PROTO_DIR)/$(USER_ROLE_DIR)/*.proto
+
+clean_pb:
+	rm -f $(PB_DIR)/*.go
+
+clean_auth_dir:
+	rm -f $(PB_DIR)/$(AUTH_DIR)/*.go
+
+clean_role_dir:
+	rm -f $(PB_DIR)/$(ROLE_DIR)/*.go
+
+clean_user_role_dir:
+	rm -f $(PB_DIR)/$(USER_ROLE_DIR)/*.go
+
+# PHONY Targets
+.PHONY: postgres createdb dropdb \
+		createmigration migrateup migrateup1 migratedown migratedown1 \
+		sqlc test dbtest apitest coverage_html server mock \
+		clean evans proto_core clean_pb proto_auth clean_auth_dir proto_role \
+		clean_role_dir proto_user_role clean_user_role_dir

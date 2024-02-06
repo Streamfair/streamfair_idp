@@ -11,7 +11,7 @@ import (
 
 // Server serves gRPC requests for the streamfair user management service.
 type Server struct {
-	pb.UnimplementedIdentityServiceServer
+	pb.UnimplementedIdentityProviderServer
 	config          util.Config
 	store           db.Store
 	localTokenMaker token.Maker

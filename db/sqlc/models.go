@@ -8,29 +8,14 @@ import (
 	"time"
 )
 
-type IdpSvcRefreshToken struct {
-	ID        int64     `json:"id"`
-	UserID    int64     `json:"user_id"`
-	Token     string    `json:"token"`
-	ExpiresAt time.Time `json:"expires_at"`
-	Revoked   bool      `json:"revoked"`
-}
-
 type IdpSvcRole struct {
 	ID          int64  `json:"id"`
 	RoleName    string `json:"role_name"`
 	Permissions []byte `json:"permissions"`
 }
 
-type IdpSvcToken struct {
-	ID        int64     `json:"id"`
-	UserID    int64     `json:"user_id"`
-	Token     string    `json:"token"`
-	ExpiresAt time.Time `json:"expires_at"`
-	Revoked   bool      `json:"revoked"`
-}
-
 type IdpSvcUserRole struct {
-	UserID int64 `json:"user_id"`
-	RoleID int64 `json:"role_id"`
+	UserID    int64     `json:"user_id"`
+	RoleID    int64     `json:"role_id"`
+	CreatedAt time.Time `json:"created_at"`
 }

@@ -10,7 +10,7 @@ import (
 )
 
 const assignRoleToUser = `-- name: AssignRoleToUser :one
-INSERT INTO "idp_svc"."UserRoles" (user_id, role_id) VALUES ($1, $2) RETURNING user_id, role_id
+INSERT INTO "idp_svc"."UserRoles" (user_id, role_id) VALUES ($1, $2) RETURNING user_id, role_id, created_at
 `
 
 type AssignRoleToUserParams struct {
@@ -21,12 +21,12 @@ type AssignRoleToUserParams struct {
 func (q *Queries) AssignRoleToUser(ctx context.Context, arg AssignRoleToUserParams) (IdpSvcUserRole, error) {
 	row := q.db.QueryRow(ctx, assignRoleToUser, arg.UserID, arg.RoleID)
 	var i IdpSvcUserRole
-	err := row.Scan(&i.UserID, &i.RoleID)
+	err := row.Scan(&i.UserID, &i.RoleID, &i.CreatedAt)
 	return i, err
 }
 
 const checkIfUserHasRole = `-- name: CheckIfUserHasRole :one
-SELECT user_id, role_id FROM "idp_svc"."UserRoles" WHERE user_id = $1 AND role_id = $2
+SELECT user_id, role_id, created_at FROM "idp_svc"."UserRoles" WHERE user_id = $1 AND role_id = $2
 `
 
 type CheckIfUserHasRoleParams struct {
@@ -37,12 +37,12 @@ type CheckIfUserHasRoleParams struct {
 func (q *Queries) CheckIfUserHasRole(ctx context.Context, arg CheckIfUserHasRoleParams) (IdpSvcUserRole, error) {
 	row := q.db.QueryRow(ctx, checkIfUserHasRole, arg.UserID, arg.RoleID)
 	var i IdpSvcUserRole
-	err := row.Scan(&i.UserID, &i.RoleID)
+	err := row.Scan(&i.UserID, &i.RoleID, &i.CreatedAt)
 	return i, err
 }
 
 const getUserRoles = `-- name: GetUserRoles :many
-SELECT user_id, role_id FROM "idp_svc"."UserRoles" WHERE user_id = $1
+SELECT user_id, role_id, created_at FROM "idp_svc"."UserRoles" WHERE user_id = $1
 `
 
 func (q *Queries) GetUserRoles(ctx context.Context, userID int64) ([]IdpSvcUserRole, error) {
@@ -54,7 +54,7 @@ func (q *Queries) GetUserRoles(ctx context.Context, userID int64) ([]IdpSvcUserR
 	items := []IdpSvcUserRole{}
 	for rows.Next() {
 		var i IdpSvcUserRole
-		if err := rows.Scan(&i.UserID, &i.RoleID); err != nil {
+		if err := rows.Scan(&i.UserID, &i.RoleID, &i.CreatedAt); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

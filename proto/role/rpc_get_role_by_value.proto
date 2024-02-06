@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package pb;
+
+import "role/role.proto";
+
+option go_package = "github.com/Streamfair/streamfair_idp_svc/pb/role";
+
+message GetRoleByValueRequest {
+    string role_name = 1;
+}
+
+message GetRoleByValueResponse {
+    Role role = 1;
+}

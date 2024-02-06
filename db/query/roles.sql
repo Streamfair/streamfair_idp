@@ -4,8 +4,11 @@ INSERT INTO "idp_svc"."Roles" (role_name, permissions) VALUES ($1, $2) RETURNING
 -- name: GetRoleByID :one
 SELECT * FROM "idp_svc"."Roles" WHERE id = $1 LIMIT 1;
 
--- name: GetRoleByName :one
+-- name: GetRoleByValue :one
 SELECT * FROM "idp_svc"."Roles" WHERE role_name = $1 LIMIT 1;
+
+-- name: GetRolePermissions :one
+SELECT permissions FROM "idp_svc"."Roles" WHERE role_name = $1 LIMIT 1;
 
 -- name: ListRoles :many
 SELECT * FROM "idp_svc"."Roles" ORDER BY id LIMIT $1 OFFSET $2;

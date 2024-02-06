@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "github.com/Streamfair/streamfair_idp_svc/pb/role";
+
+message Role {
+    int64 id = 1;
+    string role_name = 2;
+    bytes permissions = 3;
+}
