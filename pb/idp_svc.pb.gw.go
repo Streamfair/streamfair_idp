@@ -33,7 +33,7 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
-func request_IdentityProvider_CreateRole_0(ctx context.Context, marshaler runtime.Marshaler, client IdentityProviderClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_IdentityProviderService_CreateRole_0(ctx context.Context, marshaler runtime.Marshaler, client IdentityProviderServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq role.CreateRoleRequest
 	var metadata runtime.ServerMetadata
 
@@ -46,7 +46,7 @@ func request_IdentityProvider_CreateRole_0(ctx context.Context, marshaler runtim
 
 }
 
-func local_request_IdentityProvider_CreateRole_0(ctx context.Context, marshaler runtime.Marshaler, server IdentityProviderServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_IdentityProviderService_CreateRole_0(ctx context.Context, marshaler runtime.Marshaler, server IdentityProviderServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq role.CreateRoleRequest
 	var metadata runtime.ServerMetadata
 
@@ -60,17 +60,17 @@ func local_request_IdentityProvider_CreateRole_0(ctx context.Context, marshaler 
 }
 
 var (
-	filter_IdentityProvider_DeleteRole_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+	filter_IdentityProviderService_DeleteRole_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 )
 
-func request_IdentityProvider_DeleteRole_0(ctx context.Context, marshaler runtime.Marshaler, client IdentityProviderClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_IdentityProviderService_DeleteRole_0(ctx context.Context, marshaler runtime.Marshaler, client IdentityProviderServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq role.DeleteRoleRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_IdentityProvider_DeleteRole_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_IdentityProviderService_DeleteRole_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -79,14 +79,14 @@ func request_IdentityProvider_DeleteRole_0(ctx context.Context, marshaler runtim
 
 }
 
-func local_request_IdentityProvider_DeleteRole_0(ctx context.Context, marshaler runtime.Marshaler, server IdentityProviderServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_IdentityProviderService_DeleteRole_0(ctx context.Context, marshaler runtime.Marshaler, server IdentityProviderServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq role.DeleteRoleRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_IdentityProvider_DeleteRole_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_IdentityProviderService_DeleteRole_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -95,7 +95,7 @@ func local_request_IdentityProvider_DeleteRole_0(ctx context.Context, marshaler 
 
 }
 
-func request_IdentityProvider_GetRoleByID_0(ctx context.Context, marshaler runtime.Marshaler, client IdentityProviderClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_IdentityProviderService_GetRoleByID_0(ctx context.Context, marshaler runtime.Marshaler, client IdentityProviderServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq role.GetRoleByIDRequest
 	var metadata runtime.ServerMetadata
 
@@ -108,7 +108,7 @@ func request_IdentityProvider_GetRoleByID_0(ctx context.Context, marshaler runti
 
 }
 
-func local_request_IdentityProvider_GetRoleByID_0(ctx context.Context, marshaler runtime.Marshaler, server IdentityProviderServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_IdentityProviderService_GetRoleByID_0(ctx context.Context, marshaler runtime.Marshaler, server IdentityProviderServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq role.GetRoleByIDRequest
 	var metadata runtime.ServerMetadata
 
@@ -121,7 +121,7 @@ func local_request_IdentityProvider_GetRoleByID_0(ctx context.Context, marshaler
 
 }
 
-func request_IdentityProvider_GetRoleByValue_0(ctx context.Context, marshaler runtime.Marshaler, client IdentityProviderClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_IdentityProviderService_GetRoleByValue_0(ctx context.Context, marshaler runtime.Marshaler, client IdentityProviderServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq role.GetRoleByValueRequest
 	var metadata runtime.ServerMetadata
 
@@ -134,7 +134,7 @@ func request_IdentityProvider_GetRoleByValue_0(ctx context.Context, marshaler ru
 
 }
 
-func local_request_IdentityProvider_GetRoleByValue_0(ctx context.Context, marshaler runtime.Marshaler, server IdentityProviderServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_IdentityProviderService_GetRoleByValue_0(ctx context.Context, marshaler runtime.Marshaler, server IdentityProviderServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq role.GetRoleByValueRequest
 	var metadata runtime.ServerMetadata
 
@@ -147,7 +147,7 @@ func local_request_IdentityProvider_GetRoleByValue_0(ctx context.Context, marsha
 
 }
 
-func request_IdentityProvider_GetRolePermissions_0(ctx context.Context, marshaler runtime.Marshaler, client IdentityProviderClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_IdentityProviderService_GetRolePermissions_0(ctx context.Context, marshaler runtime.Marshaler, client IdentityProviderServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq role.GetRolePermissionsRequest
 	var metadata runtime.ServerMetadata
 
@@ -160,7 +160,7 @@ func request_IdentityProvider_GetRolePermissions_0(ctx context.Context, marshale
 
 }
 
-func local_request_IdentityProvider_GetRolePermissions_0(ctx context.Context, marshaler runtime.Marshaler, server IdentityProviderServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_IdentityProviderService_GetRolePermissions_0(ctx context.Context, marshaler runtime.Marshaler, server IdentityProviderServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq role.GetRolePermissionsRequest
 	var metadata runtime.ServerMetadata
 
@@ -173,7 +173,7 @@ func local_request_IdentityProvider_GetRolePermissions_0(ctx context.Context, ma
 
 }
 
-func request_IdentityProvider_ListRoles_0(ctx context.Context, marshaler runtime.Marshaler, client IdentityProviderClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_IdentityProviderService_ListRoles_0(ctx context.Context, marshaler runtime.Marshaler, client IdentityProviderServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq role.ListRolesRequest
 	var metadata runtime.ServerMetadata
 
@@ -186,7 +186,7 @@ func request_IdentityProvider_ListRoles_0(ctx context.Context, marshaler runtime
 
 }
 
-func local_request_IdentityProvider_ListRoles_0(ctx context.Context, marshaler runtime.Marshaler, server IdentityProviderServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_IdentityProviderService_ListRoles_0(ctx context.Context, marshaler runtime.Marshaler, server IdentityProviderServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq role.ListRolesRequest
 	var metadata runtime.ServerMetadata
 
@@ -199,7 +199,7 @@ func local_request_IdentityProvider_ListRoles_0(ctx context.Context, marshaler r
 
 }
 
-func request_IdentityProvider_UpdateRole_0(ctx context.Context, marshaler runtime.Marshaler, client IdentityProviderClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_IdentityProviderService_UpdateRole_0(ctx context.Context, marshaler runtime.Marshaler, client IdentityProviderServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq role.UpdateRoleRequest
 	var metadata runtime.ServerMetadata
 
@@ -212,7 +212,7 @@ func request_IdentityProvider_UpdateRole_0(ctx context.Context, marshaler runtim
 
 }
 
-func local_request_IdentityProvider_UpdateRole_0(ctx context.Context, marshaler runtime.Marshaler, server IdentityProviderServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_IdentityProviderService_UpdateRole_0(ctx context.Context, marshaler runtime.Marshaler, server IdentityProviderServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq role.UpdateRoleRequest
 	var metadata runtime.ServerMetadata
 
@@ -225,7 +225,7 @@ func local_request_IdentityProvider_UpdateRole_0(ctx context.Context, marshaler 
 
 }
 
-func request_IdentityProvider_AssignRoleToUser_0(ctx context.Context, marshaler runtime.Marshaler, client IdentityProviderClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_IdentityProviderService_AssignRoleToUser_0(ctx context.Context, marshaler runtime.Marshaler, client IdentityProviderServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq user_role.AssignRoleToUserRequest
 	var metadata runtime.ServerMetadata
 
@@ -238,7 +238,7 @@ func request_IdentityProvider_AssignRoleToUser_0(ctx context.Context, marshaler 
 
 }
 
-func local_request_IdentityProvider_AssignRoleToUser_0(ctx context.Context, marshaler runtime.Marshaler, server IdentityProviderServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_IdentityProviderService_AssignRoleToUser_0(ctx context.Context, marshaler runtime.Marshaler, server IdentityProviderServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq user_role.AssignRoleToUserRequest
 	var metadata runtime.ServerMetadata
 
@@ -251,7 +251,7 @@ func local_request_IdentityProvider_AssignRoleToUser_0(ctx context.Context, mars
 
 }
 
-func request_IdentityProvider_CheckIfUserHasRole_0(ctx context.Context, marshaler runtime.Marshaler, client IdentityProviderClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_IdentityProviderService_CheckIfUserHasRole_0(ctx context.Context, marshaler runtime.Marshaler, client IdentityProviderServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq user_role.CheckIfUserHasRoleRequest
 	var metadata runtime.ServerMetadata
 
@@ -264,7 +264,7 @@ func request_IdentityProvider_CheckIfUserHasRole_0(ctx context.Context, marshale
 
 }
 
-func local_request_IdentityProvider_CheckIfUserHasRole_0(ctx context.Context, marshaler runtime.Marshaler, server IdentityProviderServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_IdentityProviderService_CheckIfUserHasRole_0(ctx context.Context, marshaler runtime.Marshaler, server IdentityProviderServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq user_role.CheckIfUserHasRoleRequest
 	var metadata runtime.ServerMetadata
 
@@ -277,7 +277,7 @@ func local_request_IdentityProvider_CheckIfUserHasRole_0(ctx context.Context, ma
 
 }
 
-func request_IdentityProvider_GetUserRoles_0(ctx context.Context, marshaler runtime.Marshaler, client IdentityProviderClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_IdentityProviderService_GetUserRoles_0(ctx context.Context, marshaler runtime.Marshaler, client IdentityProviderServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq user_role.GetUserRolesRequest
 	var metadata runtime.ServerMetadata
 
@@ -290,7 +290,7 @@ func request_IdentityProvider_GetUserRoles_0(ctx context.Context, marshaler runt
 
 }
 
-func local_request_IdentityProvider_GetUserRoles_0(ctx context.Context, marshaler runtime.Marshaler, server IdentityProviderServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_IdentityProviderService_GetUserRoles_0(ctx context.Context, marshaler runtime.Marshaler, server IdentityProviderServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq user_role.GetUserRolesRequest
 	var metadata runtime.ServerMetadata
 
@@ -304,17 +304,17 @@ func local_request_IdentityProvider_GetUserRoles_0(ctx context.Context, marshale
 }
 
 var (
-	filter_IdentityProvider_RemoveRoleFromUser_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
+	filter_IdentityProviderService_RemoveRoleFromUser_0 = &utilities.DoubleArray{Encoding: map[string]int{}, Base: []int(nil), Check: []int(nil)}
 )
 
-func request_IdentityProvider_RemoveRoleFromUser_0(ctx context.Context, marshaler runtime.Marshaler, client IdentityProviderClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_IdentityProviderService_RemoveRoleFromUser_0(ctx context.Context, marshaler runtime.Marshaler, client IdentityProviderServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq user_role.RemoveRoleFromUserRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_IdentityProvider_RemoveRoleFromUser_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_IdentityProviderService_RemoveRoleFromUser_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -323,14 +323,14 @@ func request_IdentityProvider_RemoveRoleFromUser_0(ctx context.Context, marshale
 
 }
 
-func local_request_IdentityProvider_RemoveRoleFromUser_0(ctx context.Context, marshaler runtime.Marshaler, server IdentityProviderServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_IdentityProviderService_RemoveRoleFromUser_0(ctx context.Context, marshaler runtime.Marshaler, server IdentityProviderServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq user_role.RemoveRoleFromUserRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
-	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_IdentityProvider_RemoveRoleFromUser_0); err != nil {
+	if err := runtime.PopulateQueryParameters(&protoReq, req.Form, filter_IdentityProviderService_RemoveRoleFromUser_0); err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
@@ -339,13 +339,13 @@ func local_request_IdentityProvider_RemoveRoleFromUser_0(ctx context.Context, ma
 
 }
 
-// RegisterIdentityProviderHandlerServer registers the http handlers for service IdentityProvider to "mux".
-// UnaryRPC     :call IdentityProviderServer directly.
+// RegisterIdentityProviderServiceHandlerServer registers the http handlers for service IdentityProviderService to "mux".
+// UnaryRPC     :call IdentityProviderServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
-// Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterIdentityProviderHandlerFromEndpoint instead.
-func RegisterIdentityProviderHandlerServer(ctx context.Context, mux *runtime.ServeMux, server IdentityProviderServer) error {
+// Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterIdentityProviderServiceHandlerFromEndpoint instead.
+func RegisterIdentityProviderServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server IdentityProviderServiceServer) error {
 
-	mux.Handle("POST", pattern_IdentityProvider_CreateRole_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_IdentityProviderService_CreateRole_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -353,12 +353,12 @@ func RegisterIdentityProviderHandlerServer(ctx context.Context, mux *runtime.Ser
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/pb.IdentityProvider/CreateRole", runtime.WithHTTPPathPattern("/v1/create_role"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/pb.IdentityProviderService/CreateRole", runtime.WithHTTPPathPattern("/v1/create_role"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_IdentityProvider_CreateRole_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_IdentityProviderService_CreateRole_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -366,11 +366,11 @@ func RegisterIdentityProviderHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 
-		forward_IdentityProvider_CreateRole_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_IdentityProviderService_CreateRole_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_IdentityProvider_DeleteRole_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_IdentityProviderService_DeleteRole_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -378,12 +378,12 @@ func RegisterIdentityProviderHandlerServer(ctx context.Context, mux *runtime.Ser
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/pb.IdentityProvider/DeleteRole", runtime.WithHTTPPathPattern("/v1/delete_role"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/pb.IdentityProviderService/DeleteRole", runtime.WithHTTPPathPattern("/v1/delete_role"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_IdentityProvider_DeleteRole_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_IdentityProviderService_DeleteRole_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -391,11 +391,11 @@ func RegisterIdentityProviderHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 
-		forward_IdentityProvider_DeleteRole_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_IdentityProviderService_DeleteRole_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_IdentityProvider_GetRoleByID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_IdentityProviderService_GetRoleByID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -403,12 +403,12 @@ func RegisterIdentityProviderHandlerServer(ctx context.Context, mux *runtime.Ser
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/pb.IdentityProvider/GetRoleByID", runtime.WithHTTPPathPattern("/v1/get_role_by_id"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/pb.IdentityProviderService/GetRoleByID", runtime.WithHTTPPathPattern("/v1/get_role_by_id"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_IdentityProvider_GetRoleByID_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_IdentityProviderService_GetRoleByID_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -416,11 +416,11 @@ func RegisterIdentityProviderHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 
-		forward_IdentityProvider_GetRoleByID_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_IdentityProviderService_GetRoleByID_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_IdentityProvider_GetRoleByValue_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_IdentityProviderService_GetRoleByValue_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -428,12 +428,12 @@ func RegisterIdentityProviderHandlerServer(ctx context.Context, mux *runtime.Ser
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/pb.IdentityProvider/GetRoleByValue", runtime.WithHTTPPathPattern("/v1/get_role_by_value"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/pb.IdentityProviderService/GetRoleByValue", runtime.WithHTTPPathPattern("/v1/get_role_by_value"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_IdentityProvider_GetRoleByValue_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_IdentityProviderService_GetRoleByValue_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -441,11 +441,11 @@ func RegisterIdentityProviderHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 
-		forward_IdentityProvider_GetRoleByValue_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_IdentityProviderService_GetRoleByValue_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_IdentityProvider_GetRolePermissions_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_IdentityProviderService_GetRolePermissions_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -453,12 +453,12 @@ func RegisterIdentityProviderHandlerServer(ctx context.Context, mux *runtime.Ser
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/pb.IdentityProvider/GetRolePermissions", runtime.WithHTTPPathPattern("/v1/get_role_permissions"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/pb.IdentityProviderService/GetRolePermissions", runtime.WithHTTPPathPattern("/v1/get_role_permissions"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_IdentityProvider_GetRolePermissions_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_IdentityProviderService_GetRolePermissions_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -466,11 +466,11 @@ func RegisterIdentityProviderHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 
-		forward_IdentityProvider_GetRolePermissions_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_IdentityProviderService_GetRolePermissions_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_IdentityProvider_ListRoles_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_IdentityProviderService_ListRoles_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -478,12 +478,12 @@ func RegisterIdentityProviderHandlerServer(ctx context.Context, mux *runtime.Ser
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/pb.IdentityProvider/ListRoles", runtime.WithHTTPPathPattern("/v1/list_roles"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/pb.IdentityProviderService/ListRoles", runtime.WithHTTPPathPattern("/v1/list_roles"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_IdentityProvider_ListRoles_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_IdentityProviderService_ListRoles_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -491,11 +491,11 @@ func RegisterIdentityProviderHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 
-		forward_IdentityProvider_ListRoles_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_IdentityProviderService_ListRoles_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_IdentityProvider_UpdateRole_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_IdentityProviderService_UpdateRole_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -503,12 +503,12 @@ func RegisterIdentityProviderHandlerServer(ctx context.Context, mux *runtime.Ser
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/pb.IdentityProvider/UpdateRole", runtime.WithHTTPPathPattern("/v1/update_role"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/pb.IdentityProviderService/UpdateRole", runtime.WithHTTPPathPattern("/v1/update_role"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_IdentityProvider_UpdateRole_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_IdentityProviderService_UpdateRole_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -516,11 +516,11 @@ func RegisterIdentityProviderHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 
-		forward_IdentityProvider_UpdateRole_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_IdentityProviderService_UpdateRole_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_IdentityProvider_AssignRoleToUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_IdentityProviderService_AssignRoleToUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -528,12 +528,12 @@ func RegisterIdentityProviderHandlerServer(ctx context.Context, mux *runtime.Ser
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/pb.IdentityProvider/AssignRoleToUser", runtime.WithHTTPPathPattern("/v1/assign_role_to_user"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/pb.IdentityProviderService/AssignRoleToUser", runtime.WithHTTPPathPattern("/v1/assign_role_to_user"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_IdentityProvider_AssignRoleToUser_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_IdentityProviderService_AssignRoleToUser_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -541,11 +541,11 @@ func RegisterIdentityProviderHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 
-		forward_IdentityProvider_AssignRoleToUser_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_IdentityProviderService_AssignRoleToUser_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_IdentityProvider_CheckIfUserHasRole_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_IdentityProviderService_CheckIfUserHasRole_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -553,12 +553,12 @@ func RegisterIdentityProviderHandlerServer(ctx context.Context, mux *runtime.Ser
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/pb.IdentityProvider/CheckIfUserHasRole", runtime.WithHTTPPathPattern("/v1/check_if_user_has_role"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/pb.IdentityProviderService/CheckIfUserHasRole", runtime.WithHTTPPathPattern("/v1/check_if_user_has_role"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_IdentityProvider_CheckIfUserHasRole_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_IdentityProviderService_CheckIfUserHasRole_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -566,11 +566,11 @@ func RegisterIdentityProviderHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 
-		forward_IdentityProvider_CheckIfUserHasRole_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_IdentityProviderService_CheckIfUserHasRole_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_IdentityProvider_GetUserRoles_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_IdentityProviderService_GetUserRoles_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -578,12 +578,12 @@ func RegisterIdentityProviderHandlerServer(ctx context.Context, mux *runtime.Ser
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/pb.IdentityProvider/GetUserRoles", runtime.WithHTTPPathPattern("/v1/get_user_roles"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/pb.IdentityProviderService/GetUserRoles", runtime.WithHTTPPathPattern("/v1/get_user_roles"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_IdentityProvider_GetUserRoles_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_IdentityProviderService_GetUserRoles_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -591,11 +591,11 @@ func RegisterIdentityProviderHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 
-		forward_IdentityProvider_GetUserRoles_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_IdentityProviderService_GetUserRoles_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_IdentityProvider_RemoveRoleFromUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_IdentityProviderService_RemoveRoleFromUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -603,12 +603,12 @@ func RegisterIdentityProviderHandlerServer(ctx context.Context, mux *runtime.Ser
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/pb.IdentityProvider/RemoveRoleFromUser", runtime.WithHTTPPathPattern("/v1/remove_role_from_user"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/pb.IdentityProviderService/RemoveRoleFromUser", runtime.WithHTTPPathPattern("/v1/remove_role_from_user"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_IdentityProvider_RemoveRoleFromUser_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_IdentityProviderService_RemoveRoleFromUser_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -616,16 +616,16 @@ func RegisterIdentityProviderHandlerServer(ctx context.Context, mux *runtime.Ser
 			return
 		}
 
-		forward_IdentityProvider_RemoveRoleFromUser_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_IdentityProviderService_RemoveRoleFromUser_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
 	return nil
 }
 
-// RegisterIdentityProviderHandlerFromEndpoint is same as RegisterIdentityProviderHandler but
+// RegisterIdentityProviderServiceHandlerFromEndpoint is same as RegisterIdentityProviderServiceHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
-func RegisterIdentityProviderHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
+func RegisterIdentityProviderServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
 	conn, err := grpc.DialContext(ctx, endpoint, opts...)
 	if err != nil {
 		return err
@@ -645,261 +645,261 @@ func RegisterIdentityProviderHandlerFromEndpoint(ctx context.Context, mux *runti
 		}()
 	}()
 
-	return RegisterIdentityProviderHandler(ctx, mux, conn)
+	return RegisterIdentityProviderServiceHandler(ctx, mux, conn)
 }
 
-// RegisterIdentityProviderHandler registers the http handlers for service IdentityProvider to "mux".
+// RegisterIdentityProviderServiceHandler registers the http handlers for service IdentityProviderService to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterIdentityProviderHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
-	return RegisterIdentityProviderHandlerClient(ctx, mux, NewIdentityProviderClient(conn))
+func RegisterIdentityProviderServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+	return RegisterIdentityProviderServiceHandlerClient(ctx, mux, NewIdentityProviderServiceClient(conn))
 }
 
-// RegisterIdentityProviderHandlerClient registers the http handlers for service IdentityProvider
-// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "IdentityProviderClient".
-// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "IdentityProviderClient"
+// RegisterIdentityProviderServiceHandlerClient registers the http handlers for service IdentityProviderService
+// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "IdentityProviderServiceClient".
+// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "IdentityProviderServiceClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "IdentityProviderClient" to call the correct interceptors.
-func RegisterIdentityProviderHandlerClient(ctx context.Context, mux *runtime.ServeMux, client IdentityProviderClient) error {
+// "IdentityProviderServiceClient" to call the correct interceptors.
+func RegisterIdentityProviderServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client IdentityProviderServiceClient) error {
 
-	mux.Handle("POST", pattern_IdentityProvider_CreateRole_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_IdentityProviderService_CreateRole_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/pb.IdentityProvider/CreateRole", runtime.WithHTTPPathPattern("/v1/create_role"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/pb.IdentityProviderService/CreateRole", runtime.WithHTTPPathPattern("/v1/create_role"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_IdentityProvider_CreateRole_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_IdentityProviderService_CreateRole_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_IdentityProvider_CreateRole_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_IdentityProviderService_CreateRole_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_IdentityProvider_DeleteRole_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_IdentityProviderService_DeleteRole_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/pb.IdentityProvider/DeleteRole", runtime.WithHTTPPathPattern("/v1/delete_role"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/pb.IdentityProviderService/DeleteRole", runtime.WithHTTPPathPattern("/v1/delete_role"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_IdentityProvider_DeleteRole_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_IdentityProviderService_DeleteRole_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_IdentityProvider_DeleteRole_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_IdentityProviderService_DeleteRole_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_IdentityProvider_GetRoleByID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_IdentityProviderService_GetRoleByID_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/pb.IdentityProvider/GetRoleByID", runtime.WithHTTPPathPattern("/v1/get_role_by_id"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/pb.IdentityProviderService/GetRoleByID", runtime.WithHTTPPathPattern("/v1/get_role_by_id"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_IdentityProvider_GetRoleByID_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_IdentityProviderService_GetRoleByID_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_IdentityProvider_GetRoleByID_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_IdentityProviderService_GetRoleByID_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_IdentityProvider_GetRoleByValue_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_IdentityProviderService_GetRoleByValue_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/pb.IdentityProvider/GetRoleByValue", runtime.WithHTTPPathPattern("/v1/get_role_by_value"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/pb.IdentityProviderService/GetRoleByValue", runtime.WithHTTPPathPattern("/v1/get_role_by_value"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_IdentityProvider_GetRoleByValue_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_IdentityProviderService_GetRoleByValue_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_IdentityProvider_GetRoleByValue_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_IdentityProviderService_GetRoleByValue_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_IdentityProvider_GetRolePermissions_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_IdentityProviderService_GetRolePermissions_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/pb.IdentityProvider/GetRolePermissions", runtime.WithHTTPPathPattern("/v1/get_role_permissions"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/pb.IdentityProviderService/GetRolePermissions", runtime.WithHTTPPathPattern("/v1/get_role_permissions"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_IdentityProvider_GetRolePermissions_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_IdentityProviderService_GetRolePermissions_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_IdentityProvider_GetRolePermissions_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_IdentityProviderService_GetRolePermissions_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_IdentityProvider_ListRoles_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_IdentityProviderService_ListRoles_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/pb.IdentityProvider/ListRoles", runtime.WithHTTPPathPattern("/v1/list_roles"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/pb.IdentityProviderService/ListRoles", runtime.WithHTTPPathPattern("/v1/list_roles"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_IdentityProvider_ListRoles_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_IdentityProviderService_ListRoles_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_IdentityProvider_ListRoles_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_IdentityProviderService_ListRoles_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_IdentityProvider_UpdateRole_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_IdentityProviderService_UpdateRole_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/pb.IdentityProvider/UpdateRole", runtime.WithHTTPPathPattern("/v1/update_role"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/pb.IdentityProviderService/UpdateRole", runtime.WithHTTPPathPattern("/v1/update_role"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_IdentityProvider_UpdateRole_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_IdentityProviderService_UpdateRole_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_IdentityProvider_UpdateRole_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_IdentityProviderService_UpdateRole_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_IdentityProvider_AssignRoleToUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_IdentityProviderService_AssignRoleToUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/pb.IdentityProvider/AssignRoleToUser", runtime.WithHTTPPathPattern("/v1/assign_role_to_user"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/pb.IdentityProviderService/AssignRoleToUser", runtime.WithHTTPPathPattern("/v1/assign_role_to_user"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_IdentityProvider_AssignRoleToUser_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_IdentityProviderService_AssignRoleToUser_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_IdentityProvider_AssignRoleToUser_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_IdentityProviderService_AssignRoleToUser_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_IdentityProvider_CheckIfUserHasRole_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_IdentityProviderService_CheckIfUserHasRole_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/pb.IdentityProvider/CheckIfUserHasRole", runtime.WithHTTPPathPattern("/v1/check_if_user_has_role"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/pb.IdentityProviderService/CheckIfUserHasRole", runtime.WithHTTPPathPattern("/v1/check_if_user_has_role"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_IdentityProvider_CheckIfUserHasRole_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_IdentityProviderService_CheckIfUserHasRole_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_IdentityProvider_CheckIfUserHasRole_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_IdentityProviderService_CheckIfUserHasRole_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_IdentityProvider_GetUserRoles_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_IdentityProviderService_GetUserRoles_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/pb.IdentityProvider/GetUserRoles", runtime.WithHTTPPathPattern("/v1/get_user_roles"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/pb.IdentityProviderService/GetUserRoles", runtime.WithHTTPPathPattern("/v1/get_user_roles"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_IdentityProvider_GetUserRoles_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_IdentityProviderService_GetUserRoles_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_IdentityProvider_GetUserRoles_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_IdentityProviderService_GetUserRoles_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_IdentityProvider_RemoveRoleFromUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_IdentityProviderService_RemoveRoleFromUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/pb.IdentityProvider/RemoveRoleFromUser", runtime.WithHTTPPathPattern("/v1/remove_role_from_user"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/pb.IdentityProviderService/RemoveRoleFromUser", runtime.WithHTTPPathPattern("/v1/remove_role_from_user"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_IdentityProvider_RemoveRoleFromUser_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_IdentityProviderService_RemoveRoleFromUser_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_IdentityProvider_RemoveRoleFromUser_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_IdentityProviderService_RemoveRoleFromUser_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -907,49 +907,49 @@ func RegisterIdentityProviderHandlerClient(ctx context.Context, mux *runtime.Ser
 }
 
 var (
-	pattern_IdentityProvider_CreateRole_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "create_role"}, ""))
+	pattern_IdentityProviderService_CreateRole_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "create_role"}, ""))
 
-	pattern_IdentityProvider_DeleteRole_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "delete_role"}, ""))
+	pattern_IdentityProviderService_DeleteRole_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "delete_role"}, ""))
 
-	pattern_IdentityProvider_GetRoleByID_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "get_role_by_id"}, ""))
+	pattern_IdentityProviderService_GetRoleByID_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "get_role_by_id"}, ""))
 
-	pattern_IdentityProvider_GetRoleByValue_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "get_role_by_value"}, ""))
+	pattern_IdentityProviderService_GetRoleByValue_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "get_role_by_value"}, ""))
 
-	pattern_IdentityProvider_GetRolePermissions_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "get_role_permissions"}, ""))
+	pattern_IdentityProviderService_GetRolePermissions_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "get_role_permissions"}, ""))
 
-	pattern_IdentityProvider_ListRoles_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "list_roles"}, ""))
+	pattern_IdentityProviderService_ListRoles_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "list_roles"}, ""))
 
-	pattern_IdentityProvider_UpdateRole_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "update_role"}, ""))
+	pattern_IdentityProviderService_UpdateRole_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "update_role"}, ""))
 
-	pattern_IdentityProvider_AssignRoleToUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "assign_role_to_user"}, ""))
+	pattern_IdentityProviderService_AssignRoleToUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "assign_role_to_user"}, ""))
 
-	pattern_IdentityProvider_CheckIfUserHasRole_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "check_if_user_has_role"}, ""))
+	pattern_IdentityProviderService_CheckIfUserHasRole_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "check_if_user_has_role"}, ""))
 
-	pattern_IdentityProvider_GetUserRoles_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "get_user_roles"}, ""))
+	pattern_IdentityProviderService_GetUserRoles_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "get_user_roles"}, ""))
 
-	pattern_IdentityProvider_RemoveRoleFromUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "remove_role_from_user"}, ""))
+	pattern_IdentityProviderService_RemoveRoleFromUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "remove_role_from_user"}, ""))
 )
 
 var (
-	forward_IdentityProvider_CreateRole_0 = runtime.ForwardResponseMessage
+	forward_IdentityProviderService_CreateRole_0 = runtime.ForwardResponseMessage
 
-	forward_IdentityProvider_DeleteRole_0 = runtime.ForwardResponseMessage
+	forward_IdentityProviderService_DeleteRole_0 = runtime.ForwardResponseMessage
 
-	forward_IdentityProvider_GetRoleByID_0 = runtime.ForwardResponseMessage
+	forward_IdentityProviderService_GetRoleByID_0 = runtime.ForwardResponseMessage
 
-	forward_IdentityProvider_GetRoleByValue_0 = runtime.ForwardResponseMessage
+	forward_IdentityProviderService_GetRoleByValue_0 = runtime.ForwardResponseMessage
 
-	forward_IdentityProvider_GetRolePermissions_0 = runtime.ForwardResponseMessage
+	forward_IdentityProviderService_GetRolePermissions_0 = runtime.ForwardResponseMessage
 
-	forward_IdentityProvider_ListRoles_0 = runtime.ForwardResponseMessage
+	forward_IdentityProviderService_ListRoles_0 = runtime.ForwardResponseMessage
 
-	forward_IdentityProvider_UpdateRole_0 = runtime.ForwardResponseMessage
+	forward_IdentityProviderService_UpdateRole_0 = runtime.ForwardResponseMessage
 
-	forward_IdentityProvider_AssignRoleToUser_0 = runtime.ForwardResponseMessage
+	forward_IdentityProviderService_AssignRoleToUser_0 = runtime.ForwardResponseMessage
 
-	forward_IdentityProvider_CheckIfUserHasRole_0 = runtime.ForwardResponseMessage
+	forward_IdentityProviderService_CheckIfUserHasRole_0 = runtime.ForwardResponseMessage
 
-	forward_IdentityProvider_GetUserRoles_0 = runtime.ForwardResponseMessage
+	forward_IdentityProviderService_GetUserRoles_0 = runtime.ForwardResponseMessage
 
-	forward_IdentityProvider_RemoveRoleFromUser_0 = runtime.ForwardResponseMessage
+	forward_IdentityProviderService_RemoveRoleFromUser_0 = runtime.ForwardResponseMessage
 )

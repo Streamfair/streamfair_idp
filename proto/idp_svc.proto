@@ -20,7 +20,7 @@ import "user_role/rpc_remove_role_from_user.proto";
 
 option go_package = "github.com/Streamfair/streamfair_idp_svc/pb";
 
-service IdentityProvider {
+service IdentityProviderService {
     // Roles
     rpc CreateRole(CreateRoleRequest) returns (CreateRoleResponse) {
         option (google.api.http) = {
