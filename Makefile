@@ -1,5 +1,9 @@
 # Variables
+SERVICE_IMAGE := streamfair_idp_svc
+SERVICE_TAG := latest
+
 DOCKER_NETWORK := idp_service_network
+
 GRPC_PORT := 9091
 GRPC_HOST_PORT := 9290
 
@@ -19,9 +23,6 @@ PB_DIR := pb
 AUTH_DIR := auth
 ROLE_DIR := role
 USER_ROLE_DIR := user_role
-
-SERVICE_IMAGE := streamfair_idp
-SERVICE_TAG := latest
 
 OUT ?= 0
 
