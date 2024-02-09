@@ -1,5 +1,12 @@
 # Variables
+DOCKER_NETWORK := idp_service_network
 GRPC_PORT := 9091
+GRPC_HOST_PORT := 9290
+
+GRPC_GATEWAY_PORT := 8081
+GRPC_GATEWAY_HOST_PORT := 8280
+
+DB_SOURCE := postgresql://root:secret@${DOCKER_NETWORK}:5433/streamfair_idp_service_db?sslmode=disable
 DB_PORT := 5433
 DB_CONTAINER_NAME := db_idp_service
 DB_NAME := streamfair_idp_service_db
@@ -13,12 +20,15 @@ AUTH_DIR := auth
 ROLE_DIR := role
 USER_ROLE_DIR := user_role
 
+SERVICE_IMAGE := streamfair_idp
+SERVICE_TAG := latest
+
 OUT ?= 0
 
 # Targets
-postgres:
+db:
 	@echo "Starting ${DB_CONTAINER_NAME}..."
-	docker run --name ${DB_CONTAINER_NAME} -p ${DB_PORT}:5432 -e POSTGRES_USER=${DB_USER} -e POSTGRES_PASSWORD=${DB_PASSWORD} -d postgres:16-alpine
+	docker run --name ${DB_CONTAINER_NAME} --network ${DOCKER_NETWORK} -p ${DB_PORT}:5432 -e POSTGRES_USER=${DB_USER} -e POSTGRES_PASSWORD=${DB_PASSWORD} -d postgres:16-alpine
 
 createdb:
 	@echo "Creating database..."
@@ -63,19 +73,33 @@ apitest:
 		go test -tags=-coverage -v -cover ./api ; \
 	fi
 
+utiltest:
+	@if [ $(OUT) -eq  1 ]; then \
+		go test -v -cover -count=1 ./util > util_tests.log; \
+	else \
+		go test -v -cover -count=1 ./util ; \
+	fi
+
+servertest:
+	@if [ $(OUT) -eq  1 ]; then \
+		go test -v -cover -count=1 ./gapi > server_tests.log; \
+	else \
+		go test -v -cover -count=1 ./gapi ; \
+	fi
+
 coverage_html:
 	go test -coverprofile=coverage.out ./...
 	go tool cover -html=coverage.out
 	rm coverage.out
+
+clean:
+	rm -f coverage.out *_tests.log
 
 server:
 	@go run main.go
 
 mock:
 	mockgen -source=db/sqlc/store.go -destination=db/mock/store_mock.go
-
-clean:
-	rm -f coverage.out *_tests.log
 
 evans:
 	evans --host ${DB_HOST} --port ${GRPC_PORT} -r repl
@@ -118,9 +142,17 @@ clean_role_dir:
 clean_user_role_dir:
 	rm -f $(PB_DIR)/$(USER_ROLE_DIR)/*.go
 
+image:
+	docker build -t ${SERVICE_IMAGE}:${SERVICE_TAG} .
+	docker images
+
+container:
+	docker run --name ${SERVICE_IMAGE} --network ${DOCKER_NETWORK} -p ${GRPC_GATEWAY_HOST_PORT}:${GRPC_GATEWAY_PORT} -p ${GRPC_HOST_PORT}:${GRPC_PORT} -e DB_SOURCE=${DB_SOURCE} ${SERVICE_IMAGE}:${SERVICE_TAG}
+	docker ps
+
 # PHONY Targets
-.PHONY: postgres createdb dropdb \
+.PHONY: db createdb dropdb \
 		createmigration migrateup migrateup1 migratedown migratedown1 \
 		sqlc test dbtest apitest coverage_html server mock \
 		clean evans proto_core clean_pb proto_auth clean_auth_dir proto_role \
-		clean_role_dir proto_user_role clean_user_role_dir
+		clean_role_dir proto_user_role clean_user_role_dir servertest dbclean

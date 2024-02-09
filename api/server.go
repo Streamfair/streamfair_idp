@@ -70,3 +70,28 @@ func errorResponse(err error) gin.H {
 		return gin.H{"error": err.Error()}
 	}
 }
+
+// func (server *Server) RunGinServer(config util.Config, store db.Store) {
+// 	err := server.StartServer(config.HttpServerAddress)
+// 	if err != nil {
+// 		fmt.Fprintf(os.Stderr, "server: error while starting server: %v\n", err)
+// 	}
+// }
+
+// func errorResponse(err error) gin.H {
+// 	switch err := err.(type) {
+// 	case *pgconn.PgError:
+// 		// Handle pgconn.PgError
+// 		switch err.Code {
+// 		case "23505": // unique_violation
+// 			return gin.H{"error": fmt.Sprintf("Unique violation error: %v: %v", err.Message, err.Hint)}
+// 		case "23503": // foreign_key_violation
+// 			return gin.H{"error": fmt.Sprintf("Foreign key violation error: %v: %v", err.Message, err.Hint)}
+// 		default:
+// 			return gin.H{"error": fmt.Sprintf("error: %v", err.Message)}
+// 		}
+// 	default:
+// 		// Handle other types of errors
+// 		return gin.H{"error": err.Error()}
+// 	}
+// }
