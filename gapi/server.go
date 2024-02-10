@@ -7,9 +7,9 @@ import (
 	"net"
 	"net/http"
 
-	db "github.com/Streamfair/streamfair_idp_svc/db/sqlc"
-	"github.com/Streamfair/streamfair_idp_svc/pb"
-	"github.com/Streamfair/streamfair_idp_svc/util"
+	db "github.com/Streamfair/streamfair_idp/db/sqlc"
+	"github.com/Streamfair/streamfair_idp/pb"
+	"github.com/Streamfair/streamfair_idp/util"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health"
@@ -21,7 +21,7 @@ import (
 // Server serves gRPC requests for the streamfair user management service.
 type Server struct {
 	grpcServer *grpc.Server
-	pb.UnimplementedIdentityProviderServiceServer
+	pb.UnimplementedIdentityProviderServer
 	config    util.Config
 	store     db.Store
 	healthSrv *health.Server
@@ -43,7 +43,7 @@ func NewServer(config util.Config, store db.Store) (*Server, error) {
 
 // RunGrpcServer runs a gRPC server on the given address.
 func (server *Server) RunGrpcServer() error {
-	pb.RegisterIdentityProviderServiceServer(server.grpcServer, server)
+	pb.RegisterIdentityProviderServer(server.grpcServer, server)
 	reflection.Register(server.grpcServer)
 
 	// Set the initial health status to SERVING when the server starts.
@@ -81,7 +81,7 @@ func (server *Server) RunGrpcGatewayServer() error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	err := pb.RegisterIdentityProviderServiceHandlerServer(ctx, grpcMux, server)
+	err := pb.RegisterIdentityProviderHandlerServer(ctx, grpcMux, server)
 	if err != nil {
 		return fmt.Errorf("server: error while registering gRPC server: %v", err)
 	}
