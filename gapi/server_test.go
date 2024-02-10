@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	mock_db "github.com/Streamfair/streamfair_idp_svc/db/mock"
+	mock_db "github.com/Streamfair/streamfair_idp/db/mock"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/mock/gomock"
 	"google.golang.org/grpc"

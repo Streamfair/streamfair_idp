@@ -9,9 +9,9 @@ import (
 // Config is a struct that holds all configurations for the application.
 // The values are read by viper from a config file or environment variables.
 type Config struct {
-	DBSource             string        `mapstructure:"DB_SOURCE_IDP_SERVICE"`
-	HttpServerAddress    string        `mapstructure:"HTTP_SERVER_ADDRESS_IDP_SERVICE"`
-	GrpcServerAddress    string        `mapstructure:"GRPC_SERVER_ADDRESS_IDP_SERVICE"`
+	DBSource             string        `mapstructure:"DB_SOURCE_IDP"`
+	HttpServerAddress    string        `mapstructure:"HTTP_SERVER_ADDRESS_IDP"`
+	GrpcServerAddress    string        `mapstructure:"GRPC_SERVER_ADDRESS_IDP"`
 	TokenSymmetricKey    string        `mapstructure:"TOKEN_SYMMETRIC_KEY"`
 	AccessTokenDuration  time.Duration `mapstructure:"ACCESS_TOKEN_DURATION"`
 	RefreshTokenDuration time.Duration `mapstructure:"REFRESH_TOKEN_DURATION"`
@@ -25,13 +25,13 @@ func LoadConfig(path string) (config Config, err error) {
 	viper.AutomaticEnv()
 
 	// Check if environment variables are set
-	if dbSource := viper.GetString("DB_SOURCE_IDP_SERVICE"); dbSource != "" {
+	if dbSource := viper.GetString("DB_SOURCE_IDP"); dbSource != "" {
 		config.DBSource = dbSource
 	}
-	if httpServerAddress := viper.GetString("HTTP_SERVER_ADDRESS_IDP_SERVICE"); httpServerAddress != "" {
+	if httpServerAddress := viper.GetString("HTTP_SERVER_ADDRESS_IDP"); httpServerAddress != "" {
 		config.HttpServerAddress = httpServerAddress
 	}
-	if grpcServerAddress := viper.GetString("GRPC_SERVER_ADDRESS_IDP_SERVICE"); grpcServerAddress != "" {
+	if grpcServerAddress := viper.GetString("GRPC_SERVER_ADDRESS_IDP"); grpcServerAddress != "" {
 		config.GrpcServerAddress = grpcServerAddress
 	}
 	if tokenSymmetricKey := viper.GetString("TOKEN_SYMMETRIC_KEY"); tokenSymmetricKey != "" {

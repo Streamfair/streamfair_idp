@@ -1,8 +1,12 @@
-# Variables
-SERVICE_IMAGE := streamfair_idp_svc
-SERVICE_TAG := latest
+###  VARIABLES  ###
+# Docker Network
+## ADJUST FOR EACH SERVICE ##
+DOCKER_NETWORK := streamfair_idp_network
 
-DOCKER_NETWORK := idp_service_network
+# Service Container
+## ADJUST FOR EACH SERVICE ##
+SERVICE_IMAGE := streamfair_idp
+SERVICE_TAG := latest
 
 GRPC_PORT := 9091
 GRPC_HOST_PORT := 9290
@@ -10,101 +14,115 @@ GRPC_HOST_PORT := 9290
 GRPC_GATEWAY_PORT := 8081
 GRPC_GATEWAY_HOST_PORT := 8280
 
-DB_SOURCE := postgresql://root:secret@${DOCKER_NETWORK}:5433/streamfair_idp_service_db?sslmode=disable
-DB_PORT := 5433
-DB_CONTAINER_NAME := db_idp_service
-DB_NAME := streamfair_idp_service_db
+# Database Container
+## ADJUST FOR EACH SERVICE ##
+DB_IMAGE := postgres:16-alpine
+DB_CONTAINER_NAME := db_idp
+
+DB_PORT := 5432
+DB_HOST_PORT := 5433
+
+DB_NAME := streamfair_idp_db
 DB_USER := root
 DB_PASSWORD := secret
 DB_HOST := localhost
+DB_SOURCE_SERVICE := "postgresql://${DB_USER}:${DB_PASSWORD}@${DOCKER_NETWORK}:${DB_HOST_PORT}/${DB_NAME}?sslmode=disable"
+DB_SOURCE_MIGRATION := "postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_HOST_PORT}/${DB_NAME}?sslmode=disable"
 
+# Migrate
+MIGRATION_DIR := db/migration
+MIGRATION_NAME := init_schema
+
+# Proto
+## ADJUST FOR EACH SERVICE ##
 PROTO_DIR := proto
 PB_DIR := pb
 AUTH_DIR := auth
 ROLE_DIR := role
 USER_ROLE_DIR := user_role
 
+# Test
+TEST_DIR := ./...
+DB_TEST_DIR := ./db/sqlc
+API_TEST_DIR := ./api
+UTIL_TEST_DIR := ./util
+SERVER_TEST_DIR := ./gapi
+# Test Output
+TEST_FILE := tests.log
+DB_TEST_FILE := db_tests.log
+API_TEST_FILE := api_tests.log
+UTIL_TEST_FILE := util_tests.log
+SERVER_TEST_FILE := server_tests.log
+# Output Flag
 OUT ?= 0
 
-# Targets
-db:
-	@echo "Starting ${DB_CONTAINER_NAME}..."
-	docker run --name ${DB_CONTAINER_NAME} --network ${DOCKER_NETWORK} -p ${DB_PORT}:5432 -e POSTGRES_USER=${DB_USER} -e POSTGRES_PASSWORD=${DB_PASSWORD} -d postgres:16-alpine
+# Go
+ENTRY_POINT := main.go
+
+# Mock-gen
+MOCK_SOURCE := db/sqlc/store.go
+MOCK_DEST := db/mock/store_mock.go
+
+
+###  TARGETS  ###
+# DB Management
+network:
+	docker network create ${DOCKER_NETWORK}
+
+db_container:
+	docker run --name ${DB_CONTAINER_NAME} --network ${DOCKER_NETWORK} -p ${DB_HOST_PORT}:${DB_PORT} -e POSTGRES_USER=${DB_USER} -e POSTGRES_PASSWORD=${DB_PASSWORD} -d ${DB_IMAGE}
 
 createdb:
-	@echo "Creating database..."
-	docker exec -it ${DB_CONTAINER_NAME} createdb --username=root --owner=root ${DB_NAME}
+	docker exec -it ${DB_CONTAINER_NAME} createdb --username=${DB_USER} --owner=${DB_USER} ${DB_NAME}
 
 dropdb:
-	@echo "Dropping database..."
 	docker exec -it ${DB_CONTAINER_NAME} dropdb ${DB_NAME}
 
 createmigration:
-	@echo "Creating migration..."
-	migrate create -ext sql -dir db/migration -seq init_schema
+	migrate create -ext sql -dir ${MIGRATION_DIR} -seq ${MIGRATION_NAME}
 
-migrateup migrateup1 migratedown migratedown1:
-	@echo "Migrating..."
-	migrate -path db/migration -database "postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable" -verbose $(if $(filter migrateup1 migratedown1,$@),$(subst migrate,,$@),) $(if $(filter migrateup migratedown,$@),up,down) $(if $(filter migrateup1 migratedown1,$@),1,)
+migrateup:
+	migrate -path ${MIGRATION_DIR} -database ${DB_SOURCE_MIGRATION} -verbose up
+
+migrateup1:
+	migrate -path ${MIGRATION_DIR} -database ${DB_SOURCE_MIGRATION} -verbose up 1
+
+migratedown:
+	migrate -path ${MIGRATION_DIR} -database ${DB_SOURCE_MIGRATION} -verbose down
+
+migratedown1:
+	migrate -path ${MIGRATION_DIR} -database ${DB_SOURCE_MIGRATION} -verbose down 1
 
 dbclean: migratedown migrateup
 	clear
 
+
+# Docker Management
+service_image:
+	docker build -t ${SERVICE_IMAGE}:${SERVICE_TAG} .
+	docker images
+
+service_container:
+	docker run --name ${SERVICE_IMAGE} --network ${DOCKER_NETWORK} -p ${GRPC_GATEWAY_HOST_PORT}:${GRPC_GATEWAY_PORT} -p ${GRPC_HOST_PORT}:${GRPC_PORT} -e DB_SOURCE=${DB_SOURCE_SERVICE} ${SERVICE_IMAGE}:${SERVICE_TAG}
+	docker ps
+
+
+# Execution
+server:
+	@go run ${ENTRY_POINT}
+
+
+# SQLC Generation
 sqlc:
 	sqlc generate
 
-test:
-	@if [ $(OUT) -eq 1 ]; then \
-		go test -v -cover ./... > tests.log; \
-	else \
-		go test -v -cover ./... ; \
-	fi
 
-dbtest:
-	@if [ $(OUT) -eq 1 ]; then \
-		go test -v -cover ./db/sqlc > db_tests.log; \
-	else \
-		go test -v -cover ./db/sqlc ; \
-	fi
-
-apitest:
-	@if [ $(OUT) -eq 1 ]; then \
-		go test -v -cover ./api > api_tests.log; \
-	else \
-		go test -tags=-coverage -v -cover ./api ; \
-	fi
-
-utiltest:
-	@if [ $(OUT) -eq  1 ]; then \
-		go test -v -cover -count=1 ./util > util_tests.log; \
-	else \
-		go test -v -cover -count=1 ./util ; \
-	fi
-
-servertest:
-	@if [ $(OUT) -eq  1 ]; then \
-		go test -v -cover -count=1 ./gapi > server_tests.log; \
-	else \
-		go test -v -cover -count=1 ./gapi ; \
-	fi
-
-coverage_html:
-	go test -coverprofile=coverage.out ./...
-	go tool cover -html=coverage.out
-	rm coverage.out
-
-clean:
-	rm -f coverage.out *_tests.log
-
-server:
-	@go run main.go
-
+# Mock Generation
 mock:
-	mockgen -source=db/sqlc/store.go -destination=db/mock/store_mock.go
+	mockgen -source=${MOCK_SOURCE} -destination=${MOCK_DEST}
 
-evans:
-	evans --host ${DB_HOST} --port ${GRPC_PORT} -r repl
 
+# Proto Generation
 proto: proto_core proto_role proto_user_role # proto_auth
 
 proto_core: clean_pb
@@ -143,17 +161,56 @@ clean_role_dir:
 clean_user_role_dir:
 	rm -f $(PB_DIR)/$(USER_ROLE_DIR)/*.go
 
-image:
-	docker build -t ${SERVICE_IMAGE}:${SERVICE_TAG} .
-	docker images
 
-container:
-	docker run --name ${SERVICE_IMAGE} --network ${DOCKER_NETWORK} -p ${GRPC_GATEWAY_HOST_PORT}:${GRPC_GATEWAY_PORT} -p ${GRPC_HOST_PORT}:${GRPC_PORT} -e DB_SOURCE=${DB_SOURCE} ${SERVICE_IMAGE}:${SERVICE_TAG}
-	docker ps
+# Evans GRPC Client
+evans:
+	evans --host ${DB_HOST} --port ${GRPC_PORT} -r repl
+
+
+# Testing
+test:
+	@if [ $(OUT) -eq 1 ]; then \
+		go test -v -cover ${TEST_DIR} > ${TEST_FILE}; \
+	else \
+		go test -v -cover ${TEST_DIR} ; \
+	fi
+
+dbtest:
+	@if [ $(OUT) -eq 1 ]; then \
+		go test -v -cover ${DB_TEST_DIR} > ${DB_TEST_FILE}; \
+	else \
+		go test -v -cover ${DB_TEST_DIR} ; \
+	fi
+
+apitest:
+	@if [ $(OUT) -eq 1 ]; then \
+		go test -v -cover ${API_TEST_DIR} > ${API_TEST_FILE}; \
+	else \
+		go test -tags=-coverage -v -cover ${API_TEST_DIR} ; \
+	fi
+
+utiltest:
+	@if [ $(OUT) -eq  1 ]; then \
+		go test -v -cover -count=1 ${UTIL_TEST_DIR} > ${UTIL_TEST_FILE}; \
+	else \
+		go test -v -cover -count=1 ${UTIL_TEST_DIR} ; \
+	fi
+
+servertest:
+	@if [ $(OUT) -eq  1 ]; then \
+		go test -v -cover -count=1 ${SERVER_TEST_DIR} > ${SERVER_TEST_FILE}; \
+	else \
+		go test -v -cover -count=1 ${SERVER_TEST_DIR} ; \
+	fi
+
+coverage_html:
+	go test -coverprofile=coverage.out ${TEST_DIR}
+	go tool cover -html=coverage.out
+	rm coverage.out
+
+clean:
+	rm -f *_tests.log
+
 
 # PHONY Targets
-.PHONY: db createdb dropdb \
-		createmigration migrateup migrateup1 migratedown migratedown1 \
-		sqlc test dbtest apitest coverage_html server mock \
-		clean evans proto_core clean_pb proto_auth clean_auth_dir proto_role \
-		clean_role_dir proto_user_role clean_user_role_dir servertest dbclean
+.PHONY: network db_container createdb dropdb createmigration migrateup migrateup1 migratedown migratedown1 dbclean service_image service_container server sqlc mock proto proto_core proto_auth proto_role proto_user_role clean_pb clean_auth_dir clean_role_dir clean_user_role_dir evans test dbtest apitest utiltest servertest coverage_html clean

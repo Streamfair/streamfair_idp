@@ -4,7 +4,7 @@ package pb;
 
 import "user_role/user_role.proto";
 
-option go_package = "github.com/Streamfair/streamfair_idp_svc/pb/user_role";
+option go_package = "github.com/Streamfair/streamfair_idp/pb/user_role";
 
 message CheckIfUserHasRoleRequest {
     int64 user_id = 1;

@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Streamfair/streamfair_idp_svc/util"
+	"github.com/Streamfair/streamfair_idp/util"
 	"github.com/stretchr/testify/require"
 )
 

@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package pb;
 
-option go_package = "github.com/Streamfair/streamfair_idp_svc/pb/user_role";
+option go_package = "github.com/Streamfair/streamfair_idp/pb/user_role";
 
 message RemoveRoleFromUserRequest {
     int64 user_id = 1;

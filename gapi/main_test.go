@@ -4,8 +4,8 @@ import (
 	"os"
 	"testing"
 
-	db "github.com/Streamfair/streamfair_idp_svc/db/sqlc"
-	"github.com/Streamfair/streamfair_idp_svc/util"
+	db "github.com/Streamfair/streamfair_idp/db/sqlc"
+	"github.com/Streamfair/streamfair_idp/util"
 	"github.com/stretchr/testify/require"
 )
 
