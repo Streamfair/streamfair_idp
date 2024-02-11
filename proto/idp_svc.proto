@@ -3,98 +3,16 @@ syntax = "proto3";
 package pb;
 
 import "google/api/annotations.proto";
-import "google/protobuf/empty.proto";
-
-import "role/rpc_create_role.proto";
-import "role/rpc_delete_role.proto";
-import "role/rpc_get_role_by_id.proto";
-import "role/rpc_get_role_by_value.proto";
-import "role/rpc_list_roles.proto";
-import "role/rpc_update_role.proto";
-import "role/rpc_get_role_permissions.proto";
-
-import "user_role/rpc_assign_role_to_user.proto";
-import "user_role/rpc_check_if_user_has_role.proto";
-import "user_role/rpc_get_user_roles.proto";
-import "user_role/rpc_remove_role_from_user.proto";
+import "login/rpc_login.proto";
 
 option go_package = "github.com/Streamfair/streamfair_idp/pb";
 
 service IdentityProvider {
-    // Roles
-    rpc CreateRole(CreateRoleRequest) returns (CreateRoleResponse) {
-        option (google.api.http) = {
-            post: "/v1/create_role"
-            body: "*"
-        };
-    }
-
-    rpc DeleteRole(DeleteRoleRequest) returns (google.protobuf.Empty) {
-        option (google.api.http) = {
-            post: "/v1/delete_role"
-        };
-    }
-
-    rpc GetRoleByID(GetRoleByIDRequest) returns (GetRoleByIDResponse) {
-        option (google.api.http) = {
-            post: "/v1/get_role_by_id"
-            body: "*"
-        };
-    }
-
-    rpc GetRoleByValue(GetRoleByValueRequest) returns (GetRoleByValueResponse) {
-        option (google.api.http) = {
-            post: "/v1/get_role_by_value"
-            body: "*"
-        };
-    }
-
-    rpc GetRolePermissions(GetRolePermissionsRequest) returns (GetRolePermissionsResponse) {
-        option (google.api.http) = {
-            post: "/v1/get_role_permissions"
-            body: "*"
-        };
-    }
-
-    rpc ListRoles(ListRolesRequest) returns (ListRolesResponse) {
-        option (google.api.http) = {
-            post: "/v1/list_roles"
-            body: "*"
-        };
-    }
-
-    rpc UpdateRole(UpdateRoleRequest) returns (UpdateRoleResponse) {
-        option (google.api.http) = {
-            post: "/v1/update_role"
-            body: "*"
-        };
-    }
-
-    // User roles
-    rpc AssignRoleToUser(AssignRoleToUserRequest) returns (AssignRoleToUserResponse) {
-        option (google.api.http) = {
-            post: "/v1/assign_role_to_user"
-            body: "*"
-        };
-    }
-
-    rpc CheckIfUserHasRole(CheckIfUserHasRoleRequest) returns (CheckIfUserHasRoleResponse) {
-        option (google.api.http) = {
-            post: "/v1/check_if_user_has_role"
-            body: "*"
-        };
-    }
-
-    rpc GetUserRoles(GetUserRolesRequest) returns (GetUserRolesResponse) {
-        option (google.api.http) = {
-            post: "/v1/get_user_roles"
-            body: "*"
-        };
-    }
-
-    rpc RemoveRoleFromUser(RemoveRoleFromUserRequest) returns (google.protobuf.Empty) {
-        option (google.api.http) = {
-            post: "/v1/remove_role_from_user"
-        };
-    }
+// Login attempts to authenticate a user and returns a token if successful.
+rpc LoginUser(LoginRequest) returns (LoginResponse) {
+    option (google.api.http) = {
+        post: "/v1/login_user"
+        body: "*"
+    };
+}
 }

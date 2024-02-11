@@ -14,7 +14,6 @@ import (
 	reflect "reflect"
 	time "time"
 
-	db "github.com/Streamfair/streamfair_idp/db/sqlc"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -41,140 +40,6 @@ func (m *MockStore) EXPECT() *MockStoreMockRecorder {
 	return m.recorder
 }
 
-// AssignRoleToUser mocks base method.
-func (m *MockStore) AssignRoleToUser(ctx context.Context, arg db.AssignRoleToUserParams) (db.IdpSvcUserRole, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AssignRoleToUser", ctx, arg)
-	ret0, _ := ret[0].(db.IdpSvcUserRole)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// AssignRoleToUser indicates an expected call of AssignRoleToUser.
-func (mr *MockStoreMockRecorder) AssignRoleToUser(ctx, arg any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AssignRoleToUser", reflect.TypeOf((*MockStore)(nil).AssignRoleToUser), ctx, arg)
-}
-
-// CheckIfUserHasRole mocks base method.
-func (m *MockStore) CheckIfUserHasRole(ctx context.Context, arg db.CheckIfUserHasRoleParams) (db.IdpSvcUserRole, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CheckIfUserHasRole", ctx, arg)
-	ret0, _ := ret[0].(db.IdpSvcUserRole)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// CheckIfUserHasRole indicates an expected call of CheckIfUserHasRole.
-func (mr *MockStoreMockRecorder) CheckIfUserHasRole(ctx, arg any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckIfUserHasRole", reflect.TypeOf((*MockStore)(nil).CheckIfUserHasRole), ctx, arg)
-}
-
-// CreateRole mocks base method.
-func (m *MockStore) CreateRole(ctx context.Context, arg db.CreateRoleParams) (db.IdpSvcRole, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateRole", ctx, arg)
-	ret0, _ := ret[0].(db.IdpSvcRole)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// CreateRole indicates an expected call of CreateRole.
-func (mr *MockStoreMockRecorder) CreateRole(ctx, arg any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateRole", reflect.TypeOf((*MockStore)(nil).CreateRole), ctx, arg)
-}
-
-// DeleteRole mocks base method.
-func (m *MockStore) DeleteRole(ctx context.Context, id int64) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteRole", ctx, id)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// DeleteRole indicates an expected call of DeleteRole.
-func (mr *MockStoreMockRecorder) DeleteRole(ctx, id any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteRole", reflect.TypeOf((*MockStore)(nil).DeleteRole), ctx, id)
-}
-
-// GetRoleByID mocks base method.
-func (m *MockStore) GetRoleByID(ctx context.Context, id int64) (db.IdpSvcRole, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetRoleByID", ctx, id)
-	ret0, _ := ret[0].(db.IdpSvcRole)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetRoleByID indicates an expected call of GetRoleByID.
-func (mr *MockStoreMockRecorder) GetRoleByID(ctx, id any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRoleByID", reflect.TypeOf((*MockStore)(nil).GetRoleByID), ctx, id)
-}
-
-// GetRoleByValue mocks base method.
-func (m *MockStore) GetRoleByValue(ctx context.Context, roleName string) (db.IdpSvcRole, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetRoleByValue", ctx, roleName)
-	ret0, _ := ret[0].(db.IdpSvcRole)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetRoleByValue indicates an expected call of GetRoleByValue.
-func (mr *MockStoreMockRecorder) GetRoleByValue(ctx, roleName any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRoleByValue", reflect.TypeOf((*MockStore)(nil).GetRoleByValue), ctx, roleName)
-}
-
-// GetRolePermissions mocks base method.
-func (m *MockStore) GetRolePermissions(ctx context.Context, roleName string) ([]byte, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetRolePermissions", ctx, roleName)
-	ret0, _ := ret[0].([]byte)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetRolePermissions indicates an expected call of GetRolePermissions.
-func (mr *MockStoreMockRecorder) GetRolePermissions(ctx, roleName any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRolePermissions", reflect.TypeOf((*MockStore)(nil).GetRolePermissions), ctx, roleName)
-}
-
-// GetUserRoles mocks base method.
-func (m *MockStore) GetUserRoles(ctx context.Context, userID int64) ([]db.IdpSvcUserRole, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetUserRoles", ctx, userID)
-	ret0, _ := ret[0].([]db.IdpSvcUserRole)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetUserRoles indicates an expected call of GetUserRoles.
-func (mr *MockStoreMockRecorder) GetUserRoles(ctx, userID any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserRoles", reflect.TypeOf((*MockStore)(nil).GetUserRoles), ctx, userID)
-}
-
-// ListRoles mocks base method.
-func (m *MockStore) ListRoles(ctx context.Context, arg db.ListRolesParams) ([]db.IdpSvcRole, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListRoles", ctx, arg)
-	ret0, _ := ret[0].([]db.IdpSvcRole)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// ListRoles indicates an expected call of ListRoles.
-func (mr *MockStoreMockRecorder) ListRoles(ctx, arg any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRoles", reflect.TypeOf((*MockStore)(nil).ListRoles), ctx, arg)
-}
-
 // Ping mocks base method.
 func (m *MockStore) Ping(ctx context.Context, timeout time.Duration) error {
 	m.ctrl.T.Helper()
@@ -187,33 +52,4 @@ func (m *MockStore) Ping(ctx context.Context, timeout time.Duration) error {
 func (mr *MockStoreMockRecorder) Ping(ctx, timeout any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Ping", reflect.TypeOf((*MockStore)(nil).Ping), ctx, timeout)
-}
-
-// RemoveRoleFromUser mocks base method.
-func (m *MockStore) RemoveRoleFromUser(ctx context.Context, arg db.RemoveRoleFromUserParams) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RemoveRoleFromUser", ctx, arg)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// RemoveRoleFromUser indicates an expected call of RemoveRoleFromUser.
-func (mr *MockStoreMockRecorder) RemoveRoleFromUser(ctx, arg any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveRoleFromUser", reflect.TypeOf((*MockStore)(nil).RemoveRoleFromUser), ctx, arg)
-}
-
-// UpdateRole mocks base method.
-func (m *MockStore) UpdateRole(ctx context.Context, arg db.UpdateRoleParams) (db.UpdateRoleRow, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateRole", ctx, arg)
-	ret0, _ := ret[0].(db.UpdateRoleRow)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// UpdateRole indicates an expected call of UpdateRole.
-func (mr *MockStoreMockRecorder) UpdateRole(ctx, arg any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateRole", reflect.TypeOf((*MockStore)(nil).UpdateRole), ctx, arg)
 }

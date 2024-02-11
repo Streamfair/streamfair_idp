@@ -37,9 +37,7 @@ MIGRATION_NAME := init_schema
 ## ADJUST FOR EACH SERVICE ##
 PROTO_DIR := proto
 PB_DIR := pb
-AUTH_DIR := auth
-ROLE_DIR := role
-USER_ROLE_DIR := user_role
+LOGIN_DIR := login
 
 # Test
 TEST_DIR := ./...
@@ -123,7 +121,7 @@ mock:
 
 
 # Proto Generation
-proto: proto_core proto_role proto_user_role # proto_auth
+proto: proto_core proto_login
 
 proto_core: clean_pb
 	protoc --proto_path=$(PROTO_DIR) --go_out=$(PB_DIR) --go_opt=paths=source_relative \
@@ -131,36 +129,17 @@ proto_core: clean_pb
 	--grpc-gateway_out=$(PB_DIR) --grpc-gateway_opt=paths=source_relative \
 	$(PROTO_DIR)/*.proto
 
-proto_auth: clean_auth_dir
-	protoc --proto_path=$(PROTO_DIR) --go_out=$(PB_DIR) --go_opt=paths=source_relative \
-	--go-grpc_out=$(PB_DIR) --go-grpc_opt=paths=source_relative \
-	--grpc-gateway_out=$(PB_DIR) --grpc-gateway_opt=paths=source_relative \
-	$(PROTO_DIR)/$(AUTH_DIR)/*.proto
-
-proto_role: clean_role_dir
-	protoc --proto_path=$(PROTO_DIR) --go_out=$(PB_DIR) --go_opt=paths=source_relative \
-	--go-grpc_out=$(PB_DIR) --go-grpc_opt=paths=source_relative \
-	--grpc-gateway_out=$(PB_DIR) --grpc-gateway_opt=paths=source_relative \
-	$(PROTO_DIR)/$(ROLE_DIR)/*.proto
-
-proto_user_role: clean_user_role_dir
-	protoc --proto_path=$(PROTO_DIR) --go_out=$(PB_DIR) --go_opt=paths=source_relative \
-	--go-grpc_out=$(PB_DIR) --go-grpc_opt=paths=source_relative \
-	--grpc-gateway_out=$(PB_DIR) --grpc-gateway_opt=paths=source_relative \
-	$(PROTO_DIR)/$(USER_ROLE_DIR)/*.proto
+proto_login: clean_login_dir
+	protoc --proto_path=${PROTO_DIR} --go_out=${PB_DIR} --go_opt=paths=source_relative \
+	--go-grpc_out=${PB_DIR} --go-grpc_opt=paths=source_relative \
+	--grpc-gateway_out=${PB_DIR} --grpc-gateway_opt=paths=source_relative \
+	${PROTO_DIR}/${LOGIN_DIR}/*.proto
 
 clean_pb:
 	rm -f $(PB_DIR)/*.go
 
-clean_auth_dir:
-	rm -f $(PB_DIR)/$(AUTH_DIR)/*.go
-
-clean_role_dir:
-	rm -f $(PB_DIR)/$(ROLE_DIR)/*.go
-
-clean_user_role_dir:
-	rm -f $(PB_DIR)/$(USER_ROLE_DIR)/*.go
-
+clean_login_dir:
+	rm -f $(LOGIN_DIR)/*.go
 
 # Evans GRPC Client
 evans:
@@ -213,4 +192,4 @@ clean:
 
 
 # PHONY Targets
-.PHONY: network db_container createdb dropdb createmigration migrateup migrateup1 migratedown migratedown1 dbclean service_image service_container server sqlc mock proto proto_core proto_auth proto_role proto_user_role clean_pb clean_auth_dir clean_role_dir clean_user_role_dir evans test dbtest apitest utiltest servertest coverage_html clean
+.PHONY: network db_container createdb dropdb createmigration migrateup migrateup1 migratedown migratedown1 dbclean service_image service_container server sqlc mock proto proto_core clean_pb evans test dbtest apitest utiltest servertest coverage_html clean clean_login_dir

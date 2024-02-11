@@ -5,21 +5,10 @@
 package db
 
 import (
-	"context"
+	
 )
 
 type Querier interface {
-	AssignRoleToUser(ctx context.Context, arg AssignRoleToUserParams) (IdpSvcUserRole, error)
-	CheckIfUserHasRole(ctx context.Context, arg CheckIfUserHasRoleParams) (IdpSvcUserRole, error)
-	CreateRole(ctx context.Context, arg CreateRoleParams) (IdpSvcRole, error)
-	DeleteRole(ctx context.Context, id int64) error
-	GetRoleByID(ctx context.Context, id int64) (IdpSvcRole, error)
-	GetRoleByValue(ctx context.Context, roleName string) (IdpSvcRole, error)
-	GetRolePermissions(ctx context.Context, roleName string) ([]byte, error)
-	GetUserRoles(ctx context.Context, userID int64) ([]IdpSvcUserRole, error)
-	ListRoles(ctx context.Context, arg ListRolesParams) ([]IdpSvcRole, error)
-	RemoveRoleFromUser(ctx context.Context, arg RemoveRoleFromUserParams) error
-	UpdateRole(ctx context.Context, arg UpdateRoleParams) (UpdateRoleRow, error)
 }
 
 var _ Querier = (*Queries)(nil)

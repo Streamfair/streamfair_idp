@@ -1,4 +1,0 @@
-DROP TABLE IF EXISTS "idp_svc"."UserRoles" CASCADE;
-DROP TABLE IF EXISTS "idp_svc"."Roles" CASCADE;
-
-DROP SCHEMA IF EXISTS "idp_svc" CASCADE;
