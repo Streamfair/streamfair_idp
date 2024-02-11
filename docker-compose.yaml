@@ -1,0 +1,35 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=streamfair_idp_db
+    ports:
+      - "5433:5432"
+    networks:
+      - db_access_network
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "9290:9091"
+      - "8280:8081"
+    environment:
+      - DB_SOURCE_IDP=postgresql://root:secret@db:5432/streamfair_idp_db?sslmode=disable
+    depends_on:
+      - db
+    networks:
+      - streamfair_internal_network
+      - db_access_network
+    entrypoint: [ "/streamfair_identity_provider/wait-for.sh", "db:5432", "--", "/streamfair_identity_provider/start.sh" ]
+    command: [ "/streamfair_identity_provider/identity_provider" ]
+
+networks:
+  db_access_network:
+    driver: bridge
+  streamfair_internal_network:
+    external: true
