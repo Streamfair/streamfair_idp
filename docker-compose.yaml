@@ -18,8 +18,8 @@ services:
     ports:
       - "9290:9091"
       - "8280:8081"
-    environment:
-      - DB_SOURCE_IDP=postgresql://root:secret@db:5432/streamfair_idp_db?sslmode=disable
+    env_file:
+      - app.env
     depends_on:
       - db
     networks:

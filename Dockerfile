@@ -15,7 +15,6 @@ COPY --from=build /streamfair_identity_provider/identity_provider .
 # Copy the downloaded migration binary from the build stage
 COPY --from=build /streamfair_identity_provider/migrate ./migrate
 
-COPY app.env .
 COPY start.sh .
 COPY wait-for.sh .
 COPY db/migration ./migration
