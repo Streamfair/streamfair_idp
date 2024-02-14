@@ -2,6 +2,8 @@
 
 Streamfair (STC) Backend microservice: This service will validate user credentials and issue tokens upon successful authentication
 
+![idp](https://github.com/Streamfair/streamfair_idp/assets/106358325/55a16d20-e836-4be2-9c87-b507cec0503c)
+
 #### Backend in progress! 
 Currently working on: Providing API
 
