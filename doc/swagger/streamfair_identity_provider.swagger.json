@@ -1,0 +1,140 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Streamfair Identity Provider",
+    "version": "1.0",
+    "contact": {
+      "name": "Streamfair",
+      "url": "https://github.com/Streamfair",
+      "email": "nelix@posteo.de"
+    }
+  },
+  "tags": [
+    {
+      "name": "IdentityProvider"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/login_user": {
+      "post": {
+        "summary": "add summary here",
+        "description": "add description here",
+        "operationId": "IdentityProvider_LoginUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbLoginResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "LoginRequest represents the data required for a user to attempt login.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbLoginRequest"
+            }
+          }
+        ],
+        "tags": [
+          "IdentityProvider"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "googlerpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "pbLoginRequest": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      },
+      "description": "LoginRequest represents the data required for a user to attempt login."
+    },
+    "pbLoginResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/pbLoginResponseStatus",
+          "description": "The status of the login attempt."
+        },
+        "errorMessage": {
+          "type": "string",
+          "description": "An optional error message if the login failed."
+        },
+        "accessToken": {
+          "type": "string"
+        },
+        "refreshToken": {
+          "type": "string"
+        },
+        "accessTokenExpiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "refreshTokenExpiresAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "description": "LoginResponse contains the result of a login attempt."
+    },
+    "pbLoginResponseStatus": {
+      "type": "string",
+      "enum": [
+        "UNKNOWN",
+        "SUCCESS",
+        "FAILURE"
+      ],
+      "default": "UNKNOWN",
+      "description": "The status of the login attempt."
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    }
+  }
+}

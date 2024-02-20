@@ -81,7 +81,7 @@ func TestGRPCGatewayServer(t *testing.T) {
 	defer cancel()
 
 	// Wait for the server to become ready
-	if err := waitForServer(ctx, server.config.HttpServerAddress); err != nil {
+	if err := waitForHTTPServer(ctx, server.config.HttpServerAddress); err != nil {
 		t.Fatalf("failed to wait for server: %v", err)
 	}
 
@@ -123,4 +123,19 @@ func waitForServer(ctx context.Context, address string) error {
 		time.Sleep(attemptInterval)
 	}
 	return fmt.Errorf("server not ready at address %s", address)
+}
+
+func waitForHTTPServer(ctx context.Context, address string) error {
+	maxAttempts :=  10
+	attemptInterval := time.Second
+
+	for i :=  0; i < maxAttempts; i++ {
+		resp, err := http.Get(fmt.Sprintf("http://%s/v1/healthz", address))
+		if err == nil && resp.StatusCode == http.StatusOK {
+			resp.Body.Close()
+			return nil
+		}
+		time.Sleep(attemptInterval)
+	}
+	return fmt.Errorf("HTTP server not ready at address %s", address)
 }

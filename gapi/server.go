@@ -8,9 +8,11 @@ import (
 	"net/http"
 
 	db "github.com/Streamfair/streamfair_idp/db/sqlc"
+	_ "github.com/Streamfair/streamfair_idp/doc/statik"
 	"github.com/Streamfair/streamfair_idp/pb"
 	"github.com/Streamfair/streamfair_idp/util"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/rakyll/statik/fs"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 	"google.golang.org/grpc"
@@ -92,6 +94,15 @@ func (server *Server) RunGrpcGatewayServer() error {
 
 	mux := http.NewServeMux()
 	mux.Handle("/", grpcMux)
+
+	// Serve the Swagger UI files using the statik file system.
+	statikFS, err := fs.New()
+	if err != nil {
+		log.Fatal("server: error while creating statik file system: ", err)
+	}
+
+	swaggerHandler := http.StripPrefix("/swagger/", http.FileServer(statikFS))
+	mux.Handle("/swagger/", swaggerHandler)
 
 	// Wrap the mux with h2c.NewHandler to support both HTTP/1 and HTTP/2 connections.
 	handler := h2c.NewHandler(mux, &http2.Server{})
