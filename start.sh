@@ -1,9 +1,8 @@
 #!/bin/sh
 
+# This file serves as a reference to show how to use ENTRYPOINT in a Dockerfile
+# as well as entrypoint with command in a docker-compose file.
 set -e
-
-echo "Running DB migrations"
-/streamfair_identity_provider/migrate -path /streamfair_identity_provider/migration -database "$DB_SOURCE_IDP" -verbose up
 
 echo "Starting Identity Provider"
 exec "$@"

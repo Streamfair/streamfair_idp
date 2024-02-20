@@ -20,6 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DB_SOURCE_IDP: ${{ secrets.DB_SOURCE_IDP }}
+      MIGRATION_URL: ${{ secrets.MIGRATION_URL }}
       HTTP_SERVER_ADDRESS_IDP: ${{ secrets.HTTP_SERVER_ADDRESS_IDP }}
       GRPC_SERVER_ADDRESS_IDP: ${{ secrets.GRPC_SERVER_ADDRESS_IDP }}
       TOKEN_SYMMETRIC_KEY: ${{ secrets.TOKEN_SYMMETRIC_KEY }}
@@ -44,15 +45,6 @@ jobs:
       uses: actions/setup-go@v4
       with:
         go-version: ^1.22
-
-    - name: Install golang-migrate
-      run: |
-        curl -L https://github.com/golang-migrate/migrate/releases/download/v4.17.0/migrate.linux-amd64.tar.gz | tar xvz
-        sudo mv migrate /usr/bin/migrate
-        which migrate
-
-    - name: Run migrations
-      run: make migrateup
 
     - name: Test
       run: make test
