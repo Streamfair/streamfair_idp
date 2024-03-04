@@ -25,7 +25,7 @@ service IdentityProvider {
 // Login attempts to authenticate a user and returns a token if successful.
 rpc LoginUser(LoginRequest) returns (LoginResponse) {
     option (google.api.http) = {
-        post: "/v1/login_user"
+        post: "/streamfair/v1/login_user"
         body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
