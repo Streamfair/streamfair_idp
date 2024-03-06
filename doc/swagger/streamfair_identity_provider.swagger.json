@@ -21,7 +21,7 @@
     "application/json"
   ],
   "paths": {
-    "/v1/login_user": {
+    "/streamfair/v1/login_user": {
       "post": {
         "summary": "add summary here",
         "description": "add description here",
