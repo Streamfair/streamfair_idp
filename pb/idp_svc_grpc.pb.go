@@ -20,7 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type IdentityProviderClient interface {
 	// Login attempts to authenticate a user and returns a token if successful.
-	LoginUser(ctx context.Context, in *login.LoginRequest, opts ...grpc.CallOption) (*login.LoginResponse, error)
+	LoginUser(ctx context.Context, in *login.LoginUserRequest, opts ...grpc.CallOption) (*login.LoginUserResponse, error)
 }
 
 type identityProviderClient struct {
@@ -31,8 +31,8 @@ func NewIdentityProviderClient(cc grpc.ClientConnInterface) IdentityProviderClie
 	return &identityProviderClient{cc}
 }
 
-func (c *identityProviderClient) LoginUser(ctx context.Context, in *login.LoginRequest, opts ...grpc.CallOption) (*login.LoginResponse, error) {
-	out := new(login.LoginResponse)
+func (c *identityProviderClient) LoginUser(ctx context.Context, in *login.LoginUserRequest, opts ...grpc.CallOption) (*login.LoginUserResponse, error) {
+	out := new(login.LoginUserResponse)
 	err := c.cc.Invoke(ctx, "/pb.IdentityProvider/LoginUser", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -45,7 +45,7 @@ func (c *identityProviderClient) LoginUser(ctx context.Context, in *login.LoginR
 // for forward compatibility
 type IdentityProviderServer interface {
 	// Login attempts to authenticate a user and returns a token if successful.
-	LoginUser(context.Context, *login.LoginRequest) (*login.LoginResponse, error)
+	LoginUser(context.Context, *login.LoginUserRequest) (*login.LoginUserResponse, error)
 	mustEmbedUnimplementedIdentityProviderServer()
 }
 
@@ -53,7 +53,7 @@ type IdentityProviderServer interface {
 type UnimplementedIdentityProviderServer struct {
 }
 
-func (UnimplementedIdentityProviderServer) LoginUser(context.Context, *login.LoginRequest) (*login.LoginResponse, error) {
+func (UnimplementedIdentityProviderServer) LoginUser(context.Context, *login.LoginUserRequest) (*login.LoginUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LoginUser not implemented")
 }
 func (UnimplementedIdentityProviderServer) mustEmbedUnimplementedIdentityProviderServer() {}
@@ -70,7 +70,7 @@ func RegisterIdentityProviderServer(s grpc.ServiceRegistrar, srv IdentityProvide
 }
 
 func _IdentityProvider_LoginUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(login.LoginRequest)
+	in := new(login.LoginUserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -82,7 +82,7 @@ func _IdentityProvider_LoginUser_Handler(srv interface{}, ctx context.Context, d
 		FullMethod: "/pb.IdentityProvider/LoginUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(IdentityProviderServer).LoginUser(ctx, req.(*login.LoginRequest))
+		return srv.(IdentityProviderServer).LoginUser(ctx, req.(*login.LoginUserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

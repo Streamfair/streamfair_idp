@@ -23,6 +23,9 @@ func main() {
 		log.Fatal().Err(err).Msg("config: error while loading config:")
 	}
 
+	configService := util.GetConfigService()
+	configService.SetConfig(config)
+
 	if viper.GetString("ENVIRONMENT") == "development" {
 		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 	}

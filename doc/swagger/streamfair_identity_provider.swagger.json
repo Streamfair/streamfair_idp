@@ -30,24 +30,23 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/pbLoginResponse"
+              "$ref": "#/definitions/pbLoginUserResponse"
             }
           },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/googlerpcStatus"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
         "parameters": [
           {
             "name": "body",
-            "description": "LoginRequest represents the data required for a user to attempt login.",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/pbLoginRequest"
+              "$ref": "#/definitions/pbLoginUserRequest"
             }
           }
         ],
@@ -58,7 +57,104 @@
     }
   },
   "definitions": {
-    "googlerpcStatus": {
+    "pbIdp_User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "username": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "countryCode": {
+          "type": "string"
+        },
+        "roleId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "status": {
+          "type": "string"
+        },
+        "lastLoginAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "usernameChangedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "emailChangedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "passwordChangedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "pbLoginUserRequest": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "pbLoginUserResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/pbIdp_User"
+        },
+        "sessionId": {
+          "type": "string"
+        },
+        "accessToken": {
+          "type": "string"
+        },
+        "refreshToken": {
+          "type": "string"
+        },
+        "accessTokenExpiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "refreshTokenExpiresAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
       "type": "object",
       "properties": {
         "code": {
@@ -76,65 +172,6 @@
           }
         }
       }
-    },
-    "pbLoginRequest": {
-      "type": "object",
-      "properties": {
-        "username": {
-          "type": "string"
-        },
-        "password": {
-          "type": "string"
-        }
-      },
-      "description": "LoginRequest represents the data required for a user to attempt login."
-    },
-    "pbLoginResponse": {
-      "type": "object",
-      "properties": {
-        "status": {
-          "$ref": "#/definitions/pbLoginResponseStatus",
-          "description": "The status of the login attempt."
-        },
-        "errorMessage": {
-          "type": "string",
-          "description": "An optional error message if the login failed."
-        },
-        "accessToken": {
-          "type": "string"
-        },
-        "refreshToken": {
-          "type": "string"
-        },
-        "accessTokenExpiresAt": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "refreshTokenExpiresAt": {
-          "type": "string",
-          "format": "date-time"
-        }
-      },
-      "description": "LoginResponse contains the result of a login attempt."
-    },
-    "pbLoginResponseStatus": {
-      "type": "string",
-      "enum": [
-        "UNKNOWN",
-        "SUCCESS",
-        "FAILURE"
-      ],
-      "default": "UNKNOWN",
-      "description": "The status of the login attempt."
-    },
-    "protobufAny": {
-      "type": "object",
-      "properties": {
-        "@type": {
-          "type": "string"
-        }
-      },
-      "additionalProperties": {}
     }
   }
 }
