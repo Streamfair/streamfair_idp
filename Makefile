@@ -40,13 +40,11 @@ MIGRATION_NAME := init_schema
 
 # Proto
 ## ADJUST FOR EACH SERVICE ##
-PROTO_DIR := proto
-PB_DIR := pb
+COMMON_PROTO_DIR := ../CommonProto
+COMMON_PROTO_ERROR_DIR := ../CommonProto/error
+PROTO_DIR := ../CommonProto/IdentityProvider/proto
+PB_DIR := ../CommonProto/IdentityProvider/pb
 LOGIN_DIR := login
-USER_DIR := user
-SESSION_DIR := session
-USER_SVC_DIR := ../UserService/proto
-SESSION_SVC_DIR := ../SessionService/proto
 
 # Test
 TEST_DIR := ./...
@@ -155,45 +153,41 @@ mock:
 
 
 # Proto Generation
-proto: proto_core proto_login proto_user_svc_core proto_user_svc_user proto_session_svc_core proto_session_svc_session
+proto: proto_core
 
-proto_core: clean_pb
-	protoc --proto_path=$(PROTO_DIR) --go_out=$(PB_DIR) --go_opt=paths=source_relative \
-	--go-grpc_out=$(PB_DIR) --go-grpc_opt=paths=source_relative \
-	--grpc-gateway_out=$(PB_DIR) --grpc-gateway_opt=paths=source_relative \
-	--openapiv2_out=$(SWAGGER_DIR) --openapiv2_opt=allow_merge=true,merge_file_name=${SWAGGER_DOC_NAME},preserve_rpc_order=true \
-	${PROTO_DIR}/*.proto
+proto_core: clean_pb proto_login proto_errors
+	protoc \
+		--proto_path=${PROTO_DIR} \
+		--proto_path=${COMMON_PROTO_DIR} \
+		--go_out=${PB_DIR} \
+		--go_opt=paths=source_relative \
+		--go-grpc_out=${PB_DIR} \
+		--go-grpc_opt=paths=source_relative \
+		--grpc-gateway_out=${PB_DIR} \
+		--grpc-gateway_opt=paths=source_relative \
+		--openapiv2_out=$(SWAGGER_DIR) \
+		--openapiv2_opt=allow_merge=true,merge_file_name=${SWAGGER_DOC_NAME},preserve_rpc_order=true \
+		${PROTO_DIR}/*.proto
 	statik -src=./$(SWAGGER_DIR) -dest=./doc
 
 proto_login: clean_login_dir
-	protoc --proto_path=${PROTO_DIR} --go_out=${PB_DIR} --go_opt=paths=source_relative \
-	--go-grpc_out=${PB_DIR} --go-grpc_opt=paths=source_relative \
-	--grpc-gateway_out=${PB_DIR} --grpc-gateway_opt=paths=source_relative \
-	${PROTO_DIR}/${LOGIN_DIR}/*.proto
+	protoc \
+		--proto_path=${PROTO_DIR} \
+		--proto_path=${COMMON_PROTO_DIR} \
+		--go_out=${PB_DIR} \
+		--go_opt=paths=source_relative \
+		--go-grpc_out=${PB_DIR} \
+		--go-grpc_opt=paths=source_relative \
+		--grpc-gateway_out=${PB_DIR} \
+		--grpc-gateway_opt=paths=source_relative \
+		${PROTO_DIR}/$(LOGIN_DIR)/*.proto
 
-proto_user_svc_core: clean_pb
-	protoc --proto_path=${USER_SVC_DIR} --go_out=${PB_DIR} --go_opt=paths=source_relative \
-	--go-grpc_out=${PB_DIR} --go-grpc_opt=paths=source_relative \
-	--grpc-gateway_out=${PB_DIR} --grpc-gateway_opt=paths=source_relative \
-	${USER_SVC_DIR}/*.proto
-
-proto_user_svc_user: clean_user_dir
-	protoc --proto_path=../UserService/proto --go_out=${PB_DIR} --go_opt=paths=source_relative \
-	--go-grpc_out=${PB_DIR} --go-grpc_opt=paths=source_relative \
-	--grpc-gateway_out=${PB_DIR} --grpc-gateway_opt=paths=source_relative \
-	${USER_SVC_DIR}/$(USER_DIR)/*.proto
-
-proto_session_svc_core: clean_pb
-	protoc --proto_path=${SESSION_SVC_DIR} --go_out=${PB_DIR} --go_opt=paths=source_relative \
-	--go-grpc_out=${PB_DIR} --go-grpc_opt=paths=source_relative \
-	--grpc-gateway_out=${PB_DIR} --grpc-gateway_opt=paths=source_relative \
-	${SESSION_SVC_DIR}/*.proto
-
-proto_session_svc_session: clean_session_dir
-	protoc --proto_path=${SESSION_SVC_DIR} --go_out=${PB_DIR} --go_opt=paths=source_relative \
-	--go-grpc_out=${PB_DIR} --go-grpc_opt=paths=source_relative \
-	--grpc-gateway_out=${PB_DIR} --grpc-gateway_opt=paths=source_relative \
-	${SESSION_SVC_DIR}/$(SESSION_DIR)/*.proto
+proto_errors:
+	protoc \
+		--proto_path=${COMMON_PROTO_ERROR_DIR} \
+		--go_out=${COMMON_PROTO_ERROR_DIR} \
+		--go_opt=paths=source_relative \
+		${COMMON_PROTO_ERROR_DIR}/*.proto
 
 clean_pb:
 	rm -f $(PB_DIR)/*.go
@@ -201,12 +195,6 @@ clean_pb:
 
 clean_login_dir:
 	rm -f $(LOGIN_DIR)/*.go
-
-clean_user_dir:
-	rm -f $(USER_DIR)/*.go
-
-clean_session_dir:
-	rm -f $(PB_DIR)/$(SESSION_DIR)/*.go
 
 # Evans GRPC Client
 evans:
@@ -259,4 +247,4 @@ clean:
 
 
 # PHONY Targets
-.PHONY: network service_image service_container db_container createdb dropdb createmigration migrateup migrateup1 migratedown migratedown1 dbclean server down sqlc mock proto proto_core proto_login proto_user_svc_core proto_user_svc_user clean_pb clean_login_dir clean_user_dir evans test dbtest apitest utiltest servertest coverage_html clean all
+.PHONY: network service_image service_container db_container createdb dropdb createmigration migrateup migrateup1 migratedown migratedown1 dbclean server down sqlc mock proto proto_core proto_login proto_errors clean_pb clean_login_dir evans test dbtest apitest utiltest servertest coverage_html clean
