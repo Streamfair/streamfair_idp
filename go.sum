@@ -2,10 +2,8 @@ github.com/Azure/go-ansiterm v0.0.0-20230124172434-306776ec8161 h1:L/gRVlceqvL25
 github.com/Azure/go-ansiterm v0.0.0-20230124172434-306776ec8161/go.mod h1:xomTg63KZ2rFqZQzSB4Vz2SUXa1BpHTVz9L5PTmPC4E=
 github.com/Microsoft/go-winio v0.6.1 h1:9/kr64B9VUZrLm5YYwbGtUJnMgqWVOdUAXu6Migciow=
 github.com/Microsoft/go-winio v0.6.1/go.mod h1:LRdKpFKfdobln8UmuiYcKPot9D2v6svN5+sAH+4kjUM=
-github.com/Streamfair/streamfair_session_svc v0.0.0-20240330171452-6f19ffa2d492 h1:pyvGxZRdsjJPgxE6v5GBN4lji82BOUl8envAOUpg6nA=
-github.com/Streamfair/streamfair_session_svc v0.0.0-20240330171452-6f19ffa2d492/go.mod h1:rvxs46I2JU7BkNviE7N+KTpKgzfQVMLJoeKjbAaEihM=
-github.com/Streamfair/streamfair_user_svc v0.0.0-20240330171404-246dd118a0a9 h1:5Et7J8zz1sGQeN4/mTDQHmlJicpTG/++4yErWdFXegM=
-github.com/Streamfair/streamfair_user_svc v0.0.0-20240330171404-246dd118a0a9/go.mod h1:gn6KdXzFlEE6UcZ68uwHRop5xVshVztyL4l69z62Mos=
+github.com/Streamfair/common_proto v0.0.0-20240403133601-f40f11765c0c h1:rVEmxTst/nQe6qr45o5KKUfoVSbW0Sj0UHW4SLGrjSw=
+github.com/Streamfair/common_proto v0.0.0-20240403133601-f40f11765c0c/go.mod h1:1JHwgRccbA0v/wehy4/SazvfpD/GUWoK8k1yXJfpxAQ=
 github.com/aead/chacha20 v0.0.0-20180709150244-8b13a72661da h1:KjTM2ks9d14ZYCvmHS9iAKVt9AyzRSqNU1qabPih5BY=
 github.com/aead/chacha20 v0.0.0-20180709150244-8b13a72661da/go.mod h1:eHEWzANqSiWQsof+nXEI9bUVUyV6F53Fp89EuCh2EAA=
 github.com/aead/chacha20poly1305 v0.0.0-20170617001512-233f39982aeb/go.mod h1:UzH9IX1MMqOcwhoNOIjmTQeAxrFgzs50j4golQtXXxU=

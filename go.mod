@@ -1,10 +1,9 @@
 module github.com/Streamfair/streamfair_idp
 
-go 1.22
+go 1.22.0
 
 require (
-	github.com/Streamfair/streamfair_session_svc v0.0.0-20240330171452-6f19ffa2d492
-	github.com/Streamfair/streamfair_user_svc v0.0.0-20240330171404-246dd118a0a9
+	github.com/Streamfair/common_proto v0.0.0-20240403133601-f40f11765c0c
 	github.com/aead/chacha20poly1305 v0.0.0-20201124145622-1a5aba2a8b29
 	github.com/gin-gonic/gin v1.9.1
 	github.com/golang-migrate/migrate/v4 v4.17.0
@@ -19,7 +18,6 @@ require (
 	go.uber.org/mock v0.4.0
 	golang.org/x/crypto v0.18.0
 	golang.org/x/net v0.20.0
-	google.golang.org/genproto/googleapis/api v0.0.0-20240205150955-31a09d347014
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240125205218-1f4bbc51befe
 	google.golang.org/grpc v1.61.0
 	google.golang.org/protobuf v1.33.0
@@ -75,6 +73,7 @@ require (
 	golang.org/x/sys v0.18.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	google.golang.org/genproto v0.0.0-20240125205218-1f4bbc51befe // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20240205150955-31a09d347014 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

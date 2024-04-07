@@ -7,7 +7,7 @@ COPY . .
 RUN apk update && apk add --no-cache git
 
 # Set GOPRIVATE environment variable
-ENV GOPRIVATE=github.com/Streamfair/streamfair_user_svc,github.com/Streamfair/streamfair_session_svc,github.com/Streamfair/streamfair_token_svc,github.com/Streamfair/streamfair_idp
+ENV GOPRIVATE=github.com/Streamfair/streamfair_user_svc,github.com/Streamfair/streamfair_session_svc,github.com/Streamfair/streamfair_token_svc,github.com/Streamfair/streamfair_idp,github.com/Streamfair/common_proto
 
 # Add .netrc file for GitHub authentication
 COPY .netrc /root/.netrc
