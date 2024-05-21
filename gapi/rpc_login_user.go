@@ -20,6 +20,93 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+// LoginUser authenticates a user and returns a session token.
+
+// Microservices involved: UserService, TokenService, SessionService
+// 1. Get user by username from UserService.
+// 2. Compare the password hash with the password provided.
+// 3. Create an access token and a refresh token.
+// 4. Create a session with the refresh token.
+// 5. Return the user, session ID, access token, refresh token, and their expiration times.
+func (server *Server) LoginUser(ctx context.Context, req *pb.LoginUserRequest) (*pb.LoginUserResponse, error) {
+	poolConfig := &PoolConfig{
+		MaxOpenConnection:     10,
+		MaxIdleConnection:     5,
+		ConnectionQueueLength: 10,
+		Address:               "streamfair_idp:9091",
+		ConfigOptions:         []grpc.DialOption{},
+		IdleTimeout:           10 * time.Second,
+	}
+
+	pool := NewClientPool(poolConfig)
+
+	username := req.GetUsername()
+
+	user, err := getUser(ctx, pool, "streamfair_user_service:9094", username)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, status.Errorf(codes.NotFound, "user not found: %v", err)
+		}
+		return nil, status.Errorf(codes.NotFound, "user not found: %v", err)
+	}
+
+	byteHash, err := base64.StdEncoding.DecodeString(user.PasswordHash)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "decoding error occured.")
+	}
+	byteSalt, err := base64.StdEncoding.DecodeString(user.PasswordSalt)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "decoding error occured.")
+	}
+
+	err = util.ComparePassword(byteHash, byteSalt, req.Password)
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "incorrect password.")
+	}
+
+	accessToken, err := createToken(ctx, pool, "streamfair_token_service:9092", &token.CreateTokenRequest{
+		UserId:    user.Id,
+		ExpiresAt: server.config.AccessTokenDuration.String(),
+	})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to create access token: %v.", err)
+	}
+
+	refreshToken, err := createRefreshToken(ctx, pool, "streamfair_token_service:9092", &refreshToken.CreateRefreshTokenRequest{
+		UserId:    user.Id,
+		ExpiresAt: server.config.RefreshTokenDuration.String(),
+	})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to create refresh token: %v.", err)
+	}
+
+	mtdt := server.extractMetadata(ctx)
+	args := &session.CreateSessionRequest{
+		Uuid:         refreshToken.Payload.Uuid,
+		Username:     user.Username,
+		RefreshToken: refreshToken.RefreshToken.Token,
+		UserAgent:    mtdt.UserAgent,
+		ClientIp:     mtdt.ClientIP,
+		IsBlocked:    false,
+		ExpiresAt:    refreshToken.Payload.ExpiredAt,
+	}
+	session, err := createSession(ctx, pool, "streamfair_session_service:9093", args)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to create session: %v.", err)
+	}
+
+	rps := &pb.LoginUserResponse{
+		User:                  user,
+		SessionId:             session.Uuid,
+		AccessToken:           accessToken.Token.Token,
+		RefreshToken:          refreshToken.RefreshToken.Token,
+		AccessTokenExpiresAt:  accessToken.Payload.ExpiredAt,
+		RefreshTokenExpiresAt: refreshToken.Payload.ExpiredAt,
+	}
+
+	return rps, nil
+}
+
 func getUser(ctx context.Context, pool *ConnectionPool, address string, username string) (*user.User, error) {
 	conn, err := pool.GetConn(address)
 	if err != nil {
@@ -33,7 +120,7 @@ func getUser(ctx context.Context, pool *ConnectionPool, address string, username
 	}
 	resp, err := client.GetUserByValue(ctx, req)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to get user: %v", err)
+		return nil, status.Errorf(codes.Internal, "failed to get user: %s", err)
 	}
 
 	return resp.User, nil
@@ -85,80 +172,4 @@ func createRefreshToken(ctx context.Context, pool *ConnectionPool, address strin
 	}
 
 	return resp, nil
-}
-
-func (server *Server) LoginUser(ctx context.Context, req *pb.LoginUserRequest) (*pb.LoginUserResponse, error) {
-	poolConfig := &PoolConfig{
-		MaxOpenConnection:     10,
-		MaxIdleConnection:     5,
-		ConnectionQueueLength: 10,
-		Address:               "your_user_service_address",
-		ConfigOptions:         []grpc.DialOption{},
-		IdleTimeout:           10 * time.Second,
-	}
-	pool := NewClientPool(poolConfig)
-
-	user, err := getUser(ctx, pool, "https://streamfair_user_service:9094/streamfair/v1/get_user_by_value", req.GetUsername())
-	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, status.Errorf(codes.NotFound, "user not found: %v", err)
-		}
-		return nil, status.Errorf(codes.Internal, "user not found: %v", err)
-	}
-
-	byteHash, err := base64.StdEncoding.DecodeString(user.PasswordHash)
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "decoding error occured.")
-	}
-	byteSalt, err := base64.StdEncoding.DecodeString(user.PasswordSalt)
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "decoding error occured.")
-	}
-
-	err = util.ComparePassword(byteHash, byteSalt, req.Password)
-	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "incorrect password.")
-	}
-
-	accessToken, err := createToken(ctx, pool, "https://streamfair_token_service:9092/streamfair/v1/create_token", &token.CreateTokenRequest{
-		UserId:    user.Id,
-		ExpiresAt: server.config.AccessTokenDuration.String(),
-	})
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to create access token: %v.", err)
-	}
-
-	refreshToken, err := createRefreshToken(ctx, pool, "https://streamfair_token_service:9092/streamfair/v1/create_token", &refreshToken.CreateRefreshTokenRequest{
-		UserId:    user.Id,
-		ExpiresAt: server.config.RefreshTokenDuration.String(),
-	})
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to create refresh token: %v.", err)
-	}
-
-	mtdt := server.extractMetadata(ctx)
-	args := &session.CreateSessionRequest{
-		Uuid:         refreshToken.Payload.Uuid,
-		Username:     user.Username,
-		RefreshToken: refreshToken.RefreshToken.Token,
-		UserAgent:    mtdt.UserAgent,
-		ClientIp:     mtdt.ClientIP,
-		IsBlocked:    false,
-		ExpiresAt:    refreshToken.Payload.ExpiredAt,
-	}
-	session, err := createSession(ctx, pool, "https://streamfair_session_service:9093/streamfair/v1/create_session", args)
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to create session: %v.", err)
-	}
-
-	rps := &pb.LoginUserResponse{
-		User:                  user,
-		SessionId:             session.Uuid,
-		AccessToken:           accessToken.Token.Token,
-		RefreshToken:          refreshToken.RefreshToken.Token,
-		AccessTokenExpiresAt:  accessToken.Payload.ExpiredAt,
-		RefreshTokenExpiresAt: refreshToken.Payload.ExpiredAt,
-	}
-
-	return rps, nil
 }

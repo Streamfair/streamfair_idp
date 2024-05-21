@@ -3,6 +3,7 @@ package gapi
 import (
 	"fmt"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/Streamfair/streamfair_idp/util"
@@ -12,24 +13,25 @@ import (
 
 // PoolConfig holds the configuration for the gRPC connection pool.
 type PoolConfig struct {
-	MaxOpenConnection     int           // Maximum number of open connections allowed.
-	MaxIdleConnection     int           // Maximum number of idle connections to keep in the pool.
-	ConnectionQueueLength int           // Length of the queue for managing connections.
-	Address               string        // Address of the gRPC service.
+	MaxOpenConnection     int               // Maximum number of open connections allowed.
+	MaxIdleConnection     int               // Maximum number of idle connections to keep in the pool.
+	ConnectionQueueLength int               // Length of the queue for managing connections.
+	Address               string            // Address of the gRPC service.
 	ConfigOptions         []grpc.DialOption // Additional gRPC dial options.
-	IdleTimeout           time.Duration // Duration after which idle connections are closed.
+	IdleTimeout           time.Duration     // Duration after which idle connections are closed.
 }
 
 // ConnectionPool manages the gRPC connections.
 type ConnectionPool struct {
-	mu                 sync.Mutex
-	configOptions       []grpc.DialOption
-	maxOpenConnection   int
-	maxIdleConnection   int
-	numOfOpenConnection int
-	connectionQueue     chan *grpc.ClientConn
-	idleConnections     map[string]map[*grpc.ClientConn]struct{} // Map of idle connections, keyed by address.
-	lastUsed            map[*grpc.ClientConn]time.Time
+	mu                        sync.Mutex
+	configOptions             []grpc.DialOption
+	maxOpenConnection         int
+	maxIdleConnection         int
+	numOfOpenConnection       int
+	connectionQueue           chan *grpc.ClientConn
+	idleConnections           map[string]map[*grpc.ClientConn]struct{}
+	lastUsed                  map[*grpc.ClientConn]time.Time
+	atomicNumOfOpenConnection uint32 // Use atomic type for safe updates
 }
 
 // NewClientPool creates a new connection pool with the given configuration.
@@ -43,7 +45,7 @@ func NewClientPool(config *PoolConfig) *ConnectionPool {
 		idleConnections:     make(map[string]map[*grpc.ClientConn]struct{}), // Initialize as map of maps.
 		lastUsed:            make(map[*grpc.ClientConn]time.Time),
 	}
-	go clientPool.handleConnectionQueue() // Start goroutine to manage connection queue.
+	go clientPool.handleConnectionQueue()                    // Start goroutine to manage connection queue.
 	go clientPool.cleanupIdleConnections(config.IdleTimeout) // Start goroutine to cleanup idle connections.
 	return clientPool
 }
@@ -58,8 +60,8 @@ func (cp *ConnectionPool) handleConnectionQueue() {
 			if _, ok := cp.idleConnections[address]; !ok {
 				cp.idleConnections[address] = make(map[*grpc.ClientConn]struct{})
 			}
-			if cp.numOfOpenConnection > cp.maxOpenConnection {
-				cp.numOfOpenConnection--
+			if atomic.LoadUint32(&cp.atomicNumOfOpenConnection) > uint32(cp.maxOpenConnection) {
+				atomic.AddUint32(&cp.atomicNumOfOpenConnection, ^uint32(0))
 				conn.Close() // Close the connection if the limit is exceeded.
 			} else {
 				cp.idleConnections[address][conn] = struct{}{} // Add the connection to the idle connections map.
@@ -114,7 +116,8 @@ func (cp *ConnectionPool) GetConn(address string) (*grpc.ClientConn, error) {
 		return nil, err
 	}
 
-	cp.numOfOpenConnection++ // Increment the number of open connections.
+	atomic.AddUint32(&cp.atomicNumOfOpenConnection, 1) // Safely update the number of open connections
+
 	return conn, nil
 }
 
@@ -130,9 +133,9 @@ func (cp *ConnectionPool) ReleaseConn(conn *grpc.ClientConn) {
 
 	if len(cp.idleConnections[address]) < cp.maxIdleConnection {
 		cp.idleConnections[address][conn] = struct{}{} // Add the connection to the idle connections map.
-		cp.lastUsed[conn] = time.Now() // Update the last used time of the connection.
+		cp.lastUsed[conn] = time.Now()                 // Update the last used time of the connection.
 	} else {
 		cp.numOfOpenConnection-- // Decrement the number of open connections.
-		conn.Close() // Close the connection if the pool is full.
+		conn.Close()             // Close the connection if the pool is full.
 	}
 }

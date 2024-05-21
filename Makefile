@@ -40,11 +40,12 @@ MIGRATION_NAME := init_schema
 
 # Proto
 ## ADJUST FOR EACH SERVICE ##
-COMMON_PROTO_DIR := ../CommonProto
-COMMON_PROTO_ERROR_DIR := ../CommonProto/error
-PROTO_DIR := ../CommonProto/IdentityProvider/proto
-PB_DIR := ../CommonProto/IdentityProvider/pb
+COMMON_PROTO_DIR := ../common_proto
+COMMON_PROTO_ERROR_DIR := ../common_proto/error
+PROTO_DIR := ../common_proto/IdentityProvider/proto
+PB_DIR := ../common_proto/IdentityProvider/pb
 LOGIN_DIR := login
+REGISTER_DIR := register
 
 # Test
 TEST_DIR := ./...
@@ -155,7 +156,7 @@ mock:
 # Proto Generation
 proto: proto_core
 
-proto_core: clean_pb proto_login proto_errors
+proto_core: clean_pb proto_register proto_login proto_errors
 	protoc \
 		--proto_path=${PROTO_DIR} \
 		--proto_path=${COMMON_PROTO_DIR} \
@@ -169,6 +170,18 @@ proto_core: clean_pb proto_login proto_errors
 		--openapiv2_opt=allow_merge=true,merge_file_name=${SWAGGER_DOC_NAME},preserve_rpc_order=true \
 		${PROTO_DIR}/*.proto
 	statik -src=./$(SWAGGER_DIR) -dest=./doc
+
+proto_register: clean_register_dir
+	protoc \
+		--proto_path=${PROTO_DIR} \
+		--proto_path=${COMMON_PROTO_DIR} \
+		--go_out=${PB_DIR} \
+		--go_opt=paths=source_relative \
+		--go-grpc_out=${PB_DIR} \
+		--go-grpc_opt=paths=source_relative \
+		--grpc-gateway_out=${PB_DIR} \
+		--grpc-gateway_opt=paths=source_relative \
+		${PROTO_DIR}/$(REGISTER_DIR)/*.proto
 
 proto_login: clean_login_dir
 	protoc \
@@ -195,6 +208,8 @@ clean_pb:
 
 clean_login_dir:
 	rm -f $(LOGIN_DIR)/*.go
+clean_register_dir:
+	rm -f $(REGISTER_DIR)/*.go
 
 # Evans GRPC Client
 evans:
