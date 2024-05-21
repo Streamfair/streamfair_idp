@@ -20,6 +20,11 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+const (
+	TOKEN_svc_address = "streamfair_token_service:9092"
+	SESSION_svc_address = "streamfair_session_service:9093"
+)
+
 // LoginUser authenticates a user and returns a session token.
 
 // Microservices involved: UserService, TokenService, SessionService
@@ -33,7 +38,7 @@ func (server *Server) LoginUser(ctx context.Context, req *pb.LoginUserRequest) (
 		MaxOpenConnection:     10,
 		MaxIdleConnection:     5,
 		ConnectionQueueLength: 10,
-		Address:               "streamfair_idp:9091",
+		Address:               IDP_svc_address,
 		ConfigOptions:         []grpc.DialOption{},
 		IdleTimeout:           10 * time.Second,
 	}
@@ -42,7 +47,7 @@ func (server *Server) LoginUser(ctx context.Context, req *pb.LoginUserRequest) (
 
 	username := req.GetUsername()
 
-	user, err := getUser(ctx, pool, "streamfair_user_service:9094", username)
+	user, err := getUser(ctx, pool, USER_svc_address, username)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, status.Errorf(codes.NotFound, "user not found: %v", err)
@@ -64,7 +69,7 @@ func (server *Server) LoginUser(ctx context.Context, req *pb.LoginUserRequest) (
 		return nil, status.Errorf(codes.NotFound, "incorrect password.")
 	}
 
-	accessToken, err := createToken(ctx, pool, "streamfair_token_service:9092", &token.CreateTokenRequest{
+	accessToken, err := createToken(ctx, pool, TOKEN_svc_address, &token.CreateTokenRequest{
 		UserId:    user.Id,
 		ExpiresAt: server.config.AccessTokenDuration.String(),
 	})
@@ -72,7 +77,7 @@ func (server *Server) LoginUser(ctx context.Context, req *pb.LoginUserRequest) (
 		return nil, status.Errorf(codes.Internal, "failed to create access token: %v.", err)
 	}
 
-	refreshToken, err := createRefreshToken(ctx, pool, "streamfair_token_service:9092", &refreshToken.CreateRefreshTokenRequest{
+	refreshToken, err := createRefreshToken(ctx, pool, TOKEN_svc_address, &refreshToken.CreateRefreshTokenRequest{
 		UserId:    user.Id,
 		ExpiresAt: server.config.RefreshTokenDuration.String(),
 	})
@@ -90,7 +95,7 @@ func (server *Server) LoginUser(ctx context.Context, req *pb.LoginUserRequest) (
 		IsBlocked:    false,
 		ExpiresAt:    refreshToken.Payload.ExpiredAt,
 	}
-	session, err := createSession(ctx, pool, "streamfair_session_service:9093", args)
+	session, err := createSession(ctx, pool, SESSION_svc_address, args)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to create session: %v.", err)
 	}
