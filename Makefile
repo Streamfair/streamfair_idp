@@ -262,4 +262,4 @@ clean:
 
 
 # PHONY Targets
-.PHONY: network service_image service_container db_container createdb dropdb createmigration migrateup migrateup1 migratedown migratedown1 dbclean server down sqlc mock proto proto_core proto_login proto_errors clean_pb clean_login_dir evans test dbtest apitest utiltest servertest coverage_html clean
+.PHONY: network service_image service_container db_container createdb dropdb createmigration migrateup migrateup1 migratedown migratedown1 dbclean server down sqlc mock proto proto_core proto_login proto_errors clean_pb clean_login_dir evans test dbtest apitest utiltest servertest coverage_html clean clean_register_dir 
