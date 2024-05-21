@@ -2,7 +2,6 @@ package gapi
 
 import (
 	"context"
-	"hash"
 	"time"
 
 	pb "github.com/Streamfair/common_proto/IdentityProvider/pb/register"
@@ -56,7 +55,7 @@ func createUser(ctx context.Context, pool *ConnectionPool, address string, param
 
 	client := user_pb.NewUserServiceClient(conn)
 
-	hashedPassword, err := hashPassword(params.GetPassword())
+	
 
 	req := &user.CreateUserRequest{
 		Username: params.GetUsername(),
