@@ -2,18 +2,20 @@ package gapi
 
 import (
 	"context"
+	"encoding/base64"
 	"time"
 
 	pb "github.com/Streamfair/common_proto/IdentityProvider/pb/register"
 	user_pb "github.com/Streamfair/common_proto/UserService/pb"
 	user "github.com/Streamfair/common_proto/UserService/pb/user"
+	"github.com/Streamfair/streamfair_idp/util"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
 const (
-	IDP_svc_address = "streamfair_idp:9091"
+	IDP_svc_address  = "streamfair_idp:9091"
 	USER_svc_address = "streamfair_user_service:9094"
 )
 
@@ -32,10 +34,9 @@ func (server *Server) RegisterUser(ctx context.Context, req *pb.RegisterUserRequ
 		IdleTimeout:           10 * time.Second,
 	}
 
-
 	pool := NewClientPool(poolConfig)
 
-	user, err := createUser(ctx, pool, USER_svc_address, req)
+	user, err := registereUser(ctx, pool, USER_svc_address, req)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Failed to register user: %v", err)
 	}
@@ -47,7 +48,7 @@ func (server *Server) RegisterUser(ctx context.Context, req *pb.RegisterUserRequ
 	return rps, nil
 }
 
-func createUser(ctx context.Context, pool *ConnectionPool, address string, params *pb.RegisterUserRequest) (*user.User, error) {
+func registereUser(ctx context.Context, pool *ConnectionPool, address string, req *pb.RegisterUserRequest) (*user.User, error) {
 	conn, err := pool.GetConn(address)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to connect to UserService: %v", err)
@@ -55,15 +56,20 @@ func createUser(ctx context.Context, pool *ConnectionPool, address string, param
 
 	client := user_pb.NewUserServiceClient(conn)
 
-	
+	byteHash, err := util.HashPassword(req.Password)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to create user: %v", err)
+	}
+	hashedPassword := base64.StdEncoding.EncodeToString(byteHash.Hash)
+	passwordSalt := base64.StdEncoding.EncodeToString(byteHash.Salt)
 
-	req := &user.CreateUserRequest{
-		Username: params.GetUsername(),
-		FullName: params.GetFullName(),
-		Email: params.GetEmail(),
-		Password: params.GetPassword(),
-		RoleId: int64(params.GetRoleId()),
-		Status: params.GetStatus(),
+	req = &pb.RegisterUserRequest{
+		Username:     req.GetUsername(),
+		FullName:     req.GetFullName(),
+		Email:        req.GetEmail(),
+
+		RoleId:       int32(req.GetRoleId()),
+		Status:       req.GetStatus(),
 	}
 	resp, err := client.CreateUser(ctx, req)
 	if err != nil {
