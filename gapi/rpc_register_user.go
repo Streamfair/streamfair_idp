@@ -7,7 +7,6 @@ import (
 
 	pb_register "github.com/Streamfair/common_proto/IdentityProvider/pb/register"
 	user_pb "github.com/Streamfair/common_proto/UserService/pb"
-	user "github.com/Streamfair/common_proto/UserService/pb/user"
 	"github.com/Streamfair/streamfair_idp/util"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -42,13 +41,13 @@ func (server *Server) RegisterUser(ctx context.Context, req *pb_register.Registe
 	}
 
 	rps := &pb_register.RegisterUserResponse{
-		User: user,
+		User_registered: user,
 	}
 
 	return rps, nil
 }
 
-func registereUser(ctx context.Context, pool *ConnectionPool, address string, req *pb_register.RegisterUserRequest) (*user.User, error) {
+func registereUser(ctx context.Context, pool *ConnectionPool, address string, req *pb_register.RegisterUserRequest) (*pb_register.User_registered, error) {
 	conn, err := pool.GetConn(address)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to connect to UserService: %v", err)
@@ -63,7 +62,7 @@ func registereUser(ctx context.Context, pool *ConnectionPool, address string, re
 	hashedPassword := base64.StdEncoding.EncodeToString(byteHash.Hash)
 	passwordSalt := base64.StdEncoding.EncodeToString(byteHash.Salt)
 
-	arg := &user.CreateUserRequest{
+	arg := &pb_register.User_registered{
 		Username:     req.GetUsername(),
 		FullName:     req.GetFullName(),
 		Email:        req.GetEmail(),
