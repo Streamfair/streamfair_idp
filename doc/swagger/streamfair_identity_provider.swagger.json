@@ -106,7 +106,7 @@
       "type": "object",
       "properties": {
         "user": {
-          "$ref": "#/definitions/pbUser"
+          "$ref": "#/definitions/pbUser_login"
         },
         "sessionId": {
           "type": "string"
@@ -158,11 +158,69 @@
       "type": "object",
       "properties": {
         "user": {
-          "$ref": "#/definitions/pbUser"
+          "$ref": "#/definitions/pbUser_registered"
         }
       }
     },
-    "pbUser": {
+    "pbUser_login": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "username": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "passwordHash": {
+          "type": "string"
+        },
+        "passwordSalt": {
+          "type": "string"
+        },
+        "countryCode": {
+          "type": "string"
+        },
+        "roleId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "status": {
+          "type": "string"
+        },
+        "lastLoginAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "usernameChangedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "emailChangedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "passwordChangedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "pbUser_registered": {
       "type": "object",
       "properties": {
         "id": {

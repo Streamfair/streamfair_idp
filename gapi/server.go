@@ -42,14 +42,14 @@ type Server struct {
 
 // NewServer creates a new gRPC server.
 func NewServer(config util.Config, store db.Store) (*Server, error) {
-	tlsConfig, err := LoadTLSConfigWithTrustedCerts(config.CertPem, config.KeyPem, config.CaCertPem)
-	if err != nil {
-		return nil, fmt.Errorf("failed to load TLS config for 'NewServer': %w", err)
-	}
-
 	localTokenMaker, err := token.NewLocalPasetoMaker(config.TokenSymmetricKey)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create local token maker: %w", err)
+	}
+
+	tlsConfig, err := LoadTLSConfigWithTrustedCerts(config.CertPem, config.KeyPem, config.CaCertPem)
+	if err != nil {
+		return nil, fmt.Errorf("failed to load TLS config for 'NewServer': %w", err)
 	}
 
 	creds := credentials.NewTLS(tlsConfig)
@@ -71,6 +71,7 @@ func NewServer(config util.Config, store db.Store) (*Server, error) {
 
 // RunGrpcServer: runs a gRPC server on the given address.
 func (server *Server) RunGrpcServer() {
+
 	pb.RegisterIdentityProviderServer(server.grpcServer, server)
 	reflection.Register(server.grpcServer)
 

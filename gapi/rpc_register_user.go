@@ -5,7 +5,7 @@ import (
 	"encoding/base64"
 	"time"
 
-	pb "github.com/Streamfair/common_proto/IdentityProvider/pb/register"
+	pb_register "github.com/Streamfair/common_proto/IdentityProvider/pb/register"
 	user_pb "github.com/Streamfair/common_proto/UserService/pb"
 	user "github.com/Streamfair/common_proto/UserService/pb/user"
 	"github.com/Streamfair/streamfair_idp/util"
@@ -24,7 +24,7 @@ const (
 // Microservices involved: UserService
 // 1. Creates the user with the given information via UserService.
 // 5. Return the user information.
-func (server *Server) RegisterUser(ctx context.Context, req *pb.RegisterUserRequest) (*pb.RegisterUserResponse, error) {
+func (server *Server) RegisterUser(ctx context.Context, req *pb_register.RegisterUserRequest) (*pb_register.RegisterUserResponse, error) {
 	poolConfig := &PoolConfig{
 		MaxOpenConnection:     10,
 		MaxIdleConnection:     5,
@@ -41,14 +41,14 @@ func (server *Server) RegisterUser(ctx context.Context, req *pb.RegisterUserRequ
 		return nil, status.Errorf(codes.Internal, "Failed to register user: %v", err)
 	}
 
-	rps := &pb.RegisterUserResponse{
+	rps := &pb_register.RegisterUserResponse{
 		User: user,
 	}
 
 	return rps, nil
 }
 
-func registereUser(ctx context.Context, pool *ConnectionPool, address string, req *pb.RegisterUserRequest) (*user.User, error) {
+func registereUser(ctx context.Context, pool *ConnectionPool, address string, req *pb_register.RegisterUserRequest) (*user.User, error) {
 	conn, err := pool.GetConn(address)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to connect to UserService: %v", err)
@@ -58,20 +58,22 @@ func registereUser(ctx context.Context, pool *ConnectionPool, address string, re
 
 	byteHash, err := util.HashPassword(req.Password)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to create user: %v", err)
+		return nil, status.Errorf(codes.Internal, "failed to prepare registering %v", err)
 	}
 	hashedPassword := base64.StdEncoding.EncodeToString(byteHash.Hash)
 	passwordSalt := base64.StdEncoding.EncodeToString(byteHash.Salt)
 
-	req = &pb.RegisterUserRequest{
+	arg := &user.CreateUserRequest{
 		Username:     req.GetUsername(),
 		FullName:     req.GetFullName(),
 		Email:        req.GetEmail(),
-
-		RoleId:       int32(req.GetRoleId()),
+		PasswordHash: hashedPassword,
+		PasswordSalt: passwordSalt,
+		CountryCode:  req.GetCountryCode(),
+		RoleId:       int64(req.GetRoleId()),
 		Status:       req.GetStatus(),
 	}
-	resp, err := client.CreateUser(ctx, req)
+	resp, err := client.CreateUser(ctx, arg)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to create user: %v", err)
 	}
