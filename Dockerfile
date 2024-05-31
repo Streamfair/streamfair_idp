@@ -1,9 +1,12 @@
 # Build Stage
 FROM golang:1.22.0-alpine3.19 AS build
 WORKDIR /streamfair_identity_provider
+
 COPY . .
 
 RUN go mod tidy
+
+# Build the application
 RUN CGO_ENABLED=0 GOOS=linux go build -o identity_provider main.go
 
 # Run Stage

@@ -13,7 +13,7 @@ import (
 
 	db "github.com/Streamfair/streamfair_idp/db/sqlc"
 	_ "github.com/Streamfair/streamfair_idp/doc/statik"
-	pb "github.com/Streamfair/common_proto/IdentityProvider/pb"
+	"github.com/Streamfair/common_proto/IdentityProvider/pb"
 	"github.com/Streamfair/streamfair_idp/token"
 	"github.com/Streamfair/streamfair_idp/util"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -71,7 +71,6 @@ func NewServer(config util.Config, store db.Store) (*Server, error) {
 
 // RunGrpcServer: runs a gRPC server on the given address.
 func (server *Server) RunGrpcServer() {
-
 	pb.RegisterIdentityProviderServer(server.grpcServer, server)
 	reflection.Register(server.grpcServer)
 

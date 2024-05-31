@@ -5,8 +5,9 @@ import (
 	"encoding/base64"
 	"time"
 
-	pb_register "github.com/Streamfair/common_proto/IdentityProvider/pb/register"
+	pb_reg "github.com/Streamfair/common_proto/IdentityProvider/pb/register"
 	user_pb "github.com/Streamfair/common_proto/UserService/pb"
+	user "github.com/Streamfair/common_proto/UserService/pb/user"
 	"github.com/Streamfair/streamfair_idp/util"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -23,7 +24,7 @@ const (
 // Microservices involved: UserService
 // 1. Creates the user with the given information via UserService.
 // 5. Return the user information.
-func (server *Server) RegisterUser(ctx context.Context, req *pb_register.RegisterUserRequest) (*pb_register.RegisterUserResponse, error) {
+func (server *Server) RegisterUser(ctx context.Context, req *pb_reg.RegisterUserRequest) (*pb_reg.RegisterUserResponse, error) {
 	poolConfig := &PoolConfig{
 		MaxOpenConnection:     10,
 		MaxIdleConnection:     5,
@@ -40,14 +41,14 @@ func (server *Server) RegisterUser(ctx context.Context, req *pb_register.Registe
 		return nil, status.Errorf(codes.Internal, "Failed to register user: %v", err)
 	}
 
-	rps := &pb_register.RegisterUserResponse{
-		User_registered: user,
+	rps := &pb_reg.RegisterUserResponse{
+		User: user,
 	}
 
 	return rps, nil
 }
 
-func registereUser(ctx context.Context, pool *ConnectionPool, address string, req *pb_register.RegisterUserRequest) (*pb_register.User_registered, error) {
+func registereUser(ctx context.Context, pool *ConnectionPool, address string, req *pb_reg.RegisterUserRequest) (*user.User, error) {
 	conn, err := pool.GetConn(address)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to connect to UserService: %v", err)
@@ -62,7 +63,7 @@ func registereUser(ctx context.Context, pool *ConnectionPool, address string, re
 	hashedPassword := base64.StdEncoding.EncodeToString(byteHash.Hash)
 	passwordSalt := base64.StdEncoding.EncodeToString(byteHash.Salt)
 
-	arg := &pb_register.User_registered{
+	arg := &user.CreateUserRequest{
 		Username:     req.GetUsername(),
 		FullName:     req.GetFullName(),
 		Email:        req.GetEmail(),
