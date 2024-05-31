@@ -6,7 +6,7 @@ import (
 	"encoding/base64"
 	"time"
 
-	pb "github.com/Streamfair/common_proto/IdentityProvider/pb/login"
+	pb_login "github.com/Streamfair/common_proto/IdentityProvider/pb/login"
 	session_pb "github.com/Streamfair/common_proto/SessionService/pb"
 	session "github.com/Streamfair/common_proto/SessionService/pb/session"
 	token_pb "github.com/Streamfair/common_proto/TokenService/pb"
@@ -33,7 +33,7 @@ const (
 // 3. Create an access token and a refresh token.
 // 4. Create a session with the refresh token.
 // 5. Return the user, session ID, access token, refresh token, and their expiration times.
-func (server *Server) LoginUser(ctx context.Context, req *pb.LoginUserRequest) (*pb.LoginUserResponse, error) {
+func (server *Server) LoginUser(ctx context.Context, req *pb_login.LoginUserRequest) (*pb_login.LoginUserResponse, error) {
 	poolConfig := &PoolConfig{
 		MaxOpenConnection:     10,
 		MaxIdleConnection:     5,
@@ -100,7 +100,7 @@ func (server *Server) LoginUser(ctx context.Context, req *pb.LoginUserRequest) (
 		return nil, status.Errorf(codes.Internal, "failed to create session: %v.", err)
 	}
 
-	rps := &pb.LoginUserResponse{
+	rps := &pb_login.LoginUserResponse{
 		User:                  user,
 		SessionId:             session.Uuid,
 		AccessToken:           accessToken.Token.Token,
