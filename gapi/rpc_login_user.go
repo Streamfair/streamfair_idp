@@ -21,7 +21,7 @@ import (
 )
 
 const (
-	TOKEN_svc_address = "streamfair_token_service:9092"
+	TOKEN_svc_address   = "streamfair_token_service:9092"
 	SESSION_svc_address = "streamfair_session_service:9093"
 )
 
@@ -101,7 +101,7 @@ func (server *Server) LoginUser(ctx context.Context, req *pb_login.LoginUserRequ
 	}
 
 	rps := &pb_login.LoginUserResponse{
-		User:                  user,
+		User:                  ConvertLoggedInUser(user),
 		SessionId:             session.Uuid,
 		AccessToken:           accessToken.Token.Token,
 		RefreshToken:          refreshToken.RefreshToken.Token,

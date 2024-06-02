@@ -36,19 +36,19 @@ func (server *Server) RegisterUser(ctx context.Context, req *pb_reg.RegisterUser
 
 	pool := NewClientPool(poolConfig)
 
-	user, err := registereUser(ctx, pool, USER_svc_address, req)
+	user, err := registerUser(ctx, pool, USER_svc_address, req)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "Failed to register user: %v", err)
 	}
 
 	rps := &pb_reg.RegisterUserResponse{
-		User: user,
+		User: ConvertRegisteredUser(user),
 	}
 
 	return rps, nil
 }
 
-func registereUser(ctx context.Context, pool *ConnectionPool, address string, req *pb_reg.RegisterUserRequest) (*user.User, error) {
+func registerUser(ctx context.Context, pool *ConnectionPool, address string, req *pb_reg.RegisterUserRequest) (*user.User, error) {
 	conn, err := pool.GetConn(address)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to connect to UserService: %v", err)
