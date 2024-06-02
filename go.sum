@@ -2,8 +2,6 @@ github.com/Azure/go-ansiterm v0.0.0-20230124172434-306776ec8161 h1:L/gRVlceqvL25
 github.com/Azure/go-ansiterm v0.0.0-20230124172434-306776ec8161/go.mod h1:xomTg63KZ2rFqZQzSB4Vz2SUXa1BpHTVz9L5PTmPC4E=
 github.com/Microsoft/go-winio v0.6.1 h1:9/kr64B9VUZrLm5YYwbGtUJnMgqWVOdUAXu6Migciow=
 github.com/Microsoft/go-winio v0.6.1/go.mod h1:LRdKpFKfdobln8UmuiYcKPot9D2v6svN5+sAH+4kjUM=
-github.com/Streamfair/common_proto v0.0.0-20240522164059-3cbd3688a73d h1:Fx2UN1/QKEoGBKZ+sKKCgQaoiy5OtCuou5t8FPmWcFE=
-github.com/Streamfair/common_proto v0.0.0-20240522164059-3cbd3688a73d/go.mod h1:c6I+NzHzhTeQ5lq2TTNr+ZpBFRwedjyHpihFHIxAUnM=
 github.com/Streamfair/common_proto v0.0.0-20240531131004-5cdbcc780089 h1:54pBcHcxX9OM6Y5o4woZE2wgVI8jJyhgOii/knpNMxI=
 github.com/Streamfair/common_proto v0.0.0-20240531131004-5cdbcc780089/go.mod h1:c6I+NzHzhTeQ5lq2TTNr+ZpBFRwedjyHpihFHIxAUnM=
 github.com/aead/chacha20 v0.0.0-20180709150244-8b13a72661da h1:KjTM2ks9d14ZYCvmHS9iAKVt9AyzRSqNU1qabPih5BY=
