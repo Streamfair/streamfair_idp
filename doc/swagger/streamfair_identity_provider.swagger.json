@@ -21,16 +21,16 @@
     "application/json"
   ],
   "paths": {
-    "/streamfair/v1/login_user": {
+    "/streamfair/v1/login_user_account": {
       "post": {
         "summary": "add summary here",
         "description": "add description here",
-        "operationId": "IdentityProvider_LoginUser",
+        "operationId": "IdentityProvider_LoginUserAccount",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/pbLoginUserResponse"
+              "$ref": "#/definitions/pbLoginUserAccountResponse"
             }
           },
           "default": {
@@ -46,7 +46,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/pbLoginUserRequest"
+              "$ref": "#/definitions/pbLoginUserAccountRequest"
             }
           }
         ],
@@ -55,16 +55,16 @@
         ]
       }
     },
-    "/streamfair/v1/register_user": {
+    "/streamfair/v1/register_user_account": {
       "post": {
         "summary": "add summary here",
         "description": "add description here",
-        "operationId": "IdentityProvider_RegisterUser",
+        "operationId": "IdentityProvider_RegisterUserAccount",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/pbRegisterUserResponse"
+              "$ref": "#/definitions/pbRegisterUserAccountResponse"
             }
           },
           "default": {
@@ -80,7 +80,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/pbRegisterUserRequest"
+              "$ref": "#/definitions/pbRegisterUserAccountRequest"
             }
           }
         ],
@@ -91,7 +91,7 @@
     }
   },
   "definitions": {
-    "pbLoginUserRequest": {
+    "pbLoginUserAccountRequest": {
       "type": "object",
       "properties": {
         "username": {
@@ -102,7 +102,7 @@
         }
       }
     },
-    "pbLoginUserResponse": {
+    "pbLoginUserAccountResponse": {
       "type": "object",
       "properties": {
         "user": {
@@ -127,7 +127,7 @@
         }
       }
     },
-    "pbRegisterUserRequest": {
+    "pbRegisterUserAccountRequest": {
       "type": "object",
       "properties": {
         "username": {
@@ -154,15 +154,15 @@
         }
       }
     },
-    "pbRegisterUserResponse": {
+    "pbRegisterUserAccountResponse": {
       "type": "object",
       "properties": {
         "user": {
-          "$ref": "#/definitions/pbUser_registered"
+          "$ref": "#/definitions/pbUser"
         }
       }
     },
-    "pbUser_login": {
+    "pbUser": {
       "type": "object",
       "properties": {
         "id": {
@@ -220,7 +220,7 @@
         }
       }
     },
-    "pbUser_registered": {
+    "pbUser_login": {
       "type": "object",
       "properties": {
         "id": {
