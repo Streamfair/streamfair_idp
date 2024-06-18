@@ -33,7 +33,7 @@ const (
 // 3. Create an access token and a refresh token.
 // 4. Create a session with the refresh token.
 // 5. Return the user, session ID, access token, refresh token, and their expiration times.
-func (server *Server) LoginUser(ctx context.Context, req *pb_login.LoginUserRequest) (*pb_login.LoginUserResponse, error) {
+func (server *Server) LoginUserAccount(ctx context.Context, req *pb_login.LoginUserAccountRequest) (*pb_login.LoginUserAccountResponse, error) {
 	poolConfig := &PoolConfig{
 		MaxOpenConnection:     10,
 		MaxIdleConnection:     5,
@@ -100,8 +100,8 @@ func (server *Server) LoginUser(ctx context.Context, req *pb_login.LoginUserRequ
 		return nil, status.Errorf(codes.Internal, "failed to create session: %v.", err)
 	}
 
-	rps := &pb_login.LoginUserResponse{
-		User:                  ConvertLoggedInUser(user),
+	rps := &pb_login.LoginUserAccountResponse{
+		LoggedInUser:          ConvertLoggedInUser(user),
 		SessionId:             session.Uuid,
 		AccessToken:           accessToken.Token.Token,
 		RefreshToken:          refreshToken.RefreshToken.Token,

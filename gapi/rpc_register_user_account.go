@@ -3,12 +3,13 @@ package gapi
 import (
 	"context"
 	"encoding/base64"
+	"fmt"
 	"time"
 
 	account_pb "github.com/Streamfair/common_proto/AccountService/pb"
 	account "github.com/Streamfair/common_proto/AccountService/pb/account"
 	account_type "github.com/Streamfair/common_proto/AccountService/pb/account_type"
-	pb_register "github.com/Streamfair/common_proto/IdentityProvider/pb/register"
+	pb "github.com/Streamfair/common_proto/IdentityProvider/pb/register"
 	user_pb "github.com/Streamfair/common_proto/UserService/pb"
 	user "github.com/Streamfair/common_proto/UserService/pb/user"
 	"github.com/Streamfair/streamfair_idp/util"
@@ -33,37 +34,37 @@ const (
 // 3. Hash the password and store it in the database.
 // 4. If not existing: create user account with the given information via AccountService.
 // 5. Return the user and account information.
-type RegisterUserAccount struct {
-    *pb_register.RegisterUserResponse `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
-    AdditionalData *structpb.Struct `protobuf:"bytes,100,opt,name=additional_data,proto3" json:"additional_data,omitempty"`
+type ExtendedRegisterUserAccount struct {
+	*pb.RegisterUserAccountResponse `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
+	Account                         *structpb.Struct `protobuf:"bytes,100,opt,name=account,proto3" json:"account,omitempty"`
 }
 
-func (server *Server) RegisterUserAccount(ctx context.Context, req *pb_register.RegisterUserRequest) (*pb_register.RegisterUserResponse, error) {
-    poolConfig := &PoolConfig{
-        MaxOpenConnection:     10,
-        MaxIdleConnection:     5,
-        ConnectionQueueLength: 10,
-        Address:               IDP_svc_address,
-        ConfigOptions:         []grpc.DialOption{},
-        IdleTimeout:           10 * time.Second,
-    }
+func (server *Server) RegisterUserAccount(ctx context.Context, req *pb.RegisterUserAccountRequest) (*pb.RegisterUserAccountResponse, error) {
+	poolConfig := &PoolConfig{
+		MaxOpenConnection:     10,
+		MaxIdleConnection:     5,
+		ConnectionQueueLength: 10,
+		Address:               IDP_svc_address,
+		ConfigOptions:         []grpc.DialOption{},
+		IdleTimeout:           10 * time.Second,
+	}
 
-    pool := NewClientPool(poolConfig)
+	pool := NewClientPool(poolConfig)
 
-    username := req.GetUsername()
+	username := req.GetUsername()
 
-    _, err := getUser(ctx, pool, USER_svc_address, username)
-    if err == nil {
-        return nil, status.Errorf(codes.AlreadyExists, "user already exists")
-    }
+	_, err := getUser(ctx, pool, USER_svc_address, username)
+	if err == nil {
+		return nil, status.Errorf(codes.AlreadyExists, "user already exists")
+	}
 
-    registered_user, err := registerUser(ctx, pool, USER_svc_address, req)
-    if err!= nil {
-        return nil, status.Errorf(codes.Internal, "Failed to register user: %v", err)
-    }
+	registered_user, err := registerUser(ctx, pool, USER_svc_address, req)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Failed to register user: %v", err)
+	}
 
 	req_acc_type := &account_type.CreateAccountTypeRequest{
-		Type:        1,
+		Type:        req.GetAccountType(),
 		Permissions: "default",
 		IsArtist:    false,
 		IsProducer:  false,
@@ -71,60 +72,69 @@ func (server *Server) RegisterUserAccount(ctx context.Context, req *pb_register.
 		IsLabel:     false,
 		IsUser:      true,
 	}
-	
+
 	req_acc := &account.CreateAccountRequest{
 		AccountType: req_acc_type.GetType(),
-		AccountName: username,
+		AccountName: req.GetAccountName(),
 		Owner:       username,
-		Bio:         "This is a default account",
+		Bio:         req.GetAccountBio(),
 		Status:      "active",
-		Plan:        "free",
-		AvatarUri:   "default",
+		Plan:        req.GetAccountPlan(),
+		AvatarUri:   req.GetAccountAvatarUri(),
 		Plays:       0,
 		Likes:       0,
 		Follows:     0,
 		Shares:      0,
 	}
 
-    account, accountType, err := createAccount(ctx, pool, ACC_svc_address, req_acc, req_acc_type, registered_user.User.GetUsername())
-    if err!= nil {
-        return nil, status.Errorf(codes.Internal, "Failed to create account: %v", err)
-    }
+	account, accountType, err := createAccount(ctx, pool, ACC_svc_address, req_acc, req_acc_type, registered_user.User.GetUsername())
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Failed to create account: %v", err)
+	}
 
-    userAccountStruct, _ := structpb.NewStruct(map[string]interface{}{
-        "accountType": accountType,
-        "account":     account,
-    })
+	userAccountData, err := structpb.NewStruct(map[string]interface{}{
+		"accountType": accountType,
+		"account":     account,
+	})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "Failed to create account: %v", err)
+	}
 
-    rsp := &pb_register.RegisterUserResponse{
-        User: &pb_register.User{
-            Username:          registered_user.User.GetUsername(),
-            FullName:          registered_user.User.GetFullName(),
-            Email:             registered_user.User.GetEmail(),
-            PasswordHash:      registered_user.User.GetPasswordHash(),
-            PasswordSalt:      registered_user.User.GetPasswordSalt(),
-            CountryCode:       registered_user.User.GetCountryCode(),
-            RoleId:            registered_user.User.GetRoleId(),
-            Status:            registered_user.User.GetStatus(),
-            LastLoginAt:       registered_user.User.GetLastLoginAt(),
-            UsernameChangedAt: registered_user.User.GetUsernameChangedAt(),
-            EmailChangedAt:    registered_user.User.GetEmailChangedAt(),
-            PasswordChangedAt: registered_user.User.GetPasswordChangedAt(),
-            CreatedAt:         registered_user.User.GetCreatedAt(),
-            UpdatedAt:         registered_user.User.GetUpdatedAt(),
-        },
-    }
+	rsp := &pb.RegisterUserAccountResponse{
+		UserAccount: &pb.UserAccount{
+			Username:          registered_user.User.GetUsername(),
+			FullName:          registered_user.User.GetFullName(),
+			Email:             registered_user.User.GetEmail(),
+			PasswordHash:      registered_user.User.GetPasswordHash(),
+			PasswordSalt:      registered_user.User.GetPasswordSalt(),
+			CountryCode:       registered_user.User.GetCountryCode(),
+			RoleId:            registered_user.User.GetRoleId(),
+			Status:            registered_user.User.GetStatus(),
+			AccountType:       req.GetAccountType(),
+			AccountName:       req.GetAccountName(),
+			AccountBio:        req.GetAccountBio(),
+			AccountPlan:       req.GetAccountPlan(),
+			AccountAvatarUri:  req.GetAccountAvatarUri(),
+			LastLoginAt:       registered_user.User.GetLastLoginAt(),
+			UsernameChangedAt: registered_user.User.GetUsernameChangedAt(),
+			EmailChangedAt:    registered_user.User.GetEmailChangedAt(),
+			PasswordChangedAt: registered_user.User.GetPasswordChangedAt(),
+			CreatedAt:         registered_user.User.GetCreatedAt(),
+			UpdatedAt:         registered_user.User.GetUpdatedAt(),
+		},
+	}
 
-    extendedRsp := &RegisterUserAccount{
-        RegisterUserResponse: rsp,
-        AdditionalData:        userAccountStruct,
-    }
+	fmt.Printf("TEST <> Registered user: %v\n", rsp.UserAccount)
+	extendedRsp := &ExtendedRegisterUserAccount{
+		RegisterUserAccountResponse: rsp,
+		Account:                     userAccountData,
+	}
 
-    // Convert RegisterUserAccount back to *pb_register.RegisterUserResponse for the return value
-    regResp := &pb_register.RegisterUserResponse{
-        User: extendedRsp.User,
-    }
-    return regResp, nil
+	// Convert RegisterUserAccount back to *pb.RegisterUserResponse for the return value
+	userAccount := &pb.RegisterUserAccountResponse{
+		UserAccount: extendedRsp.UserAccount,
+	}
+	return userAccount, nil
 }
 
 func createAccount(ctx context.Context, pool *ConnectionPool, address string, req_acc *account.CreateAccountRequest, req_acc_type *account_type.CreateAccountTypeRequest, username string) (*account.CreateAccountResponse, *account_type.CreateAccountTypeResponse, error) {
@@ -183,7 +193,7 @@ func createAccount(ctx context.Context, pool *ConnectionPool, address string, re
 	return account, accountType, nil
 }
 
-func registerUser(ctx context.Context, pool *ConnectionPool, address string, req *pb_register.RegisterUserRequest) (*user.CreateUserResponse, error) {
+func registerUser(ctx context.Context, pool *ConnectionPool, address string, req *pb.RegisterUserAccountRequest) (*user.CreateUserResponse, error) {
 	conn, err := pool.GetConn(address)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to connect to UserService: %v", err)

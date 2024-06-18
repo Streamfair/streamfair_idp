@@ -3,6 +3,7 @@ module github.com/Streamfair/streamfair_idp
 go 1.22.0
 
 require (
+	github.com/Streamfair/common_proto v0.0.0-20240618174345-f74ca713fb84
 	github.com/aead/chacha20poly1305 v0.0.0-20201124145622-1a5aba2a8b29
 	github.com/gin-gonic/gin v1.9.1
 	github.com/golang-migrate/migrate/v4 v4.17.0
@@ -23,7 +24,6 @@ require (
 )
 
 require (
-	github.com/Streamfair/common_proto v0.0.0-20240605194903-601e767003c4
 	github.com/aead/chacha20 v0.0.0-20180709150244-8b13a72661da // indirect
 	github.com/aead/poly1305 v0.0.0-20180717145839-3fee0db0b635 // indirect
 	github.com/bytedance/sonic v1.9.1 // indirect

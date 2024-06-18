@@ -91,78 +91,7 @@
     }
   },
   "definitions": {
-    "pbLoginUserAccountRequest": {
-      "type": "object",
-      "properties": {
-        "username": {
-          "type": "string"
-        },
-        "password": {
-          "type": "string"
-        }
-      }
-    },
-    "pbLoginUserAccountResponse": {
-      "type": "object",
-      "properties": {
-        "user": {
-          "$ref": "#/definitions/pbUser_login"
-        },
-        "sessionId": {
-          "type": "string"
-        },
-        "accessToken": {
-          "type": "string"
-        },
-        "refreshToken": {
-          "type": "string"
-        },
-        "accessTokenExpiresAt": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "refreshTokenExpiresAt": {
-          "type": "string",
-          "format": "date-time"
-        }
-      }
-    },
-    "pbRegisterUserAccountRequest": {
-      "type": "object",
-      "properties": {
-        "username": {
-          "type": "string"
-        },
-        "fullName": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "password": {
-          "type": "string"
-        },
-        "countryCode": {
-          "type": "string"
-        },
-        "roleId": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "status": {
-          "type": "string"
-        }
-      }
-    },
-    "pbRegisterUserAccountResponse": {
-      "type": "object",
-      "properties": {
-        "user": {
-          "$ref": "#/definitions/pbUser"
-        }
-      }
-    },
-    "pbUser": {
+    "pbLoggedInUser": {
       "type": "object",
       "properties": {
         "id": {
@@ -220,7 +149,95 @@
         }
       }
     },
-    "pbUser_login": {
+    "pbLoginUserAccountRequest": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "pbLoginUserAccountResponse": {
+      "type": "object",
+      "properties": {
+        "loggedInUser": {
+          "$ref": "#/definitions/pbLoggedInUser"
+        },
+        "sessionId": {
+          "type": "string"
+        },
+        "accessToken": {
+          "type": "string"
+        },
+        "refreshToken": {
+          "type": "string"
+        },
+        "accessTokenExpiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "refreshTokenExpiresAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "pbRegisterUserAccountRequest": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "countryCode": {
+          "type": "string"
+        },
+        "roleId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "status": {
+          "type": "string"
+        },
+        "accountType": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "accountName": {
+          "type": "string"
+        },
+        "accountBio": {
+          "type": "string"
+        },
+        "accountPlan": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "accountAvatarUri": {
+          "type": "string"
+        }
+      }
+    },
+    "pbRegisterUserAccountResponse": {
+      "type": "object",
+      "properties": {
+        "userAccount": {
+          "$ref": "#/definitions/pbUserAccount"
+        }
+      }
+    },
+    "pbUserAccount": {
       "type": "object",
       "properties": {
         "id": {
@@ -250,6 +267,23 @@
           "format": "int64"
         },
         "status": {
+          "type": "string"
+        },
+        "accountType": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "accountName": {
+          "type": "string"
+        },
+        "accountBio": {
+          "type": "string"
+        },
+        "accountPlan": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "accountAvatarUri": {
           "type": "string"
         },
         "lastLoginAt": {

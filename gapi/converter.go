@@ -6,8 +6,8 @@ import (
 	user "github.com/Streamfair/common_proto/UserService/pb/user"
 )
 
-func ConvertRegisteredUser(user *user.User) *pb_reg.UserRegistered {
-	return &pb_reg.UserRegistered{
+func ConvertRegisteredUser(user *user.User) *pb_reg.UserAccount {
+	return &pb_reg.UserAccount{
 		Id:                user.Id,
 		Username:          user.Username,
 		FullName:          user.FullName,
@@ -26,8 +26,8 @@ func ConvertRegisteredUser(user *user.User) *pb_reg.UserRegistered {
 	}
 }
 
-func ConvertLoggedInUser(user *user.User) *pb_log.UserLogin {
-	return &pb_log.UserLogin{
+func ConvertLoggedInUser(user *user.User) *pb_log.LoggedInUser {
+	return &pb_log.LoggedInUser{
 		Id:                user.Id,
 		Username:          user.Username,
 		FullName:          user.FullName,
