@@ -38,7 +38,7 @@ func (server *Server) LoginUserAccount(ctx context.Context, req *pb_login.LoginU
 		MaxOpenConnection:     10,
 		MaxIdleConnection:     5,
 		ConnectionQueueLength: 10,
-		Address:               IDP_svc_address,
+		Address:               IdpSvcAddress,
 		ConfigOptions:         []grpc.DialOption{},
 		IdleTimeout:           10 * time.Second,
 	}
@@ -47,7 +47,7 @@ func (server *Server) LoginUserAccount(ctx context.Context, req *pb_login.LoginU
 
 	username := req.GetUsername()
 
-	user, err := getUser(ctx, pool, USER_svc_address, username)
+	user, err := getUser(ctx, pool, UserSvcAddress, username)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, status.Errorf(codes.NotFound, "user not found: %v", err)
