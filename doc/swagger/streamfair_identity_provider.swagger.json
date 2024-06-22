@@ -91,6 +91,104 @@
     }
   },
   "definitions": {
+    "pbAccountData": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "accType": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "accountName": {
+          "type": "string"
+        },
+        "owner": {
+          "type": "string"
+        },
+        "bio": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "plan": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "avatarUri": {
+          "type": "string"
+        },
+        "plays": {
+          "type": "string",
+          "format": "int64"
+        },
+        "likes": {
+          "type": "string",
+          "format": "int64"
+        },
+        "follows": {
+          "type": "string",
+          "format": "int64"
+        },
+        "shares": {
+          "type": "string",
+          "format": "int64"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "accountType": {
+          "$ref": "#/definitions/pbAccountTypeData"
+        }
+      }
+    },
+    "pbAccountTypeData": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "accType": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "permissions": {
+          "type": "string"
+        },
+        "isArtist": {
+          "type": "boolean"
+        },
+        "isProducer": {
+          "type": "boolean"
+        },
+        "isWriter": {
+          "type": "boolean"
+        },
+        "isLabel": {
+          "type": "boolean"
+        },
+        "isUser": {
+          "type": "boolean"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
     "pbLoggedInUser": {
       "type": "object",
       "properties": {
@@ -238,6 +336,17 @@
       }
     },
     "pbUserAccount": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/pbUserData"
+        },
+        "account": {
+          "$ref": "#/definitions/pbAccountData"
+        }
+      }
+    },
+    "pbUserData": {
       "type": "object",
       "properties": {
         "id": {
