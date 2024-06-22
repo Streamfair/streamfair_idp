@@ -14,6 +14,8 @@ import (
 	reflect "reflect"
 	time "time"
 
+	db "github.com/Streamfair/streamfair_idp/db/sqlc"
+	pgtype "github.com/jackc/pgx/v5/pgtype"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -38,6 +40,171 @@ func NewMockStore(ctrl *gomock.Controller) *MockStore {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockStore) EXPECT() *MockStoreMockRecorder {
 	return m.recorder
+}
+
+// GetAllUsers mocks base method.
+func (m *MockStore) GetAllUsers(ctx context.Context) ([]db.IdpSvcUserAccountView, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAllUsers", ctx)
+	ret0, _ := ret[0].([]db.IdpSvcUserAccountView)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAllUsers indicates an expected call of GetAllUsers.
+func (mr *MockStoreMockRecorder) GetAllUsers(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAllUsers", reflect.TypeOf((*MockStore)(nil).GetAllUsers), ctx)
+}
+
+// GetUserByEmail mocks base method.
+func (m *MockStore) GetUserByEmail(ctx context.Context, email string) (db.IdpSvcUserAccountView, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUserByEmail", ctx, email)
+	ret0, _ := ret[0].(db.IdpSvcUserAccountView)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUserByEmail indicates an expected call of GetUserByEmail.
+func (mr *MockStoreMockRecorder) GetUserByEmail(ctx, email any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserByEmail", reflect.TypeOf((*MockStore)(nil).GetUserByEmail), ctx, email)
+}
+
+// GetUserById mocks base method.
+func (m *MockStore) GetUserById(ctx context.Context, userID int64) (db.IdpSvcUserAccountView, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUserById", ctx, userID)
+	ret0, _ := ret[0].(db.IdpSvcUserAccountView)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUserById indicates an expected call of GetUserById.
+func (mr *MockStoreMockRecorder) GetUserById(ctx, userID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserById", reflect.TypeOf((*MockStore)(nil).GetUserById), ctx, userID)
+}
+
+// GetUserByUsername mocks base method.
+func (m *MockStore) GetUserByUsername(ctx context.Context, username string) (db.IdpSvcUserAccountView, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUserByUsername", ctx, username)
+	ret0, _ := ret[0].(db.IdpSvcUserAccountView)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUserByUsername indicates an expected call of GetUserByUsername.
+func (mr *MockStoreMockRecorder) GetUserByUsername(ctx, username any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserByUsername", reflect.TypeOf((*MockStore)(nil).GetUserByUsername), ctx, username)
+}
+
+// GetUsersByAccountStatus mocks base method.
+func (m *MockStore) GetUsersByAccountStatus(ctx context.Context, accountStatus string) ([]db.IdpSvcUserAccountView, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUsersByAccountStatus", ctx, accountStatus)
+	ret0, _ := ret[0].([]db.IdpSvcUserAccountView)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUsersByAccountStatus indicates an expected call of GetUsersByAccountStatus.
+func (mr *MockStoreMockRecorder) GetUsersByAccountStatus(ctx, accountStatus any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUsersByAccountStatus", reflect.TypeOf((*MockStore)(nil).GetUsersByAccountStatus), ctx, accountStatus)
+}
+
+// GetUsersByAccountType mocks base method.
+func (m *MockStore) GetUsersByAccountType(ctx context.Context, accountType int32) ([]db.IdpSvcUserAccountView, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUsersByAccountType", ctx, accountType)
+	ret0, _ := ret[0].([]db.IdpSvcUserAccountView)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUsersByAccountType indicates an expected call of GetUsersByAccountType.
+func (mr *MockStoreMockRecorder) GetUsersByAccountType(ctx, accountType any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUsersByAccountType", reflect.TypeOf((*MockStore)(nil).GetUsersByAccountType), ctx, accountType)
+}
+
+// GetUsersByCountryCode mocks base method.
+func (m *MockStore) GetUsersByCountryCode(ctx context.Context, countryCode string) ([]db.IdpSvcUserAccountView, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUsersByCountryCode", ctx, countryCode)
+	ret0, _ := ret[0].([]db.IdpSvcUserAccountView)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUsersByCountryCode indicates an expected call of GetUsersByCountryCode.
+func (mr *MockStoreMockRecorder) GetUsersByCountryCode(ctx, countryCode any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUsersByCountryCode", reflect.TypeOf((*MockStore)(nil).GetUsersByCountryCode), ctx, countryCode)
+}
+
+// GetUsersByOwner mocks base method.
+func (m *MockStore) GetUsersByOwner(ctx context.Context, owner string) ([]db.IdpSvcUserAccountView, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUsersByOwner", ctx, owner)
+	ret0, _ := ret[0].([]db.IdpSvcUserAccountView)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUsersByOwner indicates an expected call of GetUsersByOwner.
+func (mr *MockStoreMockRecorder) GetUsersByOwner(ctx, owner any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUsersByOwner", reflect.TypeOf((*MockStore)(nil).GetUsersByOwner), ctx, owner)
+}
+
+// GetUsersByRoleId mocks base method.
+func (m *MockStore) GetUsersByRoleId(ctx context.Context, roleID pgtype.Int8) ([]db.IdpSvcUserAccountView, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUsersByRoleId", ctx, roleID)
+	ret0, _ := ret[0].([]db.IdpSvcUserAccountView)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUsersByRoleId indicates an expected call of GetUsersByRoleId.
+func (mr *MockStoreMockRecorder) GetUsersByRoleId(ctx, roleID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUsersByRoleId", reflect.TypeOf((*MockStore)(nil).GetUsersByRoleId), ctx, roleID)
+}
+
+// GetUsersCreatedAfter mocks base method.
+func (m *MockStore) GetUsersCreatedAfter(ctx context.Context, userCreatedAt time.Time) ([]db.IdpSvcUserAccountView, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUsersCreatedAfter", ctx, userCreatedAt)
+	ret0, _ := ret[0].([]db.IdpSvcUserAccountView)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUsersCreatedAfter indicates an expected call of GetUsersCreatedAfter.
+func (mr *MockStoreMockRecorder) GetUsersCreatedAfter(ctx, userCreatedAt any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUsersCreatedAfter", reflect.TypeOf((*MockStore)(nil).GetUsersCreatedAfter), ctx, userCreatedAt)
+}
+
+// GetUsersUpdatedAfter mocks base method.
+func (m *MockStore) GetUsersUpdatedAfter(ctx context.Context, userUpdatedAt time.Time) ([]db.IdpSvcUserAccountView, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUsersUpdatedAfter", ctx, userUpdatedAt)
+	ret0, _ := ret[0].([]db.IdpSvcUserAccountView)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUsersUpdatedAfter indicates an expected call of GetUsersUpdatedAfter.
+func (mr *MockStoreMockRecorder) GetUsersUpdatedAfter(ctx, userUpdatedAt any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUsersUpdatedAfter", reflect.TypeOf((*MockStore)(nil).GetUsersUpdatedAfter), ctx, userUpdatedAt)
 }
 
 // Ping mocks base method.

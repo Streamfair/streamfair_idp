@@ -20,14 +20,6 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-// LoginUser authenticates a user and returns a session token.
-
-// Microservices involved: UserService, TokenService, SessionService
-// 1. Get user by username from UserService.
-// 2. Compare the password hash with the password provided.
-// 3. Create an access token and a refresh token.
-// 4. Create a session with the refresh token.
-// 5. Return the user, session ID, access token, refresh token, and their expiration times.
 func (server *Server) LoginUserAccount(ctx context.Context, req *pb_login.LoginUserAccountRequest) (*pb_login.LoginUserAccountResponse, error) {
 	poolConfig := &PoolConfig{
 		MaxOpenConnection:     10,
@@ -42,6 +34,7 @@ func (server *Server) LoginUserAccount(ctx context.Context, req *pb_login.LoginU
 
 	username := req.GetUsername()
 
+	// get registered user by username!
 	user, err := getUser(ctx, pool, UserSvcAddress, username)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -96,7 +89,7 @@ func (server *Server) LoginUserAccount(ctx context.Context, req *pb_login.LoginU
 	}
 
 	rps := &pb_login.LoginUserAccountResponse{
-		LoggedInUser:          ConvertLoggedInUser(user),
+		LoggedInUser:          ConvertLoggedInUserAcount(user),
 		SessionId:             session.Uuid,
 		AccessToken:           accessToken.Token.Token,
 		RefreshToken:          refreshToken.RefreshToken.Token,

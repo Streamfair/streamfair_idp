@@ -25,7 +25,7 @@ import (
 // 	}
 // }
 
-func ConvertLoggedInUser(user *user.User) *pb_log.LoggedInUser {
+func ConvertLoggedInUserAcount(user *user.User) *pb_log.LoggedInUser {
 	return &pb_log.LoggedInUser{
 		Id:                user.Id,
 		Username:          user.Username,
