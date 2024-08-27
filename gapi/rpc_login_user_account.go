@@ -12,8 +12,6 @@ import (
 	token_pb "github.com/Streamfair/common_proto/TokenService/pb"
 	refreshToken "github.com/Streamfair/common_proto/TokenService/pb/refresh_token"
 	token "github.com/Streamfair/common_proto/TokenService/pb/token"
-	user_pb "github.com/Streamfair/common_proto/UserService/pb"
-	user "github.com/Streamfair/common_proto/UserService/pb/user"
 	"github.com/Streamfair/streamfair_idp/util"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -34,20 +32,20 @@ func (server *Server) LoginUserAccount(ctx context.Context, req *pb_login.LoginU
 
 	username := req.GetUsername()
 
-	// get registered user by username!
-	user, err := getUser(ctx, pool, UserSvcAddress, username)
+	// Fetch user from the database
+	userAccount, err := server.store.GetUserAccountByUserAccountname(ctx, username)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, status.Errorf(codes.NotFound, "user not found: %v", err)
+			return nil, status.Errorf(codes.NotFound, "user_account not found: %v", err)
 		}
-		return nil, status.Errorf(codes.NotFound, "user not found: %v", err)
+		return nil, handleDatabaseError(err)
 	}
 
-	byteHash, err := base64.StdEncoding.DecodeString(user.PasswordHash)
+	byteHash, err := base64.StdEncoding.DecodeString(userAccount.PasswordHash)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "decoding error occured.")
 	}
-	byteSalt, err := base64.StdEncoding.DecodeString(user.PasswordSalt)
+	byteSalt, err := base64.StdEncoding.DecodeString(userAccount.PasswordSalt)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "decoding error occured.")
 	}
@@ -58,7 +56,7 @@ func (server *Server) LoginUserAccount(ctx context.Context, req *pb_login.LoginU
 	}
 
 	accessToken, err := createToken(ctx, pool, TOKEN_svc_address, &token.CreateTokenRequest{
-		UserId:    user.Id,
+		UserId:    userAccount.ID,
 		ExpiresAt: server.config.AccessTokenDuration.String(),
 	})
 	if err != nil {
@@ -66,7 +64,7 @@ func (server *Server) LoginUserAccount(ctx context.Context, req *pb_login.LoginU
 	}
 
 	refreshToken, err := createRefreshToken(ctx, pool, TOKEN_svc_address, &refreshToken.CreateRefreshTokenRequest{
-		UserId:    user.Id,
+		UserId:    userAccount.ID,
 		ExpiresAt: server.config.RefreshTokenDuration.String(),
 	})
 	if err != nil {
@@ -75,13 +73,13 @@ func (server *Server) LoginUserAccount(ctx context.Context, req *pb_login.LoginU
 
 	mtdt := server.extractMetadata(ctx)
 	args := &session.CreateSessionRequest{
-		Uuid:         refreshToken.Payload.Uuid,
-		Username:     user.Username,
-		RefreshToken: refreshToken.RefreshToken.Token,
+		Uuid:         refreshToken.Payload.GetUuid(),
+		Username:     userAccount.Username,
+		RefreshToken: refreshToken.RefreshToken.GetToken(),
 		UserAgent:    mtdt.UserAgent,
 		ClientIp:     mtdt.ClientIP,
 		IsBlocked:    false,
-		ExpiresAt:    refreshToken.Payload.ExpiredAt,
+		ExpiresAt:    refreshToken.Payload.GetExpiredAt(),
 	}
 	session, err := createSession(ctx, pool, SESSION_svc_address, args)
 	if err != nil {
@@ -89,34 +87,22 @@ func (server *Server) LoginUserAccount(ctx context.Context, req *pb_login.LoginU
 	}
 
 	rps := &pb_login.LoginUserAccountResponse{
-		LoggedInUser:          ConvertLoggedInUserAcount(user),
-		SessionId:             session.Uuid,
-		AccessToken:           accessToken.Token.Token,
-		RefreshToken:          refreshToken.RefreshToken.Token,
-		AccessTokenExpiresAt:  accessToken.Payload.ExpiredAt,
-		RefreshTokenExpiresAt: refreshToken.Payload.ExpiredAt,
+		UserAccount: ConvertUserAccount(userAccount),
+		Session: &pb_login.SessionData{
+			SessionId:             session.GetUuid(),
+			IsBlocked:             session.GetIsBlocked(),
+			UserAgent:             session.GetUserAgent(),
+			ClientIp:              session.GetClientIp(),
+			AccessToken:           accessToken.GetToken().GetToken(),
+			AccessTokenExpiresAt:  accessToken.GetToken().GetExpiresAt(),
+			RefreshToken:          refreshToken.GetRefreshToken().GetToken(),
+			RefreshTokenExpiresAt: refreshToken.GetPayload().GetExpiredAt(),
+			SessionCreatedAt:      session.GetCreatedAt(),
+			SessionExpiresAt:      session.GetExpiresAt(),
+		},
 	}
 
 	return rps, nil
-}
-
-func getUser(ctx context.Context, pool *ConnectionPool, address string, username string) (*user.User, error) {
-	conn, err := pool.GetConn(address)
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to connect to UserService: %v", err)
-	}
-
-	client := user_pb.NewUserServiceClient(conn)
-
-	req := &user.GetUserByValueRequest{
-		Username: username,
-	}
-	resp, err := client.GetUserByValue(ctx, req)
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to get user: %s", err)
-	}
-
-	return resp.User, nil
 }
 
 func createSession(ctx context.Context, pool *ConnectionPool, address string, args *session.CreateSessionRequest) (*session.Session, error) {

@@ -88,6 +88,40 @@
           "IdentityProvider"
         ]
       }
+    },
+    "/streamfair/v1/get_user_account_by_username": {
+      "post": {
+        "summary": "add summary here",
+        "description": "add description here",
+        "operationId": "IdentityProvider_GetUserAccountByUsername",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetUserAccountByUsernameResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbGetUserAccountByUsernameRequest"
+            }
+          }
+        ],
+        "tags": [
+          "IdentityProvider"
+        ]
+      }
     }
   },
   "definitions": {
@@ -98,12 +132,12 @@
           "type": "string",
           "format": "int64"
         },
-        "accType": {
-          "type": "integer",
-          "format": "int32"
-        },
         "accountName": {
           "type": "string"
+        },
+        "accountType": {
+          "type": "integer",
+          "format": "int32"
         },
         "owner": {
           "type": "string"
@@ -144,9 +178,6 @@
         "updatedAt": {
           "type": "string",
           "format": "date-time"
-        },
-        "accountType": {
-          "$ref": "#/definitions/pbAccountTypeData"
         }
       }
     },
@@ -157,7 +188,7 @@
           "type": "string",
           "format": "int64"
         },
-        "accType": {
+        "type": {
           "type": "integer",
           "format": "int32"
         },
@@ -189,6 +220,22 @@
         }
       }
     },
+    "pbGetUserAccountByUsernameRequest": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        }
+      }
+    },
+    "pbGetUserAccountByUsernameResponse": {
+      "type": "object",
+      "properties": {
+        "userAccount": {
+          "$ref": "#/definitions/pbUserAccount"
+        }
+      }
+    },
     "pbLoginUserAccountRequest": {
       "type": "object",
       "properties": {
@@ -197,10 +244,6 @@
         },
         "password": {
           "type": "string"
-        },
-        "accountId": {
-          "type": "string",
-          "format": "int64"
         }
       }
     },
@@ -210,22 +253,8 @@
         "userAccount": {
           "$ref": "#/definitions/pbUserAccount"
         },
-        "sessionId": {
-          "type": "string"
-        },
-        "accessToken": {
-          "type": "string"
-        },
-        "refreshToken": {
-          "type": "string"
-        },
-        "accessTokenExpiresAt": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "refreshTokenExpiresAt": {
-          "type": "string",
-          "format": "date-time"
+        "session": {
+          "$ref": "#/definitions/pbSessionData"
         }
       }
     },
@@ -281,6 +310,45 @@
         }
       }
     },
+    "pbSessionData": {
+      "type": "object",
+      "properties": {
+        "sessionId": {
+          "type": "string"
+        },
+        "isBlocked": {
+          "type": "boolean"
+        },
+        "userAgent": {
+          "type": "string"
+        },
+        "clientIp": {
+          "type": "string"
+        },
+        "accessToken": {
+          "type": "string"
+        },
+        "accessTokenExpiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "refreshToken": {
+          "type": "string"
+        },
+        "refreshTokenExpiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "sessionCreatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "sessionExpiresAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
     "pbUserAccount": {
       "type": "object",
       "properties": {
@@ -289,6 +357,9 @@
         },
         "account": {
           "$ref": "#/definitions/pbAccountData"
+        },
+        "accountType": {
+          "$ref": "#/definitions/pbAccountTypeData"
         }
       }
     },
@@ -322,23 +393,6 @@
           "format": "int64"
         },
         "status": {
-          "type": "string"
-        },
-        "accountType": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "accountName": {
-          "type": "string"
-        },
-        "accountBio": {
-          "type": "string"
-        },
-        "accountPlan": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "accountAvatarUri": {
           "type": "string"
         },
         "lastLoginAt": {

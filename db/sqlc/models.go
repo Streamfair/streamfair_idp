@@ -7,91 +7,53 @@ package db
 import (
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-type IdpSvcAccount struct {
-	ID          int64       `json:"id"`
-	AccountName string      `json:"account_name"`
-	AccountType int32       `json:"account_type"`
-	Owner       string      `json:"owner"`
-	Bio         string      `json:"bio"`
-	Status      string      `json:"status"`
-	Plan        int32       `json:"plan"`
-	AvatarUri   pgtype.Text `json:"avatar_uri"`
-	Plays       int64       `json:"plays"`
-	Likes       int64       `json:"likes"`
-	Follows     int64       `json:"follows"`
-	Shares      int64       `json:"shares"`
-	CreatedAt   time.Time   `json:"created_at"`
-	UpdatedAt   time.Time   `json:"updated_at"`
-}
-
-type IdpSvcAccountType struct {
-	ID          int32     `json:"id"`
-	Type        int32     `json:"type"`
-	Permissions string    `json:"permissions"`
-	IsArtist    bool      `json:"is_artist"`
-	IsProducer  bool      `json:"is_producer"`
-	IsWriter    bool      `json:"is_writer"`
-	IsLabel     bool      `json:"is_label"`
-	IsUser      bool      `json:"is_user"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
-}
-
-type IdpSvcUser struct {
-	ID                int64       `json:"id"`
-	Username          string      `json:"username"`
-	FullName          string      `json:"full_name"`
-	Email             string      `json:"email"`
-	PasswordHash      string      `json:"password_hash"`
-	PasswordSalt      string      `json:"password_salt"`
-	CountryCode       string      `json:"country_code"`
-	RoleID            pgtype.Int8 `json:"role_id"`
-	Status            pgtype.Text `json:"status"`
-	LastLoginAt       time.Time   `json:"last_login_at"`
-	UsernameChangedAt time.Time   `json:"username_changed_at"`
-	EmailChangedAt    time.Time   `json:"email_changed_at"`
-	PasswordChangedAt time.Time   `json:"password_changed_at"`
-	CreatedAt         time.Time   `json:"created_at"`
-	UpdatedAt         time.Time   `json:"updated_at"`
-}
-
-type IdpSvcUserAccountView struct {
-	UserID            int64       `json:"user_id"`
-	Username          string      `json:"username"`
-	FullName          string      `json:"full_name"`
-	Email             string      `json:"email"`
-	PasswordHash      string      `json:"password_hash"`
-	PasswordSalt      string      `json:"password_salt"`
-	CountryCode       string      `json:"country_code"`
-	RoleID            pgtype.Int8 `json:"role_id"`
-	UserStatus        pgtype.Text `json:"user_status"`
-	LastLoginAt       time.Time   `json:"last_login_at"`
-	UsernameChangedAt time.Time   `json:"username_changed_at"`
-	EmailChangedAt    time.Time   `json:"email_changed_at"`
-	PasswordChangedAt time.Time   `json:"password_changed_at"`
-	UserCreatedAt     time.Time   `json:"user_created_at"`
-	UserUpdatedAt     time.Time   `json:"user_updated_at"`
-	AccountID         int64       `json:"account_id"`
-	AccountName       string      `json:"account_name"`
-	AccountType       int32       `json:"account_type"`
-	Owner             string      `json:"owner"`
-	Bio               string      `json:"bio"`
-	AccountStatus     string      `json:"account_status"`
-	Plan              int32       `json:"plan"`
-	AvatarUri         pgtype.Text `json:"avatar_uri"`
-	Plays             int64       `json:"plays"`
-	Likes             int64       `json:"likes"`
-	Follows           int64       `json:"follows"`
-	Shares            int64       `json:"shares"`
-	AccountTypeID     int32       `json:"account_type_id"`
-	AccountTypeName   int32       `json:"account_type_name"`
-	Permissions       string      `json:"permissions"`
-	IsArtist          bool        `json:"is_artist"`
-	IsProducer        bool        `json:"is_producer"`
-	IsWriter          bool        `json:"is_writer"`
-	IsLabel           bool        `json:"is_label"`
-	IsRegularUser     bool        `json:"is_regular_user"`
+type IdpSvcUserAccount struct {
+	ID                   int64       `json:"id"`
+	Username             string      `json:"username"`
+	FullName             string      `json:"full_name"`
+	Email                string      `json:"email"`
+	PasswordHash         string      `json:"password_hash"`
+	PasswordSalt         string      `json:"password_salt"`
+	CountryCode          string      `json:"country_code"`
+	RoleID               pgtype.Int8 `json:"role_id"`
+	Status               pgtype.Text `json:"status"`
+	LastLoginAt          time.Time   `json:"last_login_at"`
+	UsernameChangedAt    time.Time   `json:"username_changed_at"`
+	EmailChangedAt       time.Time   `json:"email_changed_at"`
+	PasswordChangedAt    time.Time   `json:"password_changed_at"`
+	UserCreatedAt        time.Time   `json:"user_created_at"`
+	UserUpdatedAt        time.Time   `json:"user_updated_at"`
+	AccountName          string      `json:"account_name"`
+	AccountType          int32       `json:"account_type"`
+	Owner                string      `json:"owner"`
+	Bio                  string      `json:"bio"`
+	AccountStatus        string      `json:"account_status"`
+	Plan                 int32       `json:"plan"`
+	AvatarUri            pgtype.Text `json:"avatar_uri"`
+	Plays                int64       `json:"plays"`
+	Likes                int64       `json:"likes"`
+	Follows              int64       `json:"follows"`
+	Shares               int64       `json:"shares"`
+	AccountCreatedAt     time.Time   `json:"account_created_at"`
+	AccountUpdatedAt     time.Time   `json:"account_updated_at"`
+	Type                 int32       `json:"type"`
+	Permissions          string      `json:"permissions"`
+	IsArtist             bool        `json:"is_artist"`
+	IsProducer           bool        `json:"is_producer"`
+	IsWriter             bool        `json:"is_writer"`
+	IsLabel              bool        `json:"is_label"`
+	IsUser               bool        `json:"is_user"`
+	AccountTypeCreatedAt time.Time   `json:"account_type_created_at"`
+	AccountTypeUpdatedAt time.Time   `json:"account_type_updated_at"`
+	Uuid                 uuid.UUID   `json:"uuid"`
+	RefreshToken         string      `json:"refresh_token"`
+	UserAgent            string      `json:"user_agent"`
+	ClientIp             string      `json:"client_ip"`
+	IsBlocked            bool        `json:"is_blocked"`
+	SessionExpiresAt     time.Time   `json:"session_expires_at"`
+	SessionCreatedAt     time.Time   `json:"session_created_at"`
 }

@@ -9,25 +9,278 @@ import (
 	"context"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const getAllUsers = `-- name: GetAllUsers :many
-SELECT user_id, username, full_name, email, password_hash, password_salt, country_code, role_id, user_status, last_login_at, username_changed_at, email_changed_at, password_changed_at, user_created_at, user_updated_at, account_id, account_name, account_type, owner, bio, account_status, plan, avatar_uri, plays, likes, follows, shares, account_type_id, account_type_name, permissions, is_artist, is_producer, is_writer, is_label, is_regular_user
-FROM "idp_svc"."UserAccount_View"
+const countTotalNumberOfSessionsPerUser = `-- name: CountTotalNumberOfSessionsPerUser :many
+SELECT
+    username,
+    COUNT(session_uuid) AS total_sessions
+FROM "idp_svc"."UserAccounts"
+GROUP BY username
 `
 
-func (q *Queries) GetAllUsers(ctx context.Context) ([]IdpSvcUserAccountView, error) {
-	rows, err := q.db.Query(ctx, getAllUsers)
+type CountTotalNumberOfSessionsPerUserRow struct {
+	Username      string `json:"username"`
+	TotalSessions int64  `json:"total_sessions"`
+}
+
+func (q *Queries) CountTotalNumberOfSessionsPerUser(ctx context.Context) ([]CountTotalNumberOfSessionsPerUserRow, error) {
+	rows, err := q.db.Query(ctx, countTotalNumberOfSessionsPerUser)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []IdpSvcUserAccountView{}
+	items := []CountTotalNumberOfSessionsPerUserRow{}
 	for rows.Next() {
-		var i IdpSvcUserAccountView
+		var i CountTotalNumberOfSessionsPerUserRow
+		if err := rows.Scan(&i.Username, &i.TotalSessions); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const createUserAccount = `-- name: CreateUserAccount :one
+INSERT INTO "idp_svc"."UserAccounts" (
+    username,
+    full_name,
+    email,
+    password_hash,
+    password_salt,
+    country_code,
+    role_id,
+    status,
+    last_login_at,
+    username_changed_at,
+    email_changed_at,
+    password_changed_at,
+    user_created_at,
+    user_updated_at,
+    account_name,
+    account_type,
+    owner,
+    bio,
+    account_status,
+    plan,
+    avatar_uri,
+    plays,
+    likes,
+    follows,
+    shares,
+    account_created_at,
+    account_updated_at,
+    type,
+    permissions,
+    is_artist,
+    is_producer,
+    is_writer,
+    is_label,
+    is_user,
+    account_type_created_at,
+    account_type_updated_at,
+    uuid,
+    refresh_token,
+    user_agent,
+    client_ip,
+    is_blocked,
+    session_expires_at,
+    session_created_at
+) VALUES (
+    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $40, $41, $42, $43
+)
+RETURNING id, username, full_name, email, password_hash, password_salt, country_code, role_id, status, last_login_at, username_changed_at, email_changed_at, password_changed_at, user_created_at, user_updated_at, account_name, account_type, owner, bio, account_status, plan, avatar_uri, plays, likes, follows, shares, account_created_at, account_updated_at, type, permissions, is_artist, is_producer, is_writer, is_label, is_user, account_type_created_at, account_type_updated_at, uuid, refresh_token, user_agent, client_ip, is_blocked, session_expires_at, session_created_at
+`
+
+type CreateUserAccountParams struct {
+	Username             string      `json:"username"`
+	FullName             string      `json:"full_name"`
+	Email                string      `json:"email"`
+	PasswordHash         string      `json:"password_hash"`
+	PasswordSalt         string      `json:"password_salt"`
+	CountryCode          string      `json:"country_code"`
+	RoleID               pgtype.Int8 `json:"role_id"`
+	Status               pgtype.Text `json:"status"`
+	LastLoginAt          time.Time   `json:"last_login_at"`
+	UsernameChangedAt    time.Time   `json:"username_changed_at"`
+	EmailChangedAt       time.Time   `json:"email_changed_at"`
+	PasswordChangedAt    time.Time   `json:"password_changed_at"`
+	UserCreatedAt        time.Time   `json:"user_created_at"`
+	UserUpdatedAt        time.Time   `json:"user_updated_at"`
+	AccountName          string      `json:"account_name"`
+	AccountType          int32       `json:"account_type"`
+	Owner                string      `json:"owner"`
+	Bio                  string      `json:"bio"`
+	AccountStatus        string      `json:"account_status"`
+	Plan                 int32       `json:"plan"`
+	AvatarUri            pgtype.Text `json:"avatar_uri"`
+	Plays                int64       `json:"plays"`
+	Likes                int64       `json:"likes"`
+	Follows              int64       `json:"follows"`
+	Shares               int64       `json:"shares"`
+	AccountCreatedAt     time.Time   `json:"account_created_at"`
+	AccountUpdatedAt     time.Time   `json:"account_updated_at"`
+	Type                 int32       `json:"type"`
+	Permissions          string      `json:"permissions"`
+	IsArtist             bool        `json:"is_artist"`
+	IsProducer           bool        `json:"is_producer"`
+	IsWriter             bool        `json:"is_writer"`
+	IsLabel              bool        `json:"is_label"`
+	IsUser               bool        `json:"is_user"`
+	AccountTypeCreatedAt time.Time   `json:"account_type_created_at"`
+	AccountTypeUpdatedAt time.Time   `json:"account_type_updated_at"`
+	Uuid                 uuid.UUID   `json:"uuid"`
+	RefreshToken         string      `json:"refresh_token"`
+	UserAgent            string      `json:"user_agent"`
+	ClientIp             string      `json:"client_ip"`
+	IsBlocked            bool        `json:"is_blocked"`
+	SessionExpiresAt     time.Time   `json:"session_expires_at"`
+	SessionCreatedAt     time.Time   `json:"session_created_at"`
+}
+
+func (q *Queries) CreateUserAccount(ctx context.Context, arg CreateUserAccountParams) (IdpSvcUserAccount, error) {
+	row := q.db.QueryRow(ctx, createUserAccount,
+		arg.Username,
+		arg.FullName,
+		arg.Email,
+		arg.PasswordHash,
+		arg.PasswordSalt,
+		arg.CountryCode,
+		arg.RoleID,
+		arg.Status,
+		arg.LastLoginAt,
+		arg.UsernameChangedAt,
+		arg.EmailChangedAt,
+		arg.PasswordChangedAt,
+		arg.UserCreatedAt,
+		arg.UserUpdatedAt,
+		arg.AccountName,
+		arg.AccountType,
+		arg.Owner,
+		arg.Bio,
+		arg.AccountStatus,
+		arg.Plan,
+		arg.AvatarUri,
+		arg.Plays,
+		arg.Likes,
+		arg.Follows,
+		arg.Shares,
+		arg.AccountCreatedAt,
+		arg.AccountUpdatedAt,
+		arg.Type,
+		arg.Permissions,
+		arg.IsArtist,
+		arg.IsProducer,
+		arg.IsWriter,
+		arg.IsLabel,
+		arg.IsUser,
+		arg.AccountTypeCreatedAt,
+		arg.AccountTypeUpdatedAt,
+		arg.Uuid,
+		arg.RefreshToken,
+		arg.UserAgent,
+		arg.ClientIp,
+		arg.IsBlocked,
+		arg.SessionExpiresAt,
+		arg.SessionCreatedAt,
+	)
+	var i IdpSvcUserAccount
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.FullName,
+		&i.Email,
+		&i.PasswordHash,
+		&i.PasswordSalt,
+		&i.CountryCode,
+		&i.RoleID,
+		&i.Status,
+		&i.LastLoginAt,
+		&i.UsernameChangedAt,
+		&i.EmailChangedAt,
+		&i.PasswordChangedAt,
+		&i.UserCreatedAt,
+		&i.UserUpdatedAt,
+		&i.AccountName,
+		&i.AccountType,
+		&i.Owner,
+		&i.Bio,
+		&i.AccountStatus,
+		&i.Plan,
+		&i.AvatarUri,
+		&i.Plays,
+		&i.Likes,
+		&i.Follows,
+		&i.Shares,
+		&i.AccountCreatedAt,
+		&i.AccountUpdatedAt,
+		&i.Type,
+		&i.Permissions,
+		&i.IsArtist,
+		&i.IsProducer,
+		&i.IsWriter,
+		&i.IsLabel,
+		&i.IsUser,
+		&i.AccountTypeCreatedAt,
+		&i.AccountTypeUpdatedAt,
+		&i.Uuid,
+		&i.RefreshToken,
+		&i.UserAgent,
+		&i.ClientIp,
+		&i.IsBlocked,
+		&i.SessionExpiresAt,
+		&i.SessionCreatedAt,
+	)
+	return i, err
+}
+
+const deleteUserAccountById = `-- name: DeleteUserAccountById :exec
+DELETE FROM "idp_svc"."UserAccounts"
+WHERE id = $1
+`
+
+func (q *Queries) DeleteUserAccountById(ctx context.Context, id int64) error {
+	_, err := q.db.Exec(ctx, deleteUserAccountById, id)
+	return err
+}
+
+const deleteUserAccountByValue = `-- name: DeleteUserAccountByValue :exec
+DELETE FROM "idp_svc"."UserAccounts"
+WHERE username = $1 OR email = $1
+`
+
+func (q *Queries) DeleteUserAccountByValue(ctx context.Context, username string) error {
+	_, err := q.db.Exec(ctx, deleteUserAccountByValue, username)
+	return err
+}
+
+const fetchDataForSpecificDateRange = `-- name: FetchDataForSpecificDateRange :many
+SELECT id, username, full_name, email, password_hash, password_salt, country_code, role_id, status, last_login_at, username_changed_at, email_changed_at, password_changed_at, user_created_at, user_updated_at, account_name, account_type, owner, bio, account_status, plan, avatar_uri, plays, likes, follows, shares, account_created_at, account_updated_at, type, permissions, is_artist, is_producer, is_writer, is_label, is_user, account_type_created_at, account_type_updated_at, uuid, refresh_token, user_agent, client_ip, is_blocked, session_expires_at, session_created_at
+FROM "idp_svc"."UserAccounts"
+WHERE user_created_at BETWEEN $1 AND $2
+`
+
+type FetchDataForSpecificDateRangeParams struct {
+	UserCreatedAt   time.Time `json:"user_created_at"`
+	UserCreatedAt_2 time.Time `json:"user_created_at_2"`
+}
+
+func (q *Queries) FetchDataForSpecificDateRange(ctx context.Context, arg FetchDataForSpecificDateRangeParams) ([]IdpSvcUserAccount, error) {
+	rows, err := q.db.Query(ctx, fetchDataForSpecificDateRange, arg.UserCreatedAt, arg.UserCreatedAt_2)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []IdpSvcUserAccount{}
+	for rows.Next() {
+		var i IdpSvcUserAccount
 		if err := rows.Scan(
-			&i.UserID,
+			&i.ID,
 			&i.Username,
 			&i.FullName,
 			&i.Email,
@@ -35,14 +288,13 @@ func (q *Queries) GetAllUsers(ctx context.Context) ([]IdpSvcUserAccountView, err
 			&i.PasswordSalt,
 			&i.CountryCode,
 			&i.RoleID,
-			&i.UserStatus,
+			&i.Status,
 			&i.LastLoginAt,
 			&i.UsernameChangedAt,
 			&i.EmailChangedAt,
 			&i.PasswordChangedAt,
 			&i.UserCreatedAt,
 			&i.UserUpdatedAt,
-			&i.AccountID,
 			&i.AccountName,
 			&i.AccountType,
 			&i.Owner,
@@ -54,14 +306,24 @@ func (q *Queries) GetAllUsers(ctx context.Context) ([]IdpSvcUserAccountView, err
 			&i.Likes,
 			&i.Follows,
 			&i.Shares,
-			&i.AccountTypeID,
-			&i.AccountTypeName,
+			&i.AccountCreatedAt,
+			&i.AccountUpdatedAt,
+			&i.Type,
 			&i.Permissions,
 			&i.IsArtist,
 			&i.IsProducer,
 			&i.IsWriter,
 			&i.IsLabel,
-			&i.IsRegularUser,
+			&i.IsUser,
+			&i.AccountTypeCreatedAt,
+			&i.AccountTypeUpdatedAt,
+			&i.Uuid,
+			&i.RefreshToken,
+			&i.UserAgent,
+			&i.ClientIp,
+			&i.IsBlocked,
+			&i.SessionExpiresAt,
+			&i.SessionCreatedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -73,17 +335,85 @@ func (q *Queries) GetAllUsers(ctx context.Context) ([]IdpSvcUserAccountView, err
 	return items, nil
 }
 
-const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT user_id, username, full_name, email, password_hash, password_salt, country_code, role_id, user_status, last_login_at, username_changed_at, email_changed_at, password_changed_at, user_created_at, user_updated_at, account_id, account_name, account_type, owner, bio, account_status, plan, avatar_uri, plays, likes, follows, shares, account_type_id, account_type_name, permissions, is_artist, is_producer, is_writer, is_label, is_regular_user
-FROM "idp_svc"."UserAccount_View"
+const getAllUserAccounts = `-- name: GetAllUserAccounts :many
+SELECT id, username, full_name, email, password_hash, password_salt, country_code, role_id, status, last_login_at, username_changed_at, email_changed_at, password_changed_at, user_created_at, user_updated_at, account_name, account_type, owner, bio, account_status, plan, avatar_uri, plays, likes, follows, shares, account_created_at, account_updated_at, type, permissions, is_artist, is_producer, is_writer, is_label, is_user, account_type_created_at, account_type_updated_at, uuid, refresh_token, user_agent, client_ip, is_blocked, session_expires_at, session_created_at FROM "idp_svc"."UserAccounts"
+`
+
+func (q *Queries) GetAllUserAccounts(ctx context.Context) ([]IdpSvcUserAccount, error) {
+	rows, err := q.db.Query(ctx, getAllUserAccounts)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []IdpSvcUserAccount{}
+	for rows.Next() {
+		var i IdpSvcUserAccount
+		if err := rows.Scan(
+			&i.ID,
+			&i.Username,
+			&i.FullName,
+			&i.Email,
+			&i.PasswordHash,
+			&i.PasswordSalt,
+			&i.CountryCode,
+			&i.RoleID,
+			&i.Status,
+			&i.LastLoginAt,
+			&i.UsernameChangedAt,
+			&i.EmailChangedAt,
+			&i.PasswordChangedAt,
+			&i.UserCreatedAt,
+			&i.UserUpdatedAt,
+			&i.AccountName,
+			&i.AccountType,
+			&i.Owner,
+			&i.Bio,
+			&i.AccountStatus,
+			&i.Plan,
+			&i.AvatarUri,
+			&i.Plays,
+			&i.Likes,
+			&i.Follows,
+			&i.Shares,
+			&i.AccountCreatedAt,
+			&i.AccountUpdatedAt,
+			&i.Type,
+			&i.Permissions,
+			&i.IsArtist,
+			&i.IsProducer,
+			&i.IsWriter,
+			&i.IsLabel,
+			&i.IsUser,
+			&i.AccountTypeCreatedAt,
+			&i.AccountTypeUpdatedAt,
+			&i.Uuid,
+			&i.RefreshToken,
+			&i.UserAgent,
+			&i.ClientIp,
+			&i.IsBlocked,
+			&i.SessionExpiresAt,
+			&i.SessionCreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getUserAccountByEmail = `-- name: GetUserAccountByEmail :one
+SELECT id, username, full_name, email, password_hash, password_salt, country_code, role_id, status, last_login_at, username_changed_at, email_changed_at, password_changed_at, user_created_at, user_updated_at, account_name, account_type, owner, bio, account_status, plan, avatar_uri, plays, likes, follows, shares, account_created_at, account_updated_at, type, permissions, is_artist, is_producer, is_writer, is_label, is_user, account_type_created_at, account_type_updated_at, uuid, refresh_token, user_agent, client_ip, is_blocked, session_expires_at, session_created_at FROM "idp_svc"."UserAccounts"
 WHERE email = $1
 `
 
-func (q *Queries) GetUserByEmail(ctx context.Context, email string) (IdpSvcUserAccountView, error) {
-	row := q.db.QueryRow(ctx, getUserByEmail, email)
-	var i IdpSvcUserAccountView
+func (q *Queries) GetUserAccountByEmail(ctx context.Context, email string) (IdpSvcUserAccount, error) {
+	row := q.db.QueryRow(ctx, getUserAccountByEmail, email)
+	var i IdpSvcUserAccount
 	err := row.Scan(
-		&i.UserID,
+		&i.ID,
 		&i.Username,
 		&i.FullName,
 		&i.Email,
@@ -91,14 +421,13 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (IdpSvcUserA
 		&i.PasswordSalt,
 		&i.CountryCode,
 		&i.RoleID,
-		&i.UserStatus,
+		&i.Status,
 		&i.LastLoginAt,
 		&i.UsernameChangedAt,
 		&i.EmailChangedAt,
 		&i.PasswordChangedAt,
 		&i.UserCreatedAt,
 		&i.UserUpdatedAt,
-		&i.AccountID,
 		&i.AccountName,
 		&i.AccountType,
 		&i.Owner,
@@ -110,29 +439,38 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (IdpSvcUserA
 		&i.Likes,
 		&i.Follows,
 		&i.Shares,
-		&i.AccountTypeID,
-		&i.AccountTypeName,
+		&i.AccountCreatedAt,
+		&i.AccountUpdatedAt,
+		&i.Type,
 		&i.Permissions,
 		&i.IsArtist,
 		&i.IsProducer,
 		&i.IsWriter,
 		&i.IsLabel,
-		&i.IsRegularUser,
+		&i.IsUser,
+		&i.AccountTypeCreatedAt,
+		&i.AccountTypeUpdatedAt,
+		&i.Uuid,
+		&i.RefreshToken,
+		&i.UserAgent,
+		&i.ClientIp,
+		&i.IsBlocked,
+		&i.SessionExpiresAt,
+		&i.SessionCreatedAt,
 	)
 	return i, err
 }
 
-const getUserById = `-- name: GetUserById :one
-SELECT user_id, username, full_name, email, password_hash, password_salt, country_code, role_id, user_status, last_login_at, username_changed_at, email_changed_at, password_changed_at, user_created_at, user_updated_at, account_id, account_name, account_type, owner, bio, account_status, plan, avatar_uri, plays, likes, follows, shares, account_type_id, account_type_name, permissions, is_artist, is_producer, is_writer, is_label, is_regular_user
-FROM "idp_svc"."UserAccount_View"
-WHERE user_id = $1
+const getUserAccountById = `-- name: GetUserAccountById :one
+SELECT id, username, full_name, email, password_hash, password_salt, country_code, role_id, status, last_login_at, username_changed_at, email_changed_at, password_changed_at, user_created_at, user_updated_at, account_name, account_type, owner, bio, account_status, plan, avatar_uri, plays, likes, follows, shares, account_created_at, account_updated_at, type, permissions, is_artist, is_producer, is_writer, is_label, is_user, account_type_created_at, account_type_updated_at, uuid, refresh_token, user_agent, client_ip, is_blocked, session_expires_at, session_created_at FROM "idp_svc"."UserAccounts"
+WHERE id = $1
 `
 
-func (q *Queries) GetUserById(ctx context.Context, userID int64) (IdpSvcUserAccountView, error) {
-	row := q.db.QueryRow(ctx, getUserById, userID)
-	var i IdpSvcUserAccountView
+func (q *Queries) GetUserAccountById(ctx context.Context, id int64) (IdpSvcUserAccount, error) {
+	row := q.db.QueryRow(ctx, getUserAccountById, id)
+	var i IdpSvcUserAccount
 	err := row.Scan(
-		&i.UserID,
+		&i.ID,
 		&i.Username,
 		&i.FullName,
 		&i.Email,
@@ -140,14 +478,13 @@ func (q *Queries) GetUserById(ctx context.Context, userID int64) (IdpSvcUserAcco
 		&i.PasswordSalt,
 		&i.CountryCode,
 		&i.RoleID,
-		&i.UserStatus,
+		&i.Status,
 		&i.LastLoginAt,
 		&i.UsernameChangedAt,
 		&i.EmailChangedAt,
 		&i.PasswordChangedAt,
 		&i.UserCreatedAt,
 		&i.UserUpdatedAt,
-		&i.AccountID,
 		&i.AccountName,
 		&i.AccountType,
 		&i.Owner,
@@ -159,29 +496,38 @@ func (q *Queries) GetUserById(ctx context.Context, userID int64) (IdpSvcUserAcco
 		&i.Likes,
 		&i.Follows,
 		&i.Shares,
-		&i.AccountTypeID,
-		&i.AccountTypeName,
+		&i.AccountCreatedAt,
+		&i.AccountUpdatedAt,
+		&i.Type,
 		&i.Permissions,
 		&i.IsArtist,
 		&i.IsProducer,
 		&i.IsWriter,
 		&i.IsLabel,
-		&i.IsRegularUser,
+		&i.IsUser,
+		&i.AccountTypeCreatedAt,
+		&i.AccountTypeUpdatedAt,
+		&i.Uuid,
+		&i.RefreshToken,
+		&i.UserAgent,
+		&i.ClientIp,
+		&i.IsBlocked,
+		&i.SessionExpiresAt,
+		&i.SessionCreatedAt,
 	)
 	return i, err
 }
 
-const getUserByUsername = `-- name: GetUserByUsername :one
-SELECT user_id, username, full_name, email, password_hash, password_salt, country_code, role_id, user_status, last_login_at, username_changed_at, email_changed_at, password_changed_at, user_created_at, user_updated_at, account_id, account_name, account_type, owner, bio, account_status, plan, avatar_uri, plays, likes, follows, shares, account_type_id, account_type_name, permissions, is_artist, is_producer, is_writer, is_label, is_regular_user
-FROM "idp_svc"."UserAccount_View"
+const getUserAccountByUserAccountname = `-- name: GetUserAccountByUserAccountname :one
+SELECT id, username, full_name, email, password_hash, password_salt, country_code, role_id, status, last_login_at, username_changed_at, email_changed_at, password_changed_at, user_created_at, user_updated_at, account_name, account_type, owner, bio, account_status, plan, avatar_uri, plays, likes, follows, shares, account_created_at, account_updated_at, type, permissions, is_artist, is_producer, is_writer, is_label, is_user, account_type_created_at, account_type_updated_at, uuid, refresh_token, user_agent, client_ip, is_blocked, session_expires_at, session_created_at FROM "idp_svc"."UserAccounts"
 WHERE username = $1
 `
 
-func (q *Queries) GetUserByUsername(ctx context.Context, username string) (IdpSvcUserAccountView, error) {
-	row := q.db.QueryRow(ctx, getUserByUsername, username)
-	var i IdpSvcUserAccountView
+func (q *Queries) GetUserAccountByUserAccountname(ctx context.Context, username string) (IdpSvcUserAccount, error) {
+	row := q.db.QueryRow(ctx, getUserAccountByUserAccountname, username)
+	var i IdpSvcUserAccount
 	err := row.Scan(
-		&i.UserID,
+		&i.ID,
 		&i.Username,
 		&i.FullName,
 		&i.Email,
@@ -189,14 +535,13 @@ func (q *Queries) GetUserByUsername(ctx context.Context, username string) (IdpSv
 		&i.PasswordSalt,
 		&i.CountryCode,
 		&i.RoleID,
-		&i.UserStatus,
+		&i.Status,
 		&i.LastLoginAt,
 		&i.UsernameChangedAt,
 		&i.EmailChangedAt,
 		&i.PasswordChangedAt,
 		&i.UserCreatedAt,
 		&i.UserUpdatedAt,
-		&i.AccountID,
 		&i.AccountName,
 		&i.AccountType,
 		&i.Owner,
@@ -208,35 +553,254 @@ func (q *Queries) GetUserByUsername(ctx context.Context, username string) (IdpSv
 		&i.Likes,
 		&i.Follows,
 		&i.Shares,
-		&i.AccountTypeID,
-		&i.AccountTypeName,
+		&i.AccountCreatedAt,
+		&i.AccountUpdatedAt,
+		&i.Type,
 		&i.Permissions,
 		&i.IsArtist,
 		&i.IsProducer,
 		&i.IsWriter,
 		&i.IsLabel,
-		&i.IsRegularUser,
+		&i.IsUser,
+		&i.AccountTypeCreatedAt,
+		&i.AccountTypeUpdatedAt,
+		&i.Uuid,
+		&i.RefreshToken,
+		&i.UserAgent,
+		&i.ClientIp,
+		&i.IsBlocked,
+		&i.SessionExpiresAt,
+		&i.SessionCreatedAt,
 	)
 	return i, err
 }
 
-const getUsersByAccountStatus = `-- name: GetUsersByAccountStatus :many
-SELECT user_id, username, full_name, email, password_hash, password_salt, country_code, role_id, user_status, last_login_at, username_changed_at, email_changed_at, password_changed_at, user_created_at, user_updated_at, account_id, account_name, account_type, owner, bio, account_status, plan, avatar_uri, plays, likes, follows, shares, account_type_id, account_type_name, permissions, is_artist, is_producer, is_writer, is_label, is_regular_user
-FROM "idp_svc"."UserAccount_View"
+const getUserAccountWithActiveSessions = `-- name: GetUserAccountWithActiveSessions :many
+SELECT id, username, full_name, email, password_hash, password_salt, country_code, role_id, status, last_login_at, username_changed_at, email_changed_at, password_changed_at, user_created_at, user_updated_at, account_name, account_type, owner, bio, account_status, plan, avatar_uri, plays, likes, follows, shares, account_created_at, account_updated_at, type, permissions, is_artist, is_producer, is_writer, is_label, is_user, account_type_created_at, account_type_updated_at, uuid, refresh_token, user_agent, client_ip, is_blocked, session_expires_at, session_created_at FROM "idp_svc"."UserAccounts"
+WHERE session_is_blocked = false
+`
+
+func (q *Queries) GetUserAccountWithActiveSessions(ctx context.Context) ([]IdpSvcUserAccount, error) {
+	rows, err := q.db.Query(ctx, getUserAccountWithActiveSessions)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []IdpSvcUserAccount{}
+	for rows.Next() {
+		var i IdpSvcUserAccount
+		if err := rows.Scan(
+			&i.ID,
+			&i.Username,
+			&i.FullName,
+			&i.Email,
+			&i.PasswordHash,
+			&i.PasswordSalt,
+			&i.CountryCode,
+			&i.RoleID,
+			&i.Status,
+			&i.LastLoginAt,
+			&i.UsernameChangedAt,
+			&i.EmailChangedAt,
+			&i.PasswordChangedAt,
+			&i.UserCreatedAt,
+			&i.UserUpdatedAt,
+			&i.AccountName,
+			&i.AccountType,
+			&i.Owner,
+			&i.Bio,
+			&i.AccountStatus,
+			&i.Plan,
+			&i.AvatarUri,
+			&i.Plays,
+			&i.Likes,
+			&i.Follows,
+			&i.Shares,
+			&i.AccountCreatedAt,
+			&i.AccountUpdatedAt,
+			&i.Type,
+			&i.Permissions,
+			&i.IsArtist,
+			&i.IsProducer,
+			&i.IsWriter,
+			&i.IsLabel,
+			&i.IsUser,
+			&i.AccountTypeCreatedAt,
+			&i.AccountTypeUpdatedAt,
+			&i.Uuid,
+			&i.RefreshToken,
+			&i.UserAgent,
+			&i.ClientIp,
+			&i.IsBlocked,
+			&i.SessionExpiresAt,
+			&i.SessionCreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getUserAccountWithBlockedSessions = `-- name: GetUserAccountWithBlockedSessions :many
+SELECT id, username, full_name, email, password_hash, password_salt, country_code, role_id, status, last_login_at, username_changed_at, email_changed_at, password_changed_at, user_created_at, user_updated_at, account_name, account_type, owner, bio, account_status, plan, avatar_uri, plays, likes, follows, shares, account_created_at, account_updated_at, type, permissions, is_artist, is_producer, is_writer, is_label, is_user, account_type_created_at, account_type_updated_at, uuid, refresh_token, user_agent, client_ip, is_blocked, session_expires_at, session_created_at FROM "idp_svc"."UserAccounts"
+WHERE session_is_blocked = true
+`
+
+func (q *Queries) GetUserAccountWithBlockedSessions(ctx context.Context) ([]IdpSvcUserAccount, error) {
+	rows, err := q.db.Query(ctx, getUserAccountWithBlockedSessions)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []IdpSvcUserAccount{}
+	for rows.Next() {
+		var i IdpSvcUserAccount
+		if err := rows.Scan(
+			&i.ID,
+			&i.Username,
+			&i.FullName,
+			&i.Email,
+			&i.PasswordHash,
+			&i.PasswordSalt,
+			&i.CountryCode,
+			&i.RoleID,
+			&i.Status,
+			&i.LastLoginAt,
+			&i.UsernameChangedAt,
+			&i.EmailChangedAt,
+			&i.PasswordChangedAt,
+			&i.UserCreatedAt,
+			&i.UserUpdatedAt,
+			&i.AccountName,
+			&i.AccountType,
+			&i.Owner,
+			&i.Bio,
+			&i.AccountStatus,
+			&i.Plan,
+			&i.AvatarUri,
+			&i.Plays,
+			&i.Likes,
+			&i.Follows,
+			&i.Shares,
+			&i.AccountCreatedAt,
+			&i.AccountUpdatedAt,
+			&i.Type,
+			&i.Permissions,
+			&i.IsArtist,
+			&i.IsProducer,
+			&i.IsWriter,
+			&i.IsLabel,
+			&i.IsUser,
+			&i.AccountTypeCreatedAt,
+			&i.AccountTypeUpdatedAt,
+			&i.Uuid,
+			&i.RefreshToken,
+			&i.UserAgent,
+			&i.ClientIp,
+			&i.IsBlocked,
+			&i.SessionExpiresAt,
+			&i.SessionCreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getUserAccountWithPermissions = `-- name: GetUserAccountWithPermissions :many
+SELECT id, username, full_name, email, password_hash, password_salt, country_code, role_id, status, last_login_at, username_changed_at, email_changed_at, password_changed_at, user_created_at, user_updated_at, account_name, account_type, owner, bio, account_status, plan, avatar_uri, plays, likes, follows, shares, account_created_at, account_updated_at, type, permissions, is_artist, is_producer, is_writer, is_label, is_user, account_type_created_at, account_type_updated_at, uuid, refresh_token, user_agent, client_ip, is_blocked, session_expires_at, session_created_at FROM "idp_svc"."UserAccounts"
+WHERE permissions = $1
+`
+
+func (q *Queries) GetUserAccountWithPermissions(ctx context.Context, permissions string) ([]IdpSvcUserAccount, error) {
+	rows, err := q.db.Query(ctx, getUserAccountWithPermissions, permissions)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []IdpSvcUserAccount{}
+	for rows.Next() {
+		var i IdpSvcUserAccount
+		if err := rows.Scan(
+			&i.ID,
+			&i.Username,
+			&i.FullName,
+			&i.Email,
+			&i.PasswordHash,
+			&i.PasswordSalt,
+			&i.CountryCode,
+			&i.RoleID,
+			&i.Status,
+			&i.LastLoginAt,
+			&i.UsernameChangedAt,
+			&i.EmailChangedAt,
+			&i.PasswordChangedAt,
+			&i.UserCreatedAt,
+			&i.UserUpdatedAt,
+			&i.AccountName,
+			&i.AccountType,
+			&i.Owner,
+			&i.Bio,
+			&i.AccountStatus,
+			&i.Plan,
+			&i.AvatarUri,
+			&i.Plays,
+			&i.Likes,
+			&i.Follows,
+			&i.Shares,
+			&i.AccountCreatedAt,
+			&i.AccountUpdatedAt,
+			&i.Type,
+			&i.Permissions,
+			&i.IsArtist,
+			&i.IsProducer,
+			&i.IsWriter,
+			&i.IsLabel,
+			&i.IsUser,
+			&i.AccountTypeCreatedAt,
+			&i.AccountTypeUpdatedAt,
+			&i.Uuid,
+			&i.RefreshToken,
+			&i.UserAgent,
+			&i.ClientIp,
+			&i.IsBlocked,
+			&i.SessionExpiresAt,
+			&i.SessionCreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getUserAccountsByAccountStatus = `-- name: GetUserAccountsByAccountStatus :many
+SELECT id, username, full_name, email, password_hash, password_salt, country_code, role_id, status, last_login_at, username_changed_at, email_changed_at, password_changed_at, user_created_at, user_updated_at, account_name, account_type, owner, bio, account_status, plan, avatar_uri, plays, likes, follows, shares, account_created_at, account_updated_at, type, permissions, is_artist, is_producer, is_writer, is_label, is_user, account_type_created_at, account_type_updated_at, uuid, refresh_token, user_agent, client_ip, is_blocked, session_expires_at, session_created_at FROM "idp_svc"."UserAccounts"
 WHERE account_status = $1
 `
 
-func (q *Queries) GetUsersByAccountStatus(ctx context.Context, accountStatus string) ([]IdpSvcUserAccountView, error) {
-	rows, err := q.db.Query(ctx, getUsersByAccountStatus, accountStatus)
+func (q *Queries) GetUserAccountsByAccountStatus(ctx context.Context, accountStatus string) ([]IdpSvcUserAccount, error) {
+	rows, err := q.db.Query(ctx, getUserAccountsByAccountStatus, accountStatus)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []IdpSvcUserAccountView{}
+	items := []IdpSvcUserAccount{}
 	for rows.Next() {
-		var i IdpSvcUserAccountView
+		var i IdpSvcUserAccount
 		if err := rows.Scan(
-			&i.UserID,
+			&i.ID,
 			&i.Username,
 			&i.FullName,
 			&i.Email,
@@ -244,14 +808,13 @@ func (q *Queries) GetUsersByAccountStatus(ctx context.Context, accountStatus str
 			&i.PasswordSalt,
 			&i.CountryCode,
 			&i.RoleID,
-			&i.UserStatus,
+			&i.Status,
 			&i.LastLoginAt,
 			&i.UsernameChangedAt,
 			&i.EmailChangedAt,
 			&i.PasswordChangedAt,
 			&i.UserCreatedAt,
 			&i.UserUpdatedAt,
-			&i.AccountID,
 			&i.AccountName,
 			&i.AccountType,
 			&i.Owner,
@@ -263,14 +826,24 @@ func (q *Queries) GetUsersByAccountStatus(ctx context.Context, accountStatus str
 			&i.Likes,
 			&i.Follows,
 			&i.Shares,
-			&i.AccountTypeID,
-			&i.AccountTypeName,
+			&i.AccountCreatedAt,
+			&i.AccountUpdatedAt,
+			&i.Type,
 			&i.Permissions,
 			&i.IsArtist,
 			&i.IsProducer,
 			&i.IsWriter,
 			&i.IsLabel,
-			&i.IsRegularUser,
+			&i.IsUser,
+			&i.AccountTypeCreatedAt,
+			&i.AccountTypeUpdatedAt,
+			&i.Uuid,
+			&i.RefreshToken,
+			&i.UserAgent,
+			&i.ClientIp,
+			&i.IsBlocked,
+			&i.SessionExpiresAt,
+			&i.SessionCreatedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -282,23 +855,22 @@ func (q *Queries) GetUsersByAccountStatus(ctx context.Context, accountStatus str
 	return items, nil
 }
 
-const getUsersByAccountType = `-- name: GetUsersByAccountType :many
-SELECT user_id, username, full_name, email, password_hash, password_salt, country_code, role_id, user_status, last_login_at, username_changed_at, email_changed_at, password_changed_at, user_created_at, user_updated_at, account_id, account_name, account_type, owner, bio, account_status, plan, avatar_uri, plays, likes, follows, shares, account_type_id, account_type_name, permissions, is_artist, is_producer, is_writer, is_label, is_regular_user
-FROM "idp_svc"."UserAccount_View"
+const getUserAccountsByAccountType = `-- name: GetUserAccountsByAccountType :many
+SELECT id, username, full_name, email, password_hash, password_salt, country_code, role_id, status, last_login_at, username_changed_at, email_changed_at, password_changed_at, user_created_at, user_updated_at, account_name, account_type, owner, bio, account_status, plan, avatar_uri, plays, likes, follows, shares, account_created_at, account_updated_at, type, permissions, is_artist, is_producer, is_writer, is_label, is_user, account_type_created_at, account_type_updated_at, uuid, refresh_token, user_agent, client_ip, is_blocked, session_expires_at, session_created_at FROM "idp_svc"."UserAccounts"
 WHERE account_type = $1
 `
 
-func (q *Queries) GetUsersByAccountType(ctx context.Context, accountType int32) ([]IdpSvcUserAccountView, error) {
-	rows, err := q.db.Query(ctx, getUsersByAccountType, accountType)
+func (q *Queries) GetUserAccountsByAccountType(ctx context.Context, accountType int32) ([]IdpSvcUserAccount, error) {
+	rows, err := q.db.Query(ctx, getUserAccountsByAccountType, accountType)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []IdpSvcUserAccountView{}
+	items := []IdpSvcUserAccount{}
 	for rows.Next() {
-		var i IdpSvcUserAccountView
+		var i IdpSvcUserAccount
 		if err := rows.Scan(
-			&i.UserID,
+			&i.ID,
 			&i.Username,
 			&i.FullName,
 			&i.Email,
@@ -306,14 +878,13 @@ func (q *Queries) GetUsersByAccountType(ctx context.Context, accountType int32) 
 			&i.PasswordSalt,
 			&i.CountryCode,
 			&i.RoleID,
-			&i.UserStatus,
+			&i.Status,
 			&i.LastLoginAt,
 			&i.UsernameChangedAt,
 			&i.EmailChangedAt,
 			&i.PasswordChangedAt,
 			&i.UserCreatedAt,
 			&i.UserUpdatedAt,
-			&i.AccountID,
 			&i.AccountName,
 			&i.AccountType,
 			&i.Owner,
@@ -325,14 +896,24 @@ func (q *Queries) GetUsersByAccountType(ctx context.Context, accountType int32) 
 			&i.Likes,
 			&i.Follows,
 			&i.Shares,
-			&i.AccountTypeID,
-			&i.AccountTypeName,
+			&i.AccountCreatedAt,
+			&i.AccountUpdatedAt,
+			&i.Type,
 			&i.Permissions,
 			&i.IsArtist,
 			&i.IsProducer,
 			&i.IsWriter,
 			&i.IsLabel,
-			&i.IsRegularUser,
+			&i.IsUser,
+			&i.AccountTypeCreatedAt,
+			&i.AccountTypeUpdatedAt,
+			&i.Uuid,
+			&i.RefreshToken,
+			&i.UserAgent,
+			&i.ClientIp,
+			&i.IsBlocked,
+			&i.SessionExpiresAt,
+			&i.SessionCreatedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -344,23 +925,22 @@ func (q *Queries) GetUsersByAccountType(ctx context.Context, accountType int32) 
 	return items, nil
 }
 
-const getUsersByCountryCode = `-- name: GetUsersByCountryCode :many
-SELECT user_id, username, full_name, email, password_hash, password_salt, country_code, role_id, user_status, last_login_at, username_changed_at, email_changed_at, password_changed_at, user_created_at, user_updated_at, account_id, account_name, account_type, owner, bio, account_status, plan, avatar_uri, plays, likes, follows, shares, account_type_id, account_type_name, permissions, is_artist, is_producer, is_writer, is_label, is_regular_user
-FROM "idp_svc"."UserAccount_View"
+const getUserAccountsByCountryCode = `-- name: GetUserAccountsByCountryCode :many
+SELECT id, username, full_name, email, password_hash, password_salt, country_code, role_id, status, last_login_at, username_changed_at, email_changed_at, password_changed_at, user_created_at, user_updated_at, account_name, account_type, owner, bio, account_status, plan, avatar_uri, plays, likes, follows, shares, account_created_at, account_updated_at, type, permissions, is_artist, is_producer, is_writer, is_label, is_user, account_type_created_at, account_type_updated_at, uuid, refresh_token, user_agent, client_ip, is_blocked, session_expires_at, session_created_at FROM "idp_svc"."UserAccounts"
 WHERE country_code = $1
 `
 
-func (q *Queries) GetUsersByCountryCode(ctx context.Context, countryCode string) ([]IdpSvcUserAccountView, error) {
-	rows, err := q.db.Query(ctx, getUsersByCountryCode, countryCode)
+func (q *Queries) GetUserAccountsByCountryCode(ctx context.Context, countryCode string) ([]IdpSvcUserAccount, error) {
+	rows, err := q.db.Query(ctx, getUserAccountsByCountryCode, countryCode)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []IdpSvcUserAccountView{}
+	items := []IdpSvcUserAccount{}
 	for rows.Next() {
-		var i IdpSvcUserAccountView
+		var i IdpSvcUserAccount
 		if err := rows.Scan(
-			&i.UserID,
+			&i.ID,
 			&i.Username,
 			&i.FullName,
 			&i.Email,
@@ -368,14 +948,13 @@ func (q *Queries) GetUsersByCountryCode(ctx context.Context, countryCode string)
 			&i.PasswordSalt,
 			&i.CountryCode,
 			&i.RoleID,
-			&i.UserStatus,
+			&i.Status,
 			&i.LastLoginAt,
 			&i.UsernameChangedAt,
 			&i.EmailChangedAt,
 			&i.PasswordChangedAt,
 			&i.UserCreatedAt,
 			&i.UserUpdatedAt,
-			&i.AccountID,
 			&i.AccountName,
 			&i.AccountType,
 			&i.Owner,
@@ -387,14 +966,24 @@ func (q *Queries) GetUsersByCountryCode(ctx context.Context, countryCode string)
 			&i.Likes,
 			&i.Follows,
 			&i.Shares,
-			&i.AccountTypeID,
-			&i.AccountTypeName,
+			&i.AccountCreatedAt,
+			&i.AccountUpdatedAt,
+			&i.Type,
 			&i.Permissions,
 			&i.IsArtist,
 			&i.IsProducer,
 			&i.IsWriter,
 			&i.IsLabel,
-			&i.IsRegularUser,
+			&i.IsUser,
+			&i.AccountTypeCreatedAt,
+			&i.AccountTypeUpdatedAt,
+			&i.Uuid,
+			&i.RefreshToken,
+			&i.UserAgent,
+			&i.ClientIp,
+			&i.IsBlocked,
+			&i.SessionExpiresAt,
+			&i.SessionCreatedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -406,23 +995,22 @@ func (q *Queries) GetUsersByCountryCode(ctx context.Context, countryCode string)
 	return items, nil
 }
 
-const getUsersByOwner = `-- name: GetUsersByOwner :many
-SELECT user_id, username, full_name, email, password_hash, password_salt, country_code, role_id, user_status, last_login_at, username_changed_at, email_changed_at, password_changed_at, user_created_at, user_updated_at, account_id, account_name, account_type, owner, bio, account_status, plan, avatar_uri, plays, likes, follows, shares, account_type_id, account_type_name, permissions, is_artist, is_producer, is_writer, is_label, is_regular_user
-FROM "idp_svc"."UserAccount_View"
+const getUserAccountsByOwner = `-- name: GetUserAccountsByOwner :many
+SELECT id, username, full_name, email, password_hash, password_salt, country_code, role_id, status, last_login_at, username_changed_at, email_changed_at, password_changed_at, user_created_at, user_updated_at, account_name, account_type, owner, bio, account_status, plan, avatar_uri, plays, likes, follows, shares, account_created_at, account_updated_at, type, permissions, is_artist, is_producer, is_writer, is_label, is_user, account_type_created_at, account_type_updated_at, uuid, refresh_token, user_agent, client_ip, is_blocked, session_expires_at, session_created_at FROM "idp_svc"."UserAccounts"
 WHERE owner = $1
 `
 
-func (q *Queries) GetUsersByOwner(ctx context.Context, owner string) ([]IdpSvcUserAccountView, error) {
-	rows, err := q.db.Query(ctx, getUsersByOwner, owner)
+func (q *Queries) GetUserAccountsByOwner(ctx context.Context, owner string) ([]IdpSvcUserAccount, error) {
+	rows, err := q.db.Query(ctx, getUserAccountsByOwner, owner)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []IdpSvcUserAccountView{}
+	items := []IdpSvcUserAccount{}
 	for rows.Next() {
-		var i IdpSvcUserAccountView
+		var i IdpSvcUserAccount
 		if err := rows.Scan(
-			&i.UserID,
+			&i.ID,
 			&i.Username,
 			&i.FullName,
 			&i.Email,
@@ -430,14 +1018,13 @@ func (q *Queries) GetUsersByOwner(ctx context.Context, owner string) ([]IdpSvcUs
 			&i.PasswordSalt,
 			&i.CountryCode,
 			&i.RoleID,
-			&i.UserStatus,
+			&i.Status,
 			&i.LastLoginAt,
 			&i.UsernameChangedAt,
 			&i.EmailChangedAt,
 			&i.PasswordChangedAt,
 			&i.UserCreatedAt,
 			&i.UserUpdatedAt,
-			&i.AccountID,
 			&i.AccountName,
 			&i.AccountType,
 			&i.Owner,
@@ -449,14 +1036,24 @@ func (q *Queries) GetUsersByOwner(ctx context.Context, owner string) ([]IdpSvcUs
 			&i.Likes,
 			&i.Follows,
 			&i.Shares,
-			&i.AccountTypeID,
-			&i.AccountTypeName,
+			&i.AccountCreatedAt,
+			&i.AccountUpdatedAt,
+			&i.Type,
 			&i.Permissions,
 			&i.IsArtist,
 			&i.IsProducer,
 			&i.IsWriter,
 			&i.IsLabel,
-			&i.IsRegularUser,
+			&i.IsUser,
+			&i.AccountTypeCreatedAt,
+			&i.AccountTypeUpdatedAt,
+			&i.Uuid,
+			&i.RefreshToken,
+			&i.UserAgent,
+			&i.ClientIp,
+			&i.IsBlocked,
+			&i.SessionExpiresAt,
+			&i.SessionCreatedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -468,23 +1065,22 @@ func (q *Queries) GetUsersByOwner(ctx context.Context, owner string) ([]IdpSvcUs
 	return items, nil
 }
 
-const getUsersByRoleId = `-- name: GetUsersByRoleId :many
-SELECT user_id, username, full_name, email, password_hash, password_salt, country_code, role_id, user_status, last_login_at, username_changed_at, email_changed_at, password_changed_at, user_created_at, user_updated_at, account_id, account_name, account_type, owner, bio, account_status, plan, avatar_uri, plays, likes, follows, shares, account_type_id, account_type_name, permissions, is_artist, is_producer, is_writer, is_label, is_regular_user
-FROM "idp_svc"."UserAccount_View"
+const getUserAccountsByRoleId = `-- name: GetUserAccountsByRoleId :many
+SELECT id, username, full_name, email, password_hash, password_salt, country_code, role_id, status, last_login_at, username_changed_at, email_changed_at, password_changed_at, user_created_at, user_updated_at, account_name, account_type, owner, bio, account_status, plan, avatar_uri, plays, likes, follows, shares, account_created_at, account_updated_at, type, permissions, is_artist, is_producer, is_writer, is_label, is_user, account_type_created_at, account_type_updated_at, uuid, refresh_token, user_agent, client_ip, is_blocked, session_expires_at, session_created_at FROM "idp_svc"."UserAccounts"
 WHERE role_id = $1
 `
 
-func (q *Queries) GetUsersByRoleId(ctx context.Context, roleID pgtype.Int8) ([]IdpSvcUserAccountView, error) {
-	rows, err := q.db.Query(ctx, getUsersByRoleId, roleID)
+func (q *Queries) GetUserAccountsByRoleId(ctx context.Context, roleID pgtype.Int8) ([]IdpSvcUserAccount, error) {
+	rows, err := q.db.Query(ctx, getUserAccountsByRoleId, roleID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []IdpSvcUserAccountView{}
+	items := []IdpSvcUserAccount{}
 	for rows.Next() {
-		var i IdpSvcUserAccountView
+		var i IdpSvcUserAccount
 		if err := rows.Scan(
-			&i.UserID,
+			&i.ID,
 			&i.Username,
 			&i.FullName,
 			&i.Email,
@@ -492,14 +1088,13 @@ func (q *Queries) GetUsersByRoleId(ctx context.Context, roleID pgtype.Int8) ([]I
 			&i.PasswordSalt,
 			&i.CountryCode,
 			&i.RoleID,
-			&i.UserStatus,
+			&i.Status,
 			&i.LastLoginAt,
 			&i.UsernameChangedAt,
 			&i.EmailChangedAt,
 			&i.PasswordChangedAt,
 			&i.UserCreatedAt,
 			&i.UserUpdatedAt,
-			&i.AccountID,
 			&i.AccountName,
 			&i.AccountType,
 			&i.Owner,
@@ -511,14 +1106,24 @@ func (q *Queries) GetUsersByRoleId(ctx context.Context, roleID pgtype.Int8) ([]I
 			&i.Likes,
 			&i.Follows,
 			&i.Shares,
-			&i.AccountTypeID,
-			&i.AccountTypeName,
+			&i.AccountCreatedAt,
+			&i.AccountUpdatedAt,
+			&i.Type,
 			&i.Permissions,
 			&i.IsArtist,
 			&i.IsProducer,
 			&i.IsWriter,
 			&i.IsLabel,
-			&i.IsRegularUser,
+			&i.IsUser,
+			&i.AccountTypeCreatedAt,
+			&i.AccountTypeUpdatedAt,
+			&i.Uuid,
+			&i.RefreshToken,
+			&i.UserAgent,
+			&i.ClientIp,
+			&i.IsBlocked,
+			&i.SessionExpiresAt,
+			&i.SessionCreatedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -530,23 +1135,22 @@ func (q *Queries) GetUsersByRoleId(ctx context.Context, roleID pgtype.Int8) ([]I
 	return items, nil
 }
 
-const getUsersCreatedAfter = `-- name: GetUsersCreatedAfter :many
-SELECT user_id, username, full_name, email, password_hash, password_salt, country_code, role_id, user_status, last_login_at, username_changed_at, email_changed_at, password_changed_at, user_created_at, user_updated_at, account_id, account_name, account_type, owner, bio, account_status, plan, avatar_uri, plays, likes, follows, shares, account_type_id, account_type_name, permissions, is_artist, is_producer, is_writer, is_label, is_regular_user
-FROM "idp_svc"."UserAccount_View"
+const getUserAccountsCreatedAfter = `-- name: GetUserAccountsCreatedAfter :many
+SELECT id, username, full_name, email, password_hash, password_salt, country_code, role_id, status, last_login_at, username_changed_at, email_changed_at, password_changed_at, user_created_at, user_updated_at, account_name, account_type, owner, bio, account_status, plan, avatar_uri, plays, likes, follows, shares, account_created_at, account_updated_at, type, permissions, is_artist, is_producer, is_writer, is_label, is_user, account_type_created_at, account_type_updated_at, uuid, refresh_token, user_agent, client_ip, is_blocked, session_expires_at, session_created_at FROM "idp_svc"."UserAccounts"
 WHERE user_created_at > $1
 `
 
-func (q *Queries) GetUsersCreatedAfter(ctx context.Context, userCreatedAt time.Time) ([]IdpSvcUserAccountView, error) {
-	rows, err := q.db.Query(ctx, getUsersCreatedAfter, userCreatedAt)
+func (q *Queries) GetUserAccountsCreatedAfter(ctx context.Context, userCreatedAt time.Time) ([]IdpSvcUserAccount, error) {
+	rows, err := q.db.Query(ctx, getUserAccountsCreatedAfter, userCreatedAt)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []IdpSvcUserAccountView{}
+	items := []IdpSvcUserAccount{}
 	for rows.Next() {
-		var i IdpSvcUserAccountView
+		var i IdpSvcUserAccount
 		if err := rows.Scan(
-			&i.UserID,
+			&i.ID,
 			&i.Username,
 			&i.FullName,
 			&i.Email,
@@ -554,14 +1158,13 @@ func (q *Queries) GetUsersCreatedAfter(ctx context.Context, userCreatedAt time.T
 			&i.PasswordSalt,
 			&i.CountryCode,
 			&i.RoleID,
-			&i.UserStatus,
+			&i.Status,
 			&i.LastLoginAt,
 			&i.UsernameChangedAt,
 			&i.EmailChangedAt,
 			&i.PasswordChangedAt,
 			&i.UserCreatedAt,
 			&i.UserUpdatedAt,
-			&i.AccountID,
 			&i.AccountName,
 			&i.AccountType,
 			&i.Owner,
@@ -573,14 +1176,24 @@ func (q *Queries) GetUsersCreatedAfter(ctx context.Context, userCreatedAt time.T
 			&i.Likes,
 			&i.Follows,
 			&i.Shares,
-			&i.AccountTypeID,
-			&i.AccountTypeName,
+			&i.AccountCreatedAt,
+			&i.AccountUpdatedAt,
+			&i.Type,
 			&i.Permissions,
 			&i.IsArtist,
 			&i.IsProducer,
 			&i.IsWriter,
 			&i.IsLabel,
-			&i.IsRegularUser,
+			&i.IsUser,
+			&i.AccountTypeCreatedAt,
+			&i.AccountTypeUpdatedAt,
+			&i.Uuid,
+			&i.RefreshToken,
+			&i.UserAgent,
+			&i.ClientIp,
+			&i.IsBlocked,
+			&i.SessionExpiresAt,
+			&i.SessionCreatedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -592,23 +1205,22 @@ func (q *Queries) GetUsersCreatedAfter(ctx context.Context, userCreatedAt time.T
 	return items, nil
 }
 
-const getUsersUpdatedAfter = `-- name: GetUsersUpdatedAfter :many
-SELECT user_id, username, full_name, email, password_hash, password_salt, country_code, role_id, user_status, last_login_at, username_changed_at, email_changed_at, password_changed_at, user_created_at, user_updated_at, account_id, account_name, account_type, owner, bio, account_status, plan, avatar_uri, plays, likes, follows, shares, account_type_id, account_type_name, permissions, is_artist, is_producer, is_writer, is_label, is_regular_user
-FROM "idp_svc"."UserAccount_View"
+const getUserAccountsUpdatedAfter = `-- name: GetUserAccountsUpdatedAfter :many
+SELECT id, username, full_name, email, password_hash, password_salt, country_code, role_id, status, last_login_at, username_changed_at, email_changed_at, password_changed_at, user_created_at, user_updated_at, account_name, account_type, owner, bio, account_status, plan, avatar_uri, plays, likes, follows, shares, account_created_at, account_updated_at, type, permissions, is_artist, is_producer, is_writer, is_label, is_user, account_type_created_at, account_type_updated_at, uuid, refresh_token, user_agent, client_ip, is_blocked, session_expires_at, session_created_at FROM "idp_svc"."UserAccounts"
 WHERE user_updated_at > $1
 `
 
-func (q *Queries) GetUsersUpdatedAfter(ctx context.Context, userUpdatedAt time.Time) ([]IdpSvcUserAccountView, error) {
-	rows, err := q.db.Query(ctx, getUsersUpdatedAfter, userUpdatedAt)
+func (q *Queries) GetUserAccountsUpdatedAfter(ctx context.Context, userUpdatedAt time.Time) ([]IdpSvcUserAccount, error) {
+	rows, err := q.db.Query(ctx, getUserAccountsUpdatedAfter, userUpdatedAt)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []IdpSvcUserAccountView{}
+	items := []IdpSvcUserAccount{}
 	for rows.Next() {
-		var i IdpSvcUserAccountView
+		var i IdpSvcUserAccount
 		if err := rows.Scan(
-			&i.UserID,
+			&i.ID,
 			&i.Username,
 			&i.FullName,
 			&i.Email,
@@ -616,14 +1228,13 @@ func (q *Queries) GetUsersUpdatedAfter(ctx context.Context, userUpdatedAt time.T
 			&i.PasswordSalt,
 			&i.CountryCode,
 			&i.RoleID,
-			&i.UserStatus,
+			&i.Status,
 			&i.LastLoginAt,
 			&i.UsernameChangedAt,
 			&i.EmailChangedAt,
 			&i.PasswordChangedAt,
 			&i.UserCreatedAt,
 			&i.UserUpdatedAt,
-			&i.AccountID,
 			&i.AccountName,
 			&i.AccountType,
 			&i.Owner,
@@ -635,14 +1246,24 @@ func (q *Queries) GetUsersUpdatedAfter(ctx context.Context, userUpdatedAt time.T
 			&i.Likes,
 			&i.Follows,
 			&i.Shares,
-			&i.AccountTypeID,
-			&i.AccountTypeName,
+			&i.AccountCreatedAt,
+			&i.AccountUpdatedAt,
+			&i.Type,
 			&i.Permissions,
 			&i.IsArtist,
 			&i.IsProducer,
 			&i.IsWriter,
 			&i.IsLabel,
-			&i.IsRegularUser,
+			&i.IsUser,
+			&i.AccountTypeCreatedAt,
+			&i.AccountTypeUpdatedAt,
+			&i.Uuid,
+			&i.RefreshToken,
+			&i.UserAgent,
+			&i.ClientIp,
+			&i.IsBlocked,
+			&i.SessionExpiresAt,
+			&i.SessionCreatedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -652,4 +1273,341 @@ func (q *Queries) GetUsersUpdatedAfter(ctx context.Context, userUpdatedAt time.T
 		return nil, err
 	}
 	return items, nil
+}
+
+const listUserAccounts = `-- name: ListUserAccounts :many
+SELECT
+    id,
+    username,
+    full_name,
+    email,
+    country_code,
+    role_id,
+    status,
+    last_login_at,
+    user_created_at,
+    user_updated_at,
+    account_name,
+    account_type,
+    owner,
+    bio,
+    account_status,
+    plan,
+    avatar_uri,
+    plays,
+    likes,
+    follows,
+    shares,
+    is_artist,
+    is_producer,
+    is_writer,
+    is_label,
+    is_user
+FROM "idp_svc"."UserAccounts"
+ORDER BY id
+LIMIT $1 OFFSET $2
+`
+
+type ListUserAccountsParams struct {
+	Limit  int32 `json:"limit"`
+	Offset int32 `json:"offset"`
+}
+
+type ListUserAccountsRow struct {
+	ID            int64       `json:"id"`
+	Username      string      `json:"username"`
+	FullName      string      `json:"full_name"`
+	Email         string      `json:"email"`
+	CountryCode   string      `json:"country_code"`
+	RoleID        pgtype.Int8 `json:"role_id"`
+	Status        pgtype.Text `json:"status"`
+	LastLoginAt   time.Time   `json:"last_login_at"`
+	UserCreatedAt time.Time   `json:"user_created_at"`
+	UserUpdatedAt time.Time   `json:"user_updated_at"`
+	AccountName   string      `json:"account_name"`
+	AccountType   int32       `json:"account_type"`
+	Owner         string      `json:"owner"`
+	Bio           string      `json:"bio"`
+	AccountStatus string      `json:"account_status"`
+	Plan          int32       `json:"plan"`
+	AvatarUri     pgtype.Text `json:"avatar_uri"`
+	Plays         int64       `json:"plays"`
+	Likes         int64       `json:"likes"`
+	Follows       int64       `json:"follows"`
+	Shares        int64       `json:"shares"`
+	IsArtist      bool        `json:"is_artist"`
+	IsProducer    bool        `json:"is_producer"`
+	IsWriter      bool        `json:"is_writer"`
+	IsLabel       bool        `json:"is_label"`
+	IsUser        bool        `json:"is_user"`
+}
+
+func (q *Queries) ListUserAccounts(ctx context.Context, arg ListUserAccountsParams) ([]ListUserAccountsRow, error) {
+	rows, err := q.db.Query(ctx, listUserAccounts, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListUserAccountsRow{}
+	for rows.Next() {
+		var i ListUserAccountsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Username,
+			&i.FullName,
+			&i.Email,
+			&i.CountryCode,
+			&i.RoleID,
+			&i.Status,
+			&i.LastLoginAt,
+			&i.UserCreatedAt,
+			&i.UserUpdatedAt,
+			&i.AccountName,
+			&i.AccountType,
+			&i.Owner,
+			&i.Bio,
+			&i.AccountStatus,
+			&i.Plan,
+			&i.AvatarUri,
+			&i.Plays,
+			&i.Likes,
+			&i.Follows,
+			&i.Shares,
+			&i.IsArtist,
+			&i.IsProducer,
+			&i.IsWriter,
+			&i.IsLabel,
+			&i.IsUser,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const orderResultsByLastLoginTime = `-- name: OrderResultsByLastLoginTime :many
+SELECT id, username, full_name, email, password_hash, password_salt, country_code, role_id, status, last_login_at, username_changed_at, email_changed_at, password_changed_at, user_created_at, user_updated_at, account_name, account_type, owner, bio, account_status, plan, avatar_uri, plays, likes, follows, shares, account_created_at, account_updated_at, type, permissions, is_artist, is_producer, is_writer, is_label, is_user, account_type_created_at, account_type_updated_at, uuid, refresh_token, user_agent, client_ip, is_blocked, session_expires_at, session_created_at FROM "idp_svc"."UserAccounts"
+ORDER BY last_login_at DESC
+`
+
+func (q *Queries) OrderResultsByLastLoginTime(ctx context.Context) ([]IdpSvcUserAccount, error) {
+	rows, err := q.db.Query(ctx, orderResultsByLastLoginTime)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []IdpSvcUserAccount{}
+	for rows.Next() {
+		var i IdpSvcUserAccount
+		if err := rows.Scan(
+			&i.ID,
+			&i.Username,
+			&i.FullName,
+			&i.Email,
+			&i.PasswordHash,
+			&i.PasswordSalt,
+			&i.CountryCode,
+			&i.RoleID,
+			&i.Status,
+			&i.LastLoginAt,
+			&i.UsernameChangedAt,
+			&i.EmailChangedAt,
+			&i.PasswordChangedAt,
+			&i.UserCreatedAt,
+			&i.UserUpdatedAt,
+			&i.AccountName,
+			&i.AccountType,
+			&i.Owner,
+			&i.Bio,
+			&i.AccountStatus,
+			&i.Plan,
+			&i.AvatarUri,
+			&i.Plays,
+			&i.Likes,
+			&i.Follows,
+			&i.Shares,
+			&i.AccountCreatedAt,
+			&i.AccountUpdatedAt,
+			&i.Type,
+			&i.Permissions,
+			&i.IsArtist,
+			&i.IsProducer,
+			&i.IsWriter,
+			&i.IsLabel,
+			&i.IsUser,
+			&i.AccountTypeCreatedAt,
+			&i.AccountTypeUpdatedAt,
+			&i.Uuid,
+			&i.RefreshToken,
+			&i.UserAgent,
+			&i.ClientIp,
+			&i.IsBlocked,
+			&i.SessionExpiresAt,
+			&i.SessionCreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const updateUserAccount = `-- name: UpdateUserAccount :one
+UPDATE "idp_svc"."UserAccounts"
+SET 
+    username = COALESCE($1, username),
+    full_name = COALESCE($2, full_name),
+    email = COALESCE($3, email),
+    password_hash = COALESCE($4, password_hash),
+    password_salt = COALESCE($5, password_salt),
+    country_code = COALESCE($6, country_code),
+    role_id = COALESCE($7, role_id),
+    status = COALESCE($8, status),
+    last_login_at = COALESCE($9, last_login_at),
+    username_changed_at = COALESCE($10, username_changed_at),
+    email_changed_at = COALESCE($11, email_changed_at),
+    password_changed_at = COALESCE($12, password_changed_at),
+    user_created_at = COALESCE($13, user_created_at),
+    user_updated_at = NOW(),
+    account_name = COALESCE($14, account_name),
+    account_type = COALESCE($15, account_type),
+    owner = COALESCE($16, owner),
+    bio = COALESCE($17, bio),
+    account_status = COALESCE($18, account_status),
+    plan = COALESCE($19, plan),
+    avatar_uri = COALESCE($20, avatar_uri),
+    plays = COALESCE($21, plays),
+    likes = COALESCE($22, likes),
+    follows = COALESCE($23, follows),
+    shares = COALESCE($24, shares),
+    is_artist = COALESCE($25, is_artist),
+    is_producer = COALESCE($26, is_producer),
+    is_writer = COALESCE($27, is_writer),
+    is_label = COALESCE($28, is_label),
+    is_user = COALESCE($29, is_user)
+WHERE id = $30
+RETURNING id, username, full_name, email, password_hash, password_salt, country_code, role_id, status, last_login_at, username_changed_at, email_changed_at, password_changed_at, user_created_at, user_updated_at, account_name, account_type, owner, bio, account_status, plan, avatar_uri, plays, likes, follows, shares, account_created_at, account_updated_at, type, permissions, is_artist, is_producer, is_writer, is_label, is_user, account_type_created_at, account_type_updated_at, uuid, refresh_token, user_agent, client_ip, is_blocked, session_expires_at, session_created_at
+`
+
+type UpdateUserAccountParams struct {
+	Username          string      `json:"username"`
+	FullName          string      `json:"full_name"`
+	Email             string      `json:"email"`
+	PasswordHash      string      `json:"password_hash"`
+	PasswordSalt      string      `json:"password_salt"`
+	CountryCode       string      `json:"country_code"`
+	RoleID            pgtype.Int8 `json:"role_id"`
+	Status            pgtype.Text `json:"status"`
+	LastLoginAt       time.Time   `json:"last_login_at"`
+	UsernameChangedAt time.Time   `json:"username_changed_at"`
+	EmailChangedAt    time.Time   `json:"email_changed_at"`
+	PasswordChangedAt time.Time   `json:"password_changed_at"`
+	UserCreatedAt     time.Time   `json:"user_created_at"`
+	AccountName       string      `json:"account_name"`
+	AccountType       int32       `json:"account_type"`
+	Owner             string      `json:"owner"`
+	Bio               string      `json:"bio"`
+	AccountStatus     string      `json:"account_status"`
+	Plan              int32       `json:"plan"`
+	AvatarUri         pgtype.Text `json:"avatar_uri"`
+	Plays             int64       `json:"plays"`
+	Likes             int64       `json:"likes"`
+	Follows           int64       `json:"follows"`
+	Shares            int64       `json:"shares"`
+	IsArtist          bool        `json:"is_artist"`
+	IsProducer        bool        `json:"is_producer"`
+	IsWriter          bool        `json:"is_writer"`
+	IsLabel           bool        `json:"is_label"`
+	IsUser            bool        `json:"is_user"`
+	ID                int64       `json:"id"`
+}
+
+func (q *Queries) UpdateUserAccount(ctx context.Context, arg UpdateUserAccountParams) (IdpSvcUserAccount, error) {
+	row := q.db.QueryRow(ctx, updateUserAccount,
+		arg.Username,
+		arg.FullName,
+		arg.Email,
+		arg.PasswordHash,
+		arg.PasswordSalt,
+		arg.CountryCode,
+		arg.RoleID,
+		arg.Status,
+		arg.LastLoginAt,
+		arg.UsernameChangedAt,
+		arg.EmailChangedAt,
+		arg.PasswordChangedAt,
+		arg.UserCreatedAt,
+		arg.AccountName,
+		arg.AccountType,
+		arg.Owner,
+		arg.Bio,
+		arg.AccountStatus,
+		arg.Plan,
+		arg.AvatarUri,
+		arg.Plays,
+		arg.Likes,
+		arg.Follows,
+		arg.Shares,
+		arg.IsArtist,
+		arg.IsProducer,
+		arg.IsWriter,
+		arg.IsLabel,
+		arg.IsUser,
+		arg.ID,
+	)
+	var i IdpSvcUserAccount
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.FullName,
+		&i.Email,
+		&i.PasswordHash,
+		&i.PasswordSalt,
+		&i.CountryCode,
+		&i.RoleID,
+		&i.Status,
+		&i.LastLoginAt,
+		&i.UsernameChangedAt,
+		&i.EmailChangedAt,
+		&i.PasswordChangedAt,
+		&i.UserCreatedAt,
+		&i.UserUpdatedAt,
+		&i.AccountName,
+		&i.AccountType,
+		&i.Owner,
+		&i.Bio,
+		&i.AccountStatus,
+		&i.Plan,
+		&i.AvatarUri,
+		&i.Plays,
+		&i.Likes,
+		&i.Follows,
+		&i.Shares,
+		&i.AccountCreatedAt,
+		&i.AccountUpdatedAt,
+		&i.Type,
+		&i.Permissions,
+		&i.IsArtist,
+		&i.IsProducer,
+		&i.IsWriter,
+		&i.IsLabel,
+		&i.IsUser,
+		&i.AccountTypeCreatedAt,
+		&i.AccountTypeUpdatedAt,
+		&i.Uuid,
+		&i.RefreshToken,
+		&i.UserAgent,
+		&i.ClientIp,
+		&i.IsBlocked,
+		&i.SessionExpiresAt,
+		&i.SessionCreatedAt,
+	)
+	return i, err
 }

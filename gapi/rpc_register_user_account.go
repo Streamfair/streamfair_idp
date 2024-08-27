@@ -11,7 +11,9 @@ import (
 	pb "github.com/Streamfair/common_proto/IdentityProvider/pb/register"
 	userpb "github.com/Streamfair/common_proto/UserService/pb"
 	"github.com/Streamfair/common_proto/UserService/pb/user"
+	db "github.com/Streamfair/streamfair_idp/db/sqlc"
 	"github.com/Streamfair/streamfair_idp/util"
+	"github.com/jackc/pgx/v5/pgtype"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -55,7 +57,11 @@ func (server *Server) RegisterUserAccount(
 		return nil, status.Errorf(codes.Internal, "Failed to create account: %v", err)
 	}
 
-	return buildRegisterUserAccountResponse(registeredUser, account, accountType), nil
+	response := buildRegisterUserAccountResponse(registeredUser, account, accountType)
+
+	err = storeUserAccount(ctx, server, response)
+
+	return response, nil
 }
 
 func userExists(ctx context.Context, pool *ConnectionPool, username string) bool {
@@ -160,8 +166,8 @@ func buildCreateAccountTypeRequest(req *pb.RegisterUserAccountRequest) *account_
 
 func buildCreateAccountRequest(req *pb.RegisterUserAccountRequest, username string, accountType int32) *acc.CreateAccountRequest {
 	return &acc.CreateAccountRequest{
-		AccountType: accountType,
 		AccountName: req.GetAccountName(),
+		AccountType: accountType,
 		Owner:       username,
 		Bio:         req.GetAccountBio(),
 		Status:      "active",
@@ -175,62 +181,129 @@ func buildCreateAccountRequest(req *pb.RegisterUserAccountRequest, username stri
 }
 
 func buildRegisterUserAccountResponse(userResp *user.CreateUserResponse, accountResp *acc.CreateAccountResponse, accountTypeResp *account_type.CreateAccountTypeResponse) *pb.RegisterUserAccountResponse {
-accountData := &pb.AccountData{
-	Id:          accountResp.Account.Id,
-	AccType:     accountResp.Account.AccountType,
-	AccountName: accountResp.Account.AccountName,
-	Owner:       accountResp.Account.Owner,
-	Bio:         accountResp.Account.Bio,
-	Status:      accountResp.Account.Status,
-	Plan:        accountResp.Account.Plan,
-	AvatarUri:   accountResp.Account.AvatarUri,
-	Plays:       accountResp.Account.Plays,
-	Likes:       accountResp.Account.Likes,
-	Follows:     accountResp.Account.Follows,
-	Shares:      accountResp.Account.Shares,
-	CreatedAt:   accountResp.Account.CreatedAt,
-	UpdatedAt:   accountResp.Account.UpdatedAt,
-	AccountType: &pb.AccountTypeData{
-		Id:          accountTypeResp.AccountType.Id,
-		AccType:     accountTypeResp.AccountType.Type,
-		Permissions: accountTypeResp.AccountType.Permissions,
-		IsArtist:    accountTypeResp.AccountType.IsArtist,
-		IsProducer:  accountTypeResp.AccountType.IsProducer,
-		IsWriter:    accountTypeResp.AccountType.IsWriter,
-		IsLabel:     accountTypeResp.AccountType.IsLabel,
-		IsUser:      accountTypeResp.AccountType.IsUser,
-		CreatedAt:   accountTypeResp.AccountType.CreatedAt,
-		UpdatedAt:   accountTypeResp.AccountType.UpdatedAt,
-	},
-}
+	accountData := &pb.AccountData{
+		Id:          accountResp.Account.GetId(),
+		AccountName: accountResp.Account.GetAccountName(),
+		AccountType: accountResp.Account.GetAccountType(),
+		Owner:       accountResp.Account.GetOwner(),
+		Bio:         accountResp.Account.GetBio(),
+		Status:      accountResp.Account.GetStatus(),
+		Plan:        accountResp.Account.GetPlan(),
+		AvatarUri:   accountResp.Account.GetAvatarUri(),
+		Plays:       accountResp.Account.GetPlays(),
+		Likes:       accountResp.Account.GetLikes(),
+		Follows:     accountResp.Account.GetFollows(),
+		Shares:      accountResp.Account.GetShares(),
+		CreatedAt:   accountResp.Account.GetCreatedAt(),
+		UpdatedAt:   accountResp.Account.GetUpdatedAt(),
+	}
 
-userData := &pb.UserData{
-	Id:                userResp.User.Id,
-	Username:          userResp.User.Username,
-	FullName:          userResp.User.FullName,
-	Email:             userResp.User.Email,
-	PasswordHash:      userResp.User.PasswordHash,
-	PasswordSalt:      userResp.User.PasswordSalt,
-	CountryCode:       userResp.User.CountryCode,
-	RoleId:            userResp.User.RoleId,
-	Status:            userResp.User.Status,
-	AccountType:       accountData.AccType,
-	AccountName:       accountData.AccountName,
-	AccountBio:        accountData.Bio,
-	AccountPlan:       accountData.Plan,
-	AccountAvatarUri:  accountData.AvatarUri,
-	LastLoginAt:       userResp.User.LastLoginAt,
-	UsernameChangedAt: userResp.User.UsernameChangedAt,
-	EmailChangedAt:    userResp.User.EmailChangedAt,
-	PasswordChangedAt: userResp.User.PasswordChangedAt,
-	CreatedAt:         userResp.User.CreatedAt,
-	UpdatedAt:         userResp.User.UpdatedAt,
-}
+	accountTypeData := &pb.AccountTypeData{
+		Id:          accountTypeResp.AccountType.GetId(),
+		Type:        accountTypeResp.AccountType.GetType(),
+		Permissions: accountTypeResp.AccountType.GetPermissions(),
+		IsArtist:    accountTypeResp.AccountType.GetIsArtist(),
+		IsProducer:  accountTypeResp.AccountType.GetIsProducer(),
+		IsWriter:    accountTypeResp.AccountType.GetIsWriter(),
+		IsLabel:     accountTypeResp.AccountType.GetIsLabel(),
+		IsUser:      accountTypeResp.AccountType.GetIsUser(),
+		CreatedAt:   accountTypeResp.AccountType.GetCreatedAt(),
+		UpdatedAt:   accountTypeResp.AccountType.GetUpdatedAt(),
+	}
+
+	userData := &pb.UserData{
+		Id:                userResp.User.GetId(),
+		Username:          userResp.User.GetUsername(),
+		FullName:          userResp.User.GetFullName(),
+		Email:             userResp.User.GetEmail(),
+		PasswordHash:      userResp.User.GetPasswordHash(),
+		PasswordSalt:      userResp.User.GetPasswordSalt(),
+		CountryCode:       userResp.User.GetCountryCode(),
+		RoleId:            userResp.User.GetRoleId(),
+		Status:            userResp.User.GetStatus(),
+		LastLoginAt:       userResp.User.GetLastLoginAt(),
+		UsernameChangedAt: userResp.User.GetUsernameChangedAt(),
+		EmailChangedAt:    userResp.User.GetEmailChangedAt(),
+		PasswordChangedAt: userResp.User.GetPasswordChangedAt(),
+		CreatedAt:         userResp.User.GetCreatedAt(),
+		UpdatedAt:         userResp.User.GetUpdatedAt(),
+	}
+
+	userAccount := &pb.UserAccount{
+		User:        userData,
+		Account:     accountData,
+		AccountType: accountTypeData,
+	}
 
 	return &pb.RegisterUserAccountResponse{
-		UserAccount: &pb.UserAccount{
-			User:    userData,
-			Account: accountData,
-		},
+		UserAccount: userAccount,
 	}
+}
+func storeUserAccount(ctx context.Context, server *Server, response *pb.RegisterUserAccountResponse) error {
+	user := response.GetUserAccount().GetUser()
+	account := response.GetUserAccount().GetAccount()
+	accountType := response.GetUserAccount().GetAccountType()
+	userAccountEntry := db.CreateUserAccountParams{
+		Username:             user.GetUsername(),
+		FullName:             user.GetFullName(),
+		Email:                user.GetEmail(),
+		PasswordHash:         user.GetPasswordHash(),
+		PasswordSalt:         user.GetPasswordSalt(),
+		CountryCode:          user.GetCountryCode(),
+		RoleID:               pgtype.Int8{Int64: user.GetRoleId()},
+		Status:               pgtype.Text{String: user.GetStatus()},
+		LastLoginAt:          user.GetLastLoginAt().AsTime(),
+		UsernameChangedAt:    user.GetUsernameChangedAt().AsTime(),
+		EmailChangedAt:       user.GetEmailChangedAt().AsTime(),
+		PasswordChangedAt:    user.GetPasswordChangedAt().AsTime(),
+		UserCreatedAt:        user.GetCreatedAt().AsTime(),
+		UserUpdatedAt:        user.GetUpdatedAt().AsTime(),
+		AccountName:          account.GetAccountName(),
+		AccountType:          account.GetAccountType(),
+		Owner:                account.GetOwner(),
+		Bio:                  account.GetBio(),
+		AccountStatus:        account.GetStatus(),
+		Plan:                 account.GetPlan(),
+		AvatarUri:            pgtype.Text{String: account.GetAvatarUri()},
+		Plays:                account.GetPlays(),
+		Likes:                account.GetLikes(),
+		Follows:              account.GetFollows(),
+		Shares:               account.GetShares(),
+		AccountCreatedAt:     account.GetCreatedAt().AsTime(),
+		AccountUpdatedAt:     account.GetUpdatedAt().AsTime(),
+		Type:                 accountType.GetType(),
+		Permissions:          accountType.GetPermissions(),
+		IsArtist:             accountType.GetIsArtist(),
+		IsProducer:           accountType.GetIsProducer(),
+		IsWriter:             accountType.GetIsWriter(),
+		IsLabel:              accountType.GetIsLabel(),
+		IsUser:               accountType.GetIsUser(),
+		AccountTypeCreatedAt: accountType.GetCreatedAt().AsTime(),
+		AccountTypeUpdatedAt: accountType.GetUpdatedAt().AsTime(),
+	}
+
+	_, err := server.store.CreateUserAccount(ctx, userAccountEntry)
+	if err != nil {
+		return status.Errorf(codes.Internal, "Failed to save user account: %v", err)
+	}
+	return nil
+}
+
+func getUser(ctx context.Context, pool *ConnectionPool, address string, username string) (*user.User, error) {
+	conn, err := pool.GetConn(address)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to connect to UserService: %v", err)
+	}
+
+	client := userpb.NewUserServiceClient(conn)
+
+	req := &user.GetUserByValueRequest{
+		Username: username,
+	}
+	resp, err := client.GetUserByValue(ctx, req)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get user: %s", err)
+	}
+
+	return resp.User, nil
 }

@@ -11,9 +11,9 @@ import (
 
 	"github.com/rs/zerolog/log"
 
+	pb "github.com/Streamfair/common_proto/IdentityProvider/pb"
 	db "github.com/Streamfair/streamfair_idp/db/sqlc"
 	_ "github.com/Streamfair/streamfair_idp/doc/statik"
-	"github.com/Streamfair/common_proto/IdentityProvider/pb"
 	"github.com/Streamfair/streamfair_idp/token"
 	"github.com/Streamfair/streamfair_idp/util"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -56,11 +56,11 @@ func NewServer(config util.Config, store db.Store) (*Server, error) {
 	grpcLogger := grpc.UnaryInterceptor(GrpcLogger)
 
 	server := &Server{
-		config:     config,
-		store:      store,
-		grpcServer: grpc.NewServer(grpc.Creds(creds), grpcLogger),
-		httpServer: &http.Server{},
-		healthSrv:  health.NewServer(),
+		config:          config,
+		store:           store,
+		grpcServer:      grpc.NewServer(grpc.Creds(creds), grpcLogger),
+		httpServer:      &http.Server{},
+		healthSrv:       health.NewServer(),
 		localTokenMaker: localTokenMaker,
 	}
 

@@ -14,6 +14,15 @@ func ValidateString(value string, minLen int, maxLen int) error {
 	return nil
 }
 
+// Function to validate a string value based on the minimum and maximum length
+func ValidateUsername(value string) error {
+	err := ValidateString(value, 2, 20)
+	if err != nil {
+		return fmt.Errorf("username %v", err)
+	}
+	return nil
+}
+
 // Function to validate UserId
 func ValidateUserId(userId int64) error {
 	// Assuming the UserId should be a positive integer

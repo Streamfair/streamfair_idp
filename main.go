@@ -50,6 +50,14 @@ func main() {
 
 	runDBMigration(config.MigrationURL, config.DBSource)
 
+	// consumer := kafka_.SetupKafkaConsumer()
+	// defer consumer.Close()
+
+	// sigchan := make(chan os.Signal, 1)
+	// signal.Notify(sigchan, syscall.SIGINT, syscall.SIGTERM)
+
+	// go kafka_.ConsumeKafkaMessages(consumer, sigchan)
+
 	go server.RunGrpcGatewayServer()
 	server.RunGrpcServer()
 }
@@ -66,3 +74,4 @@ func runDBMigration(migrationURL string, dbSource string) {
 
 	log.Info().Msg("DB migrated successfully")
 }
+	

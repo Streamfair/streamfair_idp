@@ -1,20 +1,18 @@
--- Drop the view if it exists
-DROP VIEW IF EXISTS "idp_svc"."UserAccount_View";
+-- Drop unique constraint for uuid
+ALTER TABLE "idp_svc"."UserAccounts" DROP CONSTRAINT IF EXISTS "fk_session_uuid";
 
--- Drop the unique constraint
-ALTER TABLE "idp_svc"."Accounts" DROP CONSTRAINT IF EXISTS "unique_account";
+-- Drop foreign key constraint for owner
+ALTER TABLE "idp_svc"."UserAccounts" DROP CONSTRAINT IF EXISTS "unique_account";
 
--- Drop the indices
-DROP INDEX IF EXISTS "idx_user_id";
-DROP INDEX IF EXISTS "idx_user_username";
-DROP INDEX IF EXISTS "idx_users_email";
-DROP INDEX IF EXISTS "idx_acc_owner";
-DROP INDEX IF EXISTS "idx_accType_id";
+-- Drop foreign key constraint for account_type
+ALTER TABLE "idp_svc"."UserAccounts" DROP CONSTRAINT IF EXISTS "fk_account_type";
 
--- Drop the tables if they exist
-DROP TABLE IF EXISTS "idp_svc"."Accounts";
-DROP TABLE IF EXISTS "idp_svc"."AccountTypes";
-DROP TABLE IF EXISTS "idp_svc"."Users";
+-- Drop indices
+DROP INDEX IF EXISTS "idp_svc"."unique_account";
+DROP INDEX IF EXISTS "idp_svc"."fk_session_uuid";
 
--- Drop the schema if it exists
-DROP SCHEMA IF EXISTS "idp_svc";
+-- Drop table
+DROP TABLE IF EXISTS "idp_svc"."UserAccounts";
+
+-- Drop schema if it exists and is empty
+DROP SCHEMA IF EXISTS "idp_svc" CASCADE;
